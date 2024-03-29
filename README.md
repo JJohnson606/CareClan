@@ -53,4 +53,4 @@ Care Management
 - As a user, I need the flexibility to edit or remove care updates and comments to ensure the information remains accurate and relevant.
 - As a user, I expect the application to be responsive and accessible from various devices, allowing me to stay connected with my family's care efforts regardless of where I am.
 
-  ![CareClan Entity Relationship Model](/assets/images/Care-Clan-ERD.png "CareClan ERD")
+  ![CareClan Entity Relationship Model](/app/assets/images/Care_Clan_ERD.png)
