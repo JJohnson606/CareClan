@@ -1,22 +1,29 @@
-<div id="<%= dom_id post %>">
-  <p>
-    <strong>Author:</strong>
-    <%= post.author_id %>
-  </p>
+<div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
+  <!-- Profile Picture -->
+  <figure class="flex-shrink-0 p-4">
+    <%= image_tag post.author.profile_picture, alt: "Profile Picture", class: "rounded-full w-24 h-24 object-cover" if post.author.profile_picture.present? %>
+  </figure>
 
-  <p>
-    <strong>Body:</strong>
-    <%= post.body %>
-  </p>
+  <!-- Post Content -->
+  <div class="card-body flex-grow">
+    <h2 class="card-title">Post by <%= post.author.name %></h2>
+    <p><%= post.body %></p>
+    <div class="card-actions justify-end">
+      <%= link_to 'Show this post', post_path(post), class: 'btn btn-primary' %>
+    </div>
+  </div>
 
-  <p>
-    <strong>Image:</strong>
-    <%= post.image %>
-  </p>
+  <!-- Post Image, make it conditional to only show if there is an image -->
+  <% if post.image.present? %>
+    <figure class="flex-shrink-0">
+      <%= image_tag post.image, alt: "Post Image", class: "w-full h-full object-cover" %>
+    </figure>
+  <% end %>
 
-  <p>
-    <strong>Trusted:</strong>
-    <%= post.trusted %>
-  </p>
-
+  <!-- Optional: Display 'Trusted' status if needed -->
+  <% if post.trusted %>
+    <div class="badge badge-secondary p-4">Trusted</div>
+  <% end %>
 </div>
+
+
