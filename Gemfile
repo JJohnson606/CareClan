@@ -87,6 +87,7 @@ gem "htmlbeautifier"
 gem "http"
 gem "sqlite3", "~> 1.4"
 gem "table_print"
+gem 'ui_faces'
 
 group :development do
   gem "annotate"

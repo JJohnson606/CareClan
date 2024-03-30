@@ -380,6 +380,7 @@ GEM
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2023.3)
       tzinfo (>= 1.0.0)
+    ui_faces (0.1.4)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
@@ -458,6 +459,7 @@ DEPENDENCIES
   table_print
   turbo-rails
   tzinfo-data
+  ui_faces
   web-console
   web_git
   webdrivers
