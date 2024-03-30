@@ -3,17 +3,16 @@ task sample_data: :environment do
   starting = Time.now
 
   # Clearing the existing data
+  Comment.delete_all
   Post.delete_all
   User.delete_all
-  
-
 
   # Pre-defined users
   predefined_users = [
     { email: "alice@example.com", password: "password", name: "Alice Smith", role: 0, trust: true, profile_picture: "Alice.jpeg" },
-    { email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true, profile_picture:  "Bob.jpeg" },
+    { email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true, profile_picture: "Bob.jpeg" }, 
     { email: "carol@example.com", password: "password", name: "Carol Smith", role: 0, trust: false, profile_picture: "Carol.jpeg" },
-    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, profile_picture:  "Doug.jpeg" },
+    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, profile_picture: "Doug.jpeg" },
   ]
 
   sample_posts = [
@@ -27,16 +26,32 @@ task sample_data: :environment do
     { body: "As I sit by the window watching the sunset, I can't help but reflect on the beauty of life's simple pleasures. Feeling thankful." }
   ]
 
+  sample_comments = [
+    { body: "Absolutely love this! Reminds me of my own experiences." },
+    { body: "So inspiring! Thank you for sharing." }, 
+    { body: "This is wonderful. Made my day!" },
+    { body: "Beautiful words. Can't wait to hear more about it." }
+  ]
 
   # Creating predefined users
-  predefined_users.each do |user_params|
-    user = User.create!(user_params)
+  users = predefined_users.map do |user_params|
+    User.create!(user_params)
+  end
+
+  users.each do |user|
     sample_posts.each do |post_params|
-      user.posts.create!(post_params)  # Posts are now directly associated with the user
+      post = user.posts.create!(post_params) # Posts are now directly associated with the user
+
+      # Randomly assign other users to comment on the post
+      3.times do
+        commenter = users.sample # Randomly pick a user from the predefined list
+        post.comments.create!(body: sample_comments.sample[:body], author: commenter)
+      end
     end
   end
 
+
   ending = Time.now
   puts "It took #{(ending - starting).to_i} seconds to create sample data."
-  puts "There are now #{User.count} users and #{Post.count} posts."
+  puts "There are now #{User.count} users, #{Post.count} posts, and #{Comment.count} comments."
 end
