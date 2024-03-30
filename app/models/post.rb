@@ -11,6 +11,6 @@
 #  updated_at :datetime         not null
 #
 class Post < ApplicationRecord
-  belongs_to :author, class_name: 'User', foreign_key: 'author_id'
-  has_many :comments, dependent: :destroy
+  belongs_to :author, class_name: 'User', foreign_key: 'author_id' # author association
+  has_many :comments, dependent: :destroy # comments association
 end
