@@ -1,16 +1,16 @@
 # == Schema Information
 #
-# Table name: posts
+# Table name: comments
 #
 #  id         :uuid             not null, primary key
-#  author_id  :uuid
 #  body       :text
-#  image      :string
-#  trusted    :boolean
+#  post_id    :uuid             not null
+#  author_id  :uuid             not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-class Post < ApplicationRecord
+class Comment < ApplicationRecord
+  belongs_to :post
   belongs_to :author, class_name: 'User', foreign_key: 'author_id'
-  has_many :comments, dependent: :destroy
 end
+

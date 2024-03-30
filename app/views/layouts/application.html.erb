@@ -14,11 +14,13 @@
 </head>
  <body class="flex min-h-screen">
   <%= render 'layouts/nav' %> <!-- Renders the navbar partial -->
-  <%= render 'layouts/sidebar' %> <!-- Renders the sidebar partial -->
+  <div class="flex flex-1 min-h-screen"> <!-- Wrapping sidebar and content area in a flex container -->
+    <%= render 'layouts/sidebar' %> <!-- Sidebar can be fixed or scroll with the page -->
 
-  <div class="flex-1 ml-64 pt-[4rem]"> <!-- Content area, adjust ml and pt values based on your navbar and sidebar sizes -->
-    <div class="max-w-4xl mx-auto">
-      <%= yield %> <!-- Page-specific content will be loaded here -->
+    <div class="flex-1 pt-[4rem]"> <!-- Content area, adjust pt value based on your navbar height -->
+      <div class="max-w-4xl mx-auto">
+        <%= yield %> <!-- Page-specific content will be loaded here -->
+      </div>
     </div>
   </div>
 </body>
