@@ -12,11 +12,15 @@
     document.documentElement.setAttribute('data-theme', window.localStorage.getItem('theme'))
   </script>
 </head>
- <%= render "layouts/nav" %>
-<body>
-  <%= render "layouts/header" %>
-  <%= yield %>
-</div>
+ <body class="flex min-h-screen">
+  <%= render 'layouts/nav' %> <!-- Renders the navbar partial -->
+  <%= render 'layouts/sidebar' %> <!-- Renders the sidebar partial -->
+
+  <div class="flex-1 ml-64 pt-[4rem]"> <!-- Content area, adjust ml and pt values based on your navbar and sidebar sizes -->
+    <div class="max-w-4xl mx-auto">
+      <%= yield %> <!-- Page-specific content will be loaded here -->
+    </div>
+  </div>
 </body>
 
 </html>
