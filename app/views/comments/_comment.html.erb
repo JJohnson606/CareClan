@@ -1,22 +1,27 @@
-      <p>
-      <strong>Poster:</strong>
-      <%= comment.post.author.name %>
-    </p>
-    
-    <p>
-      <strong>Post:</strong>
-      <%= comment.post.body %>
-    </p>
-    
-    
-    <p>
-      <strong>Comment:</strong>
-      <%= comment.body %>
-    </p>
-    
-    <p>
-      <strong>Commenter:</strong>
-      <%= comment.author.name %>
-    </p>
+<div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
+  <!-- Commenter Profile Picture -->
+  <figure class="flex-shrink-0 p-4">
+    <% if comment.author.profile_picture.present? %>
+      <%= image_tag comment.author.profile_picture, alt: "Profile Picture", class: "rounded-full w-24 h-24 object-cover" %>
+    <% else %>
+      <%= image_tag "default_profile_picture.png", alt: "Default Profile Picture", class: "rounded-full w-24 h-24 object-cover" %>
+    <% end %>
+  </figure>
 
+  <!-- Comment Content -->
+  <div class="card-body flex-grow">
+    <h2 class="card-title">Comment by <%= comment.author.name %></h2>
+    <p><%= comment.body %></p>
 
+    <!-- Additional Comment Details -->
+    <p><strong>On Post:</strong> <%= comment.post.body %></p>
+    <p><strong>By Poster:</strong> <%= comment.post.author.name %></p>
+
+    <!-- Actions, like reply or edit, can go here -->
+    <div class="card-actions justify-end">
+      <%= link_to 'Reply', new_comment_path(parent_id: comment.id), class: 'btn btn-primary' %>
+      <!-- A link styled as a button ('btn btn-primary') to reply to the comment.
+           - It passes the comment's ID as a 'parent_id' parameter to the path helper. -->
+    </div>
+  </div>
+</div>
