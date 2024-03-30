@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_30_200213) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_30_212231) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -35,6 +35,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_30_200213) do
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_comments_on_author_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
+  end
+
+  create_table "medical_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "patient_id", null: false
+    t.string "record_type"
+    t.date "record_date"
+    t.text "notes"
+    t.uuid "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_medical_records_on_created_by_id"
+    t.index ["patient_id"], name: "index_medical_records_on_patient_id"
   end
 
   create_table "posts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -68,5 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_30_200213) do
   add_foreign_key "approvals", "users", column: "voter_id"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users", column: "author_id"
+  add_foreign_key "medical_records", "users", column: "created_by_id"
+  add_foreign_key "medical_records", "users", column: "patient_id"
   add_foreign_key "posts", "users", column: "author_id"
 end
