@@ -12,6 +12,9 @@ gem "sprockets-rails"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
 
+# Generates uuids for security
+gem 'pgcrypto', '~> 0.4.1'
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 6.0"
 
@@ -84,6 +87,7 @@ gem "htmlbeautifier"
 gem "http"
 gem "sqlite3", "~> 1.4"
 gem "table_print"
+gem 'ui_faces'
 
 group :development do
   gem "annotate"

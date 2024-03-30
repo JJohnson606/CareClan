@@ -234,6 +234,7 @@ GEM
     oj (3.13.23)
     orm_adapter (0.5.0)
     pg (1.5.4)
+    pgcrypto (0.4.1)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -379,6 +380,7 @@ GEM
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2023.3)
       tzinfo (>= 1.0.0)
+    ui_faces (0.1.4)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
@@ -439,6 +441,7 @@ DEPENDENCIES
   jbuilder
   jsbundling-rails
   pg (~> 1.1)
+  pgcrypto (~> 0.4.1)
   pry-rails
   puma (~> 6.0)
   rails (~> 7.0.7, >= 7.0.7)
@@ -456,6 +459,7 @@ DEPENDENCIES
   table_print
   turbo-rails
   tzinfo-data
+  ui_faces
   web-console
   web_git
   webdrivers
