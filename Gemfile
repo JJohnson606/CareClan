@@ -6,6 +6,9 @@ ruby "3.1.1"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.7", ">= 7.0.7"
 
+# Update rake gem file to 13.1.0
+gem 'rake', '13.1.0'
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
