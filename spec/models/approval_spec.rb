@@ -1,18 +1,17 @@
 # == Schema Information
 #
-# Table name: posts
+# Table name: approvals
 #
 #  id              :uuid             not null, primary key
-#  author_id       :uuid
-#  body            :text
-#  image           :string
-#  trusted         :boolean
+#  votetype        :boolean
+#  voter_id        :uuid             not null
+#  post_id         :uuid             not null
+#  approvals_count :integer          default(0)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  approvals_count :integer          default(0), not null
 #
 require 'rails_helper'
 
-RSpec.describe Post, type: :model do
+RSpec.describe Approval, type: :model do
   pending "add some examples to (or delete) #{__FILE__}"
 end
