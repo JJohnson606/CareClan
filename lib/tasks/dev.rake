@@ -45,7 +45,11 @@ task sample_data: :environment do
   { record_type: 'Basic Metabolic Panel', record_date: Date.today - 10, notes: 'Normal range, no issues detected.' },
   { record_type: 'Lipid Panel', record_date: Date.today - 20, notes: 'Cholesterol levels slightly high, dietary adjustments recommended.' },
   { record_type: "Doctor's Note", record_date: Date.today - 5, notes: "Patient recovering well from minor surgery. Follow-up appointment in 2 weeks." },
-  {  record_type: 'Appointment Reminder', record_date: Date.today + 7, notes: 'Upcoming appointment for routine check-up. Please arrive 15 minutes early.' }
+  { record_type: 'Appointment Reminder', record_date: Date.today + 7, notes: 'Upcoming appointment for routine check-up. Please arrive 15 minutes early.' },
+  { record_type: 'Echocardiogram', record_date: Date.today - 15, notes: 'Heart function normal, no abnormalities detected.' },
+  { record_type: 'MRI Scan', record_date: Date.today - 25, notes: 'No signs of issues, brain structure normal.' },
+  { record_type: 'Allergy Testing', record_date: Date.today - 35, notes: 'Mild reactions to certain pollens, otherwise normal.' },
+  { record_type: 'Vaccination Record', record_date: Date.today - 45, notes: 'Up to date on all vaccinations including COVID-19 booster.' }
   ]
 
 
@@ -75,30 +79,46 @@ task sample_data: :environment do
   end
 
 # Add this block after creating posts, comments, and approvals
-# # Find Alice and Bob by their roles
-alice = User.find_by(email: "alice@example.com")
-bob = User.find_by(email: "bob@example.com")
 
-puts "Alice: #{alice.inspect}"
-puts "Bob: #{bob.inspect}"
+alice = users.detect { |user| user.email == "alice@example.com" }
+bob = users.detect { |user| user.email == "bob@example.com" }
+# Previously, you were creating new posts with generic titles like "Post 1 by Alice"
+# Let's use the sample_posts content instead
 
-if alice && bob && alice.patient? && bob.healthcare_proffesional?
-  puts "Creating medical records for Alice by Bob..."
-  10.times do |i|
-    medical_record = alice.medical_records_as_patient.create!(
-      record_type: "Medical Record #{i + 1}",
-      record_date: Date.today - i.days,
-      notes: "This is a note for record #{i + 1}",
-      created_by_id: bob.id
+if alice && bob
+  # Create sample medical records for Alice as before
+  sample_medical_records.each_with_index do |record, index|
+    MedicalRecord.create!(
+      patient_id: alice.id,
+      created_by_id: bob.id,
+      record_type: record[:record_type],
+      record_date: record[:record_date],
+      notes: record[:notes]
     )
-    if medical_record.persisted?
-      puts "Created medical record #{i + 1} for Alice."
-    else
-      puts "Failed to create medical record #{i + 1}: #{medical_record.errors.full_messages.join(", ")}"
+  end
+
+  # Now, let's iterate over sample_posts to create posts for Alice,
+  # and we'll randomly decide whether to associate each post with a medical record
+  sample_posts.each do |sample_post|
+    post = alice.posts.create!(sample_post)
+
+    # Randomly decide whether to associate this post with a medical record
+    if [true, false].sample && alice.medical_records_as_patient.any?
+      post.update(medical_record: alice.medical_records_as_patient.sample)
+    end
+
+    # Now, create comments and approvals for this post as before
+    3.times do
+      commenter = users.sample
+      post.comments.create!(body: sample_comments.sample[:body], author: commenter)
+    end
+
+    2.times do
+      voter = users.sample
+      next if voter == alice || Approval.exists?(voter: voter, post: post)
+      post.approvals.create!(votetype: sample_approvals.sample, voter: voter)
     end
   end
-else
-  puts "Either Alice or Bob was not found, or their roles do not match the expected ones."
 end
   ending = Time.now
   puts "It took #{(ending - starting).to_i} seconds to create sample data."
