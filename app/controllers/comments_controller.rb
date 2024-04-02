@@ -21,7 +21,8 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-    @comment = Comment.new(comment_params)
+    @post = Post.find(params[:post_id])  # Get the post from the params
+    @comment = @post.comments.build(comment_params.merge(author: current_user))  # Set the author to the current user
 
     respond_to do |format|
       if @comment.save
