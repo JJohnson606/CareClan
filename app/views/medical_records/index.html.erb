@@ -1,0 +1,17 @@
+<h1>Medical records</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% @medical_records.each do |medical_record| %>
+    <div class="border border-gray-200 rounded-lg p-4">
+      <h2 class="text-lg font-semibold mb-2">Medical Record</h2>
+      <p><strong>Record Type:</strong> <%= medical_record.record_type %></p>
+      <p><strong>Record Date:</strong> <%= medical_record.record_date.strftime("%B %d, %Y") %></p>
+      <p><strong>Notes:</strong> <%= medical_record.notes %></p>
+      <p><strong>Patient:</strong> <%= medical_record.patient.name %></p>
+      <p><strong>Created By:</strong> <%= medical_record.creator.name %></p>
+      <%= link_to "Show this medical record", medical_record, class: "text-blue-500 hover:underline" %>
+    </div>
+  <% end %>
+</div>
+
+<%= link_to "New medical record", new_medical_record_path, class: "text-blue-500 hover:underline" %>

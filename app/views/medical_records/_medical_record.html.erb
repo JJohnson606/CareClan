@@ -1,0 +1,16 @@
+<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+  <div class="md:flex">
+    <div class="md:flex-shrink-0">
+      <img class="h-48 w-full object-cover md:h-full md:w-48" src="medical_record_image.jpg" alt="Medical Record Image">
+    </div>
+    <div class="p-8">
+      <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Medical Record</div>
+      <p class="mt-2 text-gray-500">Patient: <%= medical_record.patient.name %></p>
+      <p class="mt-2 text-gray-500">Record Type: <%= medical_record.record_type %></p>
+      <p class="mt-2 text-gray-500">Record Date: <%= medical_record.record_date %></p>
+      <p class="mt-2 text-gray-500">Notes: <%= medical_record.notes %></p>
+      <p class="mt-2 text-gray-500">Created By: <%= medical_record.creator.name %></p>
+      <a href="<%= medical_record_path(medical_record) %>" class="mt-4 block w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100">Show this medical record</a>
+    </div>
+  </div>
+</div>
