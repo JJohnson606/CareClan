@@ -32,20 +32,16 @@
   <!-- Display the names of the voters -->
  <h4 class="text-lg font-semibold mt-4">Voters</h4>
 
-<% @post.get_likes.each do |like| %>
-  <% if like.voter_id.present? && like.voter_id != 0 %>
-    <% voter = User.find_by(id: like.voter_id) %>
-    <% if voter.present? %>
-      <p><%= voter.name %> voted <%= like.vote_flag ? 'Approved' : 'Disapproved' %></p>
-    <% else %>
-      <p>Unknown voter voted <%= like.vote_flag ? 'Approved' : 'Disapproved' %></p>
-    <% end %>
-  <% else %>
-    <p>Unknown voter voted <%= like.vote_flag ? 'Approved' : 'Disapproved' %></p>
-  <% end %>
+<h4>Approved by:</h4>
+<% @voters_up.each do |voter| %>
+  <p><%= voter.name %></p>
 <% end %>
 
-
+<h4>Disapproved by:</h4>
+<% @voters_down.each do |voter| %>
+  <p><%= voter.name %></p>
+<% end %>
+  
 </div>
 
 </div>
