@@ -12,7 +12,9 @@ class CommentsController < ApplicationController
 
   # GET /comments/new
   def new
-    @comment = Comment.new
+    @post = Post.find(params[:post_id])
+    @parent_comment = Comment.find_by(id: params[:parent_id]) # Optional, find parent comment if present
+    @comment = Comment.new(post: @post, parent: @parent_comment)
   end
 
   # GET /comments/1/edit
@@ -22,12 +24,12 @@ class CommentsController < ApplicationController
   # POST /comments or /comments.json
   def create
     @post = Post.find(params[:post_id])  # Get the post from the params
-    @comment = @post.comments.build(comment_params.merge(author: current_user))  # Set the author to the current user
-
+    @comment = @post.comments.build(comment_params.merge(author: current_user, parent_id: params[:parent_id]))
     respond_to do |format|
       if @comment.save
         format.html { redirect_to comment_url(@comment), notice: "Comment was successfully created." }
         format.json { render :show, status: :created, location: @comment }
+        puts "Comment was successfully created."
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
