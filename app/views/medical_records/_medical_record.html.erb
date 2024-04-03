@@ -1,17 +1,21 @@
-<!-- app/views/medical_records/_medical_record.html.erb -->
-<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-  <div class="md:flex">
-    <div class="md:flex-shrink-0">
-      <%# <img class="h-48 w-full object-cover md:h-full md:w-48" src="medical_record_image.jpg" alt="Medical Record Image"> %>
+<!-- No need for 'if medical_record.present?' here since we're already checking before rendering this partial -->
+<div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
+  <!-- Healthcare Professional's Profile Picture -->
+  <figure class="flex-shrink-0 p-4">
+    <%= image_tag(medical_record.creator.profile_picture, alt: "Healthcare Professional's Profile Picture", class: "rounded-full w-24 h-24 object-cover") if medical_record.creator.profile_picture.present? %>
+  </figure>
+
+  <!-- Medical Record Content -->
+  <div class="card-body flex-grow">
+    <div class="flex items-center">
+      <h2 class="card-title flex-grow">Medical Record by <%= medical_record.creator.name %></h2> 
     </div>
-    <div class="p-8">
-      <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Medical Record</div>
-      <p class="mt-2 text-gray-500">Patient: <%= medical_record.patient.name %></p>
-      <p class="mt-2 text-gray-500">Record Type: <%= medical_record.record_type %></p>
-      <p class="mt-2 text-gray-500">Record Date: <%= medical_record.record_date %></p>
-      <p class="mt-2 text-gray-500">Notes: <%= medical_record.notes %></p>
-      <p class="mt-2 text-gray-500">Created By: <%= medical_record.creator.name %></p>
-      <a href="<%= medical_record_path(medical_record) %>" class="mt-4 block w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100">Show this medical record</a>
+    <p><strong>Patient:</strong> <%= medical_record.patient.name %></p>
+    <p><strong>Type:</strong> <%= medical_record.record_type %></p>
+    <p><strong>Date:</strong> <%= medical_record.record_date %></p>
+    <p><strong>Notes:</strong> <%= medical_record.notes %></p>
+    <div class="card-actions justify-end">
+      <%= link_to 'View Details', medical_record_path(medical_record), class: 'btn btn-secondary' %>
     </div>
   </div>
 </div>
