@@ -12,7 +12,9 @@
     </div>
     <p><%= post.body %></p>
     <div class="card-actions justify-end">
+      <% if local_assigns[:show_button].nil? || local_assigns[:show_button] %>
       <%= link_to 'Show this post', post_path(post), class: 'btn btn-primary' %>
+      <% end %>
     </div>
   </div>
 
