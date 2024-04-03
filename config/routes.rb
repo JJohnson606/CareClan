@@ -3,7 +3,12 @@ Rails.application.routes.draw do
   resources :medical_records
   resources :approvals
   resources :comments
-  resources :posts
+  resources :posts do
+    member do
+      put 'approve'
+      put 'disapprove'
+    end
+  end
   devise_for :users
   get 'dashboard', to: 'dashboard#index', as: 'dashboard'
 
