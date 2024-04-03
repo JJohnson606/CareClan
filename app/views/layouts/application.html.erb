@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<!-- #application.html.erb -->
 <head>
   <title>CareClan</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -19,6 +19,9 @@
 
     <div class="flex-1 pt-[4rem]"> <!-- Content area, adjust pt value based on your navbar height -->
       <div class="max-w-4xl mx-auto">
+        <% flash.each do |type, message| %>
+    <%= render partial: "layouts/flash", locals: { message: message, css_class: type.to_s } %>
+    <% end %>
         <%= yield %> <!-- Page-specific content will be loaded here -->
       </div>
     </div>

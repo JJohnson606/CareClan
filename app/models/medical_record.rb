@@ -14,5 +14,6 @@
 class MedicalRecord < ApplicationRecord
    belongs_to :patient, class_name: 'User', foreign_key: 'patient_id'
    belongs_to :creator, class_name: 'User', foreign_key: 'created_by_id'
+   has_many :posts
  end
   

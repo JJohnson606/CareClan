@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_30_212231) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_31_180138) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_30_212231) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "approvals_count", default: 0, null: false
+    t.uuid "medical_record_id"
     t.index ["author_id"], name: "index_posts_on_author_id"
   end
 
