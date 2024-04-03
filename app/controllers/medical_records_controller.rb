@@ -3,7 +3,7 @@ class MedicalRecordsController < ApplicationController
 
   # GET /medical_records or /medical_records.json
   def index
-    @medical_records = MedicalRecord.all
+    @medical_records = MedicalRecord.all.order(record_date: :desc)
   end
 
   # GET /medical_records/1 or /medical_records/1.json
