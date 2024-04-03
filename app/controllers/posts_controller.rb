@@ -11,6 +11,8 @@ class PostsController < ApplicationController
      @post = Post.find(params[:id])
      @approval_rating = @post.approval_rating
      @medical_record = @post.medical_record
+     @voters_up = User.includes(:votes).where(votes: { votable: @post, vote_flag: true })
+     @voters_down = User.includes(:votes).where(votes: { votable: @post, vote_flag: false })
   end
 
   # GET /posts/new
