@@ -3,6 +3,7 @@ task sample_data: :environment do
   starting = Time.now
 
   # Clearing the existing data
+  Approval.delete_all
   Comment.delete_all
   Post.delete_all
   User.delete_all
@@ -33,6 +34,8 @@ task sample_data: :environment do
     { body: "Beautiful words. Can't wait to hear more about it." }
   ]
 
+  sample_approvals = [true, false]
+
   # Creating predefined users
   users = predefined_users.map do |user_params|
     User.create!(user_params)
@@ -47,11 +50,21 @@ task sample_data: :environment do
         commenter = users.sample # Randomly pick a user from the predefined list
         post.comments.create!(body: sample_comments.sample[:body], author: commenter)
       end
+
+       # Randomly assign approvals to the post
+       2.times do
+        voter = users.sample # Randomly pick a user from the predefined list
+        # Ensure the voter is not the author of the post
+        next if voter == user || Approval.exists?(voter: voter, post: post)
+      post.approvals.create!(votetype: sample_approvals.sample, voter: voter)
+      end
     end
   end
+
+   
 
 
   ending = Time.now
   puts "It took #{(ending - starting).to_i} seconds to create sample data."
-  puts "There are now #{User.count} users, #{Post.count} posts, and #{Comment.count} comments."
+  puts "There are now #{User.count} users, #{Post.count} posts, #{Comment.count} comments, and #{Approval.count} approvals."
 end

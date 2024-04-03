@@ -1,3 +1,4 @@
+# app/models/comment.rb
 # == Schema Information
 #
 # Table name: comments
@@ -10,7 +11,9 @@
 #  updated_at :datetime         not null
 #
 class Comment < ApplicationRecord
+  # belongs_to association with Post model
   belongs_to :post
+  # belongs_to association with User model, using 'author_id' as foreign key
   belongs_to :author, class_name: 'User', foreign_key: 'author_id'
 end
 

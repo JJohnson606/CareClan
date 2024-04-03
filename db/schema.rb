@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_30_160601) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_30_200213) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "approvals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "votetype"
+    t.uuid "voter_id", null: false
+    t.uuid "post_id", null: false
+    t.integer "approvals_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_approvals_on_post_id"
+    t.index ["voter_id", "post_id"], name: "index_approvals_on_voter_id_and_post_id", unique: true
+    t.index ["voter_id"], name: "index_approvals_on_voter_id"
+  end
 
   create_table "comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "body"
@@ -32,6 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_30_160601) do
     t.boolean "trusted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "approvals_count", default: 0, null: false
     t.index ["author_id"], name: "index_posts_on_author_id"
   end
 
@@ -51,6 +64,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_30_160601) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "approvals", "posts"
+  add_foreign_key "approvals", "users", column: "voter_id"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "posts", "users", column: "author_id"
