@@ -8,6 +8,7 @@
 #  author_id  :uuid             not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  parent_id  :uuid
 #
 require "rails_helper"
 
