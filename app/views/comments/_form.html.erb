@@ -1,3 +1,4 @@
+<!-- comment/_form.html.erb -->
 <%= form_with(model: comment) do |form| %>
   <% if comment.errors.any? %>
     <div style="color: red">
@@ -13,15 +14,15 @@
 
   <div>
     <%= form.label :body, style: "display: block" %>
-    <%= form.text_area :body %>
+    <%= form.text_area :body, class: "textarea-md textarea-accent", placeholder: "Add a comment..." %>
   </div>
 
   <div>
-   <%= form.hidden_field :post_id, value: @post.id %>
+    <%= form.hidden_field :post_id, value: @post.id %>
   </div>
 
   <div>
-   <%= form.hidden_field :author_id, value: current_user.id %>
+    <%= form.hidden_field :author_id, value: current_user.id %>
   </div>
 
   <div>

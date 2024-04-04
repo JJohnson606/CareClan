@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :set_post
   before_action :set_comment, only: %i[ show edit update destroy ]
 
   # GET /comments or /comments.json
@@ -13,8 +14,8 @@ class CommentsController < ApplicationController
   # GET /comments/new
   def new
     @post = Post.find(params[:post_id])
-    @parent_comment = Comment.find_by(id: params[:parent_id]) # Optional, find parent comment if present
-    @comment = Comment.new(post: @post, parent: @parent_comment)
+     @parent_comment = Comment.find_by(id: params[:parent_id]) # Optional, find parent comment if present
+     @comment = Comment.new(post_id: params[:post_id], parent_id: params[:parent_id])
   end
 
   # GET /comments/1/edit
@@ -23,20 +24,21 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-    @post = Post.find(params[:post_id])  # Get the post from the params
-    @comment = @post.comments.build(comment_params.merge(author: current_user, parent_id: params[:parent_id]))
-    respond_to do |format|
-      if @comment.save
-        format.html { redirect_to comment_url(@comment), notice: "Comment was successfully created." }
-        format.json { render :show, status: :created, location: @comment }
-        puts "Comment was successfully created."
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @comment.errors, status: :unprocessable_entity }
-      end
+    Rails.logger.info "Parameters: #{params.inspect}" # Log incoming parameters
+    @post = Post.find(params[:comment][:post_id])
+    @comment = @post.comments.build(comment_params.merge(author: current_user))
+    
+    if @comment.save
+      Rails.logger.info "Comment saved successfully: #{@comment.inspect}" # Log successful save
+      redirect_to @post, notice: 'Comment was successfully created.'
+    else
+      Rails.logger.error "Failed to save comment: #{@comment.errors.full_messages}" # Log error messages
+      flash.now[:alert] = 'Failed to create comment.'
+      render 'posts/show', status: :unprocessable_entity
     end
   end
-
+  
+ 
   # PATCH/PUT /comments/1 or /comments/1.json
   def update
     respond_to do |format|
@@ -61,6 +63,11 @@ class CommentsController < ApplicationController
   end
 
   private
+  
+  def set_post
+    @post = Post.find(params[:comment][:post_id])
+  end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_comment
       @comment = Comment.find(params[:id])

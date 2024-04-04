@@ -62,9 +62,7 @@
 
    <!-- Create Comment -->
 <div class="p-4">
-  <%= link_to 'New Comment', new_comment_path(post_id: @post.id) %>
-
-  
+  <%= render 'comments/form', comment: Comment.new(post_id: @post.id) %>
 </div>
    <!-- Comments Section -->
 <div class="p-4 border-t border-gray-200 w-full">
