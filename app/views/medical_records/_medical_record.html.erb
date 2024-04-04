@@ -1,0 +1,21 @@
+<!-- No need for 'if medical_record.present?' here since we're already checking before rendering this partial -->
+<div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
+  <!-- Healthcare Professional's Profile Picture -->
+  <figure class="flex-shrink-0 p-4">
+    <%= image_tag(medical_record.creator.profile_picture, alt: "Healthcare Professional's Profile Picture", class: "rounded-full w-24 h-24 object-cover") if medical_record.creator.profile_picture.present? %>
+  </figure>
+
+  <!-- Medical Record Content -->
+  <div class="card-body flex-grow">
+    <div class="flex items-center">
+      <h2 class="card-title flex-grow">Medical Record by <%= medical_record.creator.name %></h2> 
+    </div>
+    <p><strong>Patient:</strong> <%= medical_record.patient.name %></p>
+    <p><strong>Type:</strong> <%= medical_record.record_type %></p>
+    <p><strong>Date:</strong> <%= medical_record.record_date %></p>
+    <p><strong>Notes:</strong> <%= medical_record.notes %></p>
+    <div class="card-actions justify-end">
+      <%= link_to 'View Details', medical_record_path(medical_record), class: 'btn btn-secondary' %>
+    </div>
+  </div>
+</div>

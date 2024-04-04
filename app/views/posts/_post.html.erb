@@ -1,3 +1,4 @@
+<!-- app/views/posts/_post.html.erb -->
 <div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
   <!-- Profile Picture -->
   <figure class="flex-shrink-0 p-4">
@@ -6,10 +7,14 @@
 
   <!-- Post Content -->
   <div class="card-body flex-grow">
-    <h2 class="card-title">Post by <%= post.author.name %></h2>
+    <div class="flex items-center">
+      <h2 class="card-title flex-grow">Post by <%= post.author.name %></h2> 
+    </div>
     <p><%= post.body %></p>
     <div class="card-actions justify-end">
+      <% if local_assigns[:show_button].nil? || local_assigns[:show_button] %>
       <%= link_to 'Show this post', post_path(post), class: 'btn btn-primary' %>
+      <% end %>
     </div>
   </div>
 
@@ -19,11 +24,4 @@
       <%= image_tag post.image, alt: "Post Image", class: "w-full h-full object-cover" %>
     </figure>
   <% end %>
-
-  <!-- Optional: Display 'Trusted' status if needed -->
-  <% if post.trusted %>
-    <div class="badge badge-secondary p-4">Trusted</div>
-  <% end %>
 </div>
-
-

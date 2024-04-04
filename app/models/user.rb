@@ -22,6 +22,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   # Associations
+  acts_as_voter # for liking/disliking posts
   has_many :posts, foreign_key: 'author_id', dependent: :destroy
   has_many :comments, foreign_key: 'author_id', dependent: :destroy
+  has_many :medical_records_as_patient, foreign_key: 'patient_id', class_name: 'MedicalRecord', dependent: :destroy
+  has_many :medical_records_as_creator, foreign_key: 'created_by_id', class_name: 'MedicalRecord', dependent: :destroy
+  enum role: { patient: 0, healthcare_proffesional: 1, clan_poa: 2, clan_non_poa: 3 }
 end

@@ -1,2 +1,102 @@
-<body> Welcome#Home Page
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareClan - Streamline Your Family's Care</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Daisy UI CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.13.1/dist/full.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+
+<!-- Hero Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-3xl font-semibold text-gray-800 mb-6">Streamline Your Family's Care</h1>
+            <%= image_tag 'landing.jpeg', alt: 'family discussing healthcare', class: 'mx-auto' %>
+            <p class="text-lg text-gray-600 mb-8">CareClan helps you coordinate and manage your loved one's
+                care with ease. Stay connected, make informed decisions, and ensure your loved one receives
+                the best possible care.</p>
+            <%= link_to "Get Started", new_user_registration_path, class: "btn bg-green-500 hover:bg-green-600 text-white" %>
+        </div>
+    </div>
+</section>
+<!-- Features Section -->
+<section class="py-20 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Enhanced 'Care Clan' Text -->
+            <h2 class="text-6xl font-extrabold text-green-600 mb-10 drop-shadow-lg">Care Clan</h2>
+            <div class="flex flex-col"> <!-- Adjusted to flex-col -->
+                <!-- Feature Card 1 -->
+                <div class="bg-white rounded-lg shadow-md p-12 mb-12">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">User-friendly Dashboard</h3>
+                    <p class="text-gray-600">Stay updated with real-time care updates for your relatives.</p>
+                     <%# <%= image_tag "landing_app.jpeg", alt: "CareClan US Map", class: "mx-auto mt-1" %> %>
+                </div>
+                <!-- Feature Card 2 -->
+                <div class="bg-white rounded-lg shadow-md p-12 mb-12">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Detailed Care Log</h3>
+                    <p class="text-gray-600">Maintain comprehensive records of all care activities.</p>
+                     <%# <%= image_tag "landing_care.jpeg", alt: "CareClan Details", class: "mx-auto mt-1" %> %>
+                </div>
+                <!-- Feature Card 3 -->
+                <div class="bg-white rounded-lg shadow-md p-12">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Information Sharing</h3>
+                    <p class="text-gray-600">Share relevant information with designated family members.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    <!-- User Stories Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl font-semibold text-gray-800 mb-10">User Stories</h2>
+                <p class="text-lg text-gray-600 mb-8">Discover how CareClan addresses the needs of family members
+                    managing their loved one's care.</p>
+                <!-- User Stories Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- User Story Card -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Dashboard and Post</h3>
+                        <p class="text-gray-600">As a family member, stay updated with a dashboard showing recent care
+                            updates.</p>
+                    </div>
+                    <!-- User Story Card -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Care Management</h3>
+                        <p class="text-gray-600">Post detailed updates about medical appointments, care decisions, and
+                            daily activities.</p>
+                    </div>
+                    <!-- User Story Card -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Family Collaboration</h3>
+                        <p class="text-gray-600">Comment on care updates and participate in care decisions through
+                            voting.</p>
+                    </div>
+                    <!-- User Story Card -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">General</h3>
+                        <p class="text-gray-600">Expect a straightforward interface, flexibility in editing or
+                            removing updates, and responsive design.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    
+   
+</body>
+</html>

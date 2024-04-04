@@ -1,0 +1,17 @@
+<!-- dashboard/index.html.erb -->
+<h1>Dashboard</h1>
+<div class="flex flex-wrap md:flex-nowrap">
+  <%= link_to 'Create New Post', new_post_path, class: "btn" %>
+
+  </div>
+
+  <% @posts.each do |post| %>
+    <div class="grid h-20 flex-grow card bg-base-300 rounded-box place-items-center">
+      <!-- Post Section -->
+      <div class="md:w-1/2 p-4">
+        <h2 class="text-lg font-bold mb-4">Posts</h2>
+        <%= render 'posts/post', post: post %>
+      </div>
+  <% end %>
+</div>
+

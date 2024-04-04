@@ -1,57 +1,185 @@
-desc "Fill the database tables with some sample data"
+# task sample_data: :environment do
+#   starting = Time.now  # Start timing the task execution
+
+#   # Clear out existing data from all tables to start fresh
+#   MedicalRecord.delete_all
+#   Comment.delete_all
+#   Post.delete_all
+#   User.delete_all
+  
+#   ActsAsVotable::Vote.delete_all #Delete Votes Table
+#     puts "Cleared all votes." 
+
+#     puts 'Creating family and friends users...'
+#   # Predefine some users for specific roles within the application
+#   alice = User.create!(email: "alice@example.com", password: "password", name: "Alice Smith", role: 0, trust: true, profile_picture: "Alice.jpeg")  # Patient
+#   bob = User.create!(email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true, profile_picture: "Bob.jpeg")  # Healthcare professional
+#    puts "Creating Additional Users"
+#   # Create a set of family and friends users for further interaction
+#   family_and_friends = [
+#     { email: "carol@example.com", password: "password", name: "Carol Smith", role: 2, trust: false, profile_picture: "Carol.jpeg" },  # POA family member
+#     { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, profile_picture: "Doug.jpeg" },  # Non-POA family member
+#     { email: "emily@example.com", password: "password", name: "Emily Johnson", role: 3, trust: false, profile_picture: "https://robohash.org/#{rand(9999)}" },
+#     { email: "frank@example.com", password: "password", name: "Frank Brown", role: 3, trust: true, profile_picture: "https://robohash.org/#{rand(9999)}" },
+#     { email: "grace@example.com", password: "password", name: "Grace Davis", role: 2, trust: false, profile_picture: "https://robohash.org/#{rand(9999)}" },
+#     { email: "harry@example.com", password: "password", name: "Harry Wilson", role: 3, trust: true, profile_picture: "https://robohash.org/#{rand(9999)}" }
+#   ].map { |u| User.create!(u) }  # Create and collect these user records
+  
+  
+#   valid_family_and_friends = family_and_friends.select(&:persisted?)
+#   puts "#{valid_family_and_friends.size} valid family and friends users created."
+
+#  puts "Giving users names"
+#   # Ensure that each user has a name
+# User.all.each do |user|
+#   user.update(name: Faker::Name.name) unless user.name.present?
+# end
+
+#   # Generate a number of additional users with random attributes using Faker
+
+  
+#   # Generate medical records for patients, created by the healthcare professional
+#   User.where(role: :patient).each do |patient|
+#     5.times do
+#       MedicalRecord.create!(
+#         record_type: Faker::Lorem.word,  # Random medical record type
+#         record_date: Faker::Date.between(from: 2.years.ago, to: Date.today),  # Random date within the last 2 years
+#         notes: Faker::Lorem.sentence(word_count: 20),  # Random medical notes
+#         patient_id: patient.id,
+#         created_by_id: bob.id  # Doctor Bob is set as the creator of all medical records
+#       )
+#     end
+#   end
+
+#   # Generate posts for each medical record to simulate sharing updates
+#   MedicalRecord.all.each do |record|
+#     post = Post.create!(
+#       body: Faker::Lorem.sentence(word_count: 12),  # Random post content
+#       author_id: record.patient_id,  # Author is the patient
+#       medical_record_id: record.id  # Associate post with the medical record
+#     )
+
+#     # For each post, generate comments from family and friends
+#     family_and_friends.each do |family_member|
+#       Comment.create!(
+#         body: Faker::Lorem.sentence(word_count: 8),  # Random comment content
+#         author_id: family_member.id,
+#         post_id: post.id  # Associate comment with the post
+#       )
+#     end
+
+   
+#   # For each post, also generate upvotes and downvotes from family and friends
+  
+# end
+
+# Post.find_each do |post|
+#   family_and_friends.each do |family_member|
+#     next unless User.exists?(family_member.id)
+#     next if post.voted_on_by?(family_member)
+
+#     vote_type = [true, false].sample
+#     if vote_type
+#       post.liked_by family_member
+#       puts "#{family_member.name} approved post #{post.id}" if post.vote_registered?
+#     else
+#       post.disliked_by family_member
+#       puts "#{family_member.name} disapproved post #{post.id}" if post.vote_registered?
+#     end
+#   rescue StandardError => e
+#     puts "An error occurred when #{family_member.name} tried to vote on post #{post.id}: #{e.message}"
+#   end
+# end  # This end closes the Post.find_each block
+
+
+#   ending = Time.now
+#   total_votes = Post.sum { |post| post.get_likes.size + post.get_dislikes.size }
+#   puts "It took #{(ending - starting).to_i} seconds to create sample data."
+#   puts "There are now #{User.count} users, #{Post.count} posts, #{Comment.count} comments, #{total_votes} votes, and #{MedicalRecord.count} medical records."
+# end
+
+
+
+
+
+
+
 task sample_data: :environment do
   starting = Time.now
 
-  # Clearing the existing data
+  # Clear out existing data
+  MedicalRecord.delete_all
   Comment.delete_all
   Post.delete_all
   User.delete_all
+  ActsAsVotable::Vote.delete_all
+  puts "Cleared all existing data."
 
-  # Pre-defined users
-  predefined_users = [
-    { email: "alice@example.com", password: "password", name: "Alice Smith", role: 0, trust: true, profile_picture: "Alice.jpeg" },
-    { email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true, profile_picture: "Bob.jpeg" }, 
-    { email: "carol@example.com", password: "password", name: "Carol Smith", role: 0, trust: false, profile_picture: "Carol.jpeg" },
-    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, profile_picture: "Doug.jpeg" },
-  ]
+  # Create predefined users
+  alice = User.create!(email: "alice@example.com", password: "password", name: "Alice Smith", role: 0, trust: true, profile_picture: "Alice.jpeg")
+  bob = User.create!(email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true, profile_picture: "Bob.jpeg")
+  puts "Predefined users Alice and Bob created."
 
-  sample_posts = [
-    { body: "Spent the morning in the garden. The tulips are in full bloom! Brings back memories of my first garden." },
-    { body: "Had my physio session today. Feeling stronger and more mobile each day. Grateful for the support." },
-    { body: "Joined a video call with the whole family yesterday. It's incredible how technology keeps us connected." },
-    { body: "Found an old photo album from the '60s. Each picture tells a story. Would love to share these with you all." },
-    { body: "Started a new book recommended by a friend here. It's a captivating historical novel. Reminds me of the stories my grandfather used to tell." },
-    { body: "Today's music therapy session was uplifting. There's something about the old classics that just soothes the soul." },
-    { body: "Attended a workshop on nutrition today. Learning to make healthier food choices, even at this age. It's never too late!" },
-    { body: "As I sit by the window watching the sunset, I can't help but reflect on the beauty of life's simple pleasures. Feeling thankful." }
-  ]
+  # Create family and friends users
+  family_and_friends = [
+    { email: "carol@example.com", password: "password", name: "Carol Smith", role: 2, trust: false, profile_picture: "Carol.jpeg" },  # POA family member
+    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, profile_picture: "Doug.jpeg" },  # Non-POA family member
+    { email: "emily@example.com", password: "password", name: "Emily Johnson", role: 3, trust: false, profile_picture: "https://robohash.org/#{rand(9999)}" },
+    { email: "frank@example.com", password: "password", name: "Frank Brown", role: 3, trust: true, profile_picture: "https://robohash.org/#{rand(9999)}" },
+    { email: "grace@example.com", password: "password", name: "Grace Davis", role: 2, trust: false, profile_picture: "https://robohash.org/#{rand(9999)}" },
+    { email: "harry@example.com", password: "password", name: "Harry Wilson", role: 3, trust: true, profile_picture: "https://robohash.org/#{rand(9999)}" }
+    # Family and friends data...
+  ].map { |u| User.create!(u) }
 
-  sample_comments = [
-    { body: "Absolutely love this! Reminds me of my own experiences." },
-    { body: "So inspiring! Thank you for sharing." }, 
-    { body: "This is wonderful. Made my day!" },
-    { body: "Beautiful words. Can't wait to hear more about it." }
-  ]
+  valid_family_and_friends = family_and_friends.select(&:persisted?)
+  puts "#{valid_family_and_friends.size} valid family and friends users created."
 
-  # Creating predefined users
-  users = predefined_users.map do |user_params|
-    User.create!(user_params)
-  end
+  # Generate medical records and posts
+  User.where(role: :patient).each do |patient|
+    5.times do
+      record = MedicalRecord.create!(
+        record_type: Faker::Lorem.word,  # Random medical record type
+                record_date: Faker::Date.between(from: 2.years.ago, to: Date.today),  # Random date within the last 2 years
+                notes: Faker::Lorem.sentence(word_count: 20),  # Random medical notes
+                patient_id: patient.id,
+                created_by_id: bob.id  # Doctor Bob is set as the creator of all medical records
+      )
+      puts "Medical record #{record.id} created for patient #{patient.name}."
 
-  users.each do |user|
-    sample_posts.each do |post_params|
-      post = user.posts.create!(post_params) # Posts are now directly associated with the user
+      post = Post.create!(
+        body: Faker::Lorem.sentence(word_count: 12),
+        author_id: patient.id,
+        medical_record_id: record.id
+      )
+      puts "Post #{post.id} created linked to medical record #{record.id}."
 
-      # Randomly assign other users to comment on the post
-      3.times do
-        commenter = users.sample # Randomly pick a user from the predefined list
-        post.comments.create!(body: sample_comments.sample[:body], author: commenter)
+      valid_family_and_friends.each do |family_member|
+        Comment.create!(
+          body: Faker::Lorem.sentence(word_count: 8),
+          author_id: family_member.id,
+          post_id: post.id
+        )
+        puts "#{family_member.name} commented on post #{post.id}."
       end
     end
   end
 
+  # Generate votes
+  Post.find_each do |post|
+    valid_family_and_friends.each do |family_member|
+      next if post.voted_on_by?(family_member)
+
+      vote_type = [true, false].sample
+      action = vote_type ? :likes : :dislikes
+
+      family_member.send(action, post)
+      puts "#{family_member.name} #{vote_type ? 'approved' : 'disapproved'} post #{post.id}." if post.vote_registered?
+    end
+  rescue StandardError => e
+    puts "An error occurred for family_member #{family_member.name} on post #{post.id}: #{e.message}"
+  end
 
   ending = Time.now
-  puts "It took #{(ending - starting).to_i} seconds to create sample data."
-  puts "There are now #{User.count} users, #{Post.count} posts, and #{Comment.count} comments."
+  puts "Sample data creation completed in #{ending - starting} seconds."
+  puts "Summary: #{User.count} users, #{Post.count} posts, #{Comment.count} comments, #{ActsAsVotable::Vote.count} votes, #{MedicalRecord.count} medical records."
 end

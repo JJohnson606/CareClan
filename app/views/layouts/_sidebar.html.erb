@@ -1,20 +1,27 @@
-<div class="fixed inset-y-0 top-20 left-0 w-64 bg-emerald-500 z-40">
+
+<div class="menu fixed inset-y-0 top-20 left-0 w-56 bg-emerald-500 z-40">
      <div class="flex flex-col">
 
-    <!-- Home Link -->
-    <%= link_to 'Home', root_path, class: 'px-4 py-2 text-white hover:bg-emerald-600' %>
+     <!-- Dashboard/User Home Link -->
+  <%= link_to dashboard_path, class: 'px-4 py-2 text-white hover:bg-emerald-600' do %>
+      <%= content_tag(:svg, class: "h-5 w-5", fill: "currentColor", viewBox: "0 0 576 512") do %>
+        <%= content_tag(:path, nil, fill: "#ffffff", d: "M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z") %>
+      <% end %>
+      User Dashboard
+    <% end %>
 
-    <!-- Posts Link -->
-    <%= link_to 'Posts', posts_path, class: 'px-4 py-2 text-white hover:bg-emerald-600' %>
+    <!-- Notifications Link Here-->
 
-    <!-- Comments Link -->
-    <%= link_to 'Comments', comments_path, class: 'px-4 py-2 text-white hover:bg-emerald-600' %>
+   <!-- Approvals Rank Link Here-->
+     
+    <!-- Medical Records Link -->
+    <%= link_to medical_records_path, class: 'px-4 py-2 text-white hover:bg-emerald-600' do %>
+      <%= content_tag(:svg, class: "h-4 w-4", fill: "currentColor", viewBox: "0 0 448 512") do %>
+        <%= content_tag(:path, nil, d: "M0 96C0 43 43 0 96 0H384h32c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32v64c17.7 0 32 14.3 32 32s-14.3 32-32 32H384 96c-53 0-96-43-96-96V96zM64 416c0 17.7 14.3 32 32 32H352V384H96c-17.7 0-32 14.3-32 32zM208 112v48H160c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h48v48c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V224h48c8.8 0 16-7.2 16-16V176c0-8.8-7.2-16-16-16H272V112c0-8.8-7.2-16-16-16H224c-8.8 0-16 7.2-16 16z") %>
+      <% end %>
+      Medical Records
+    <% end %>
 
-    <%# <!-- Users Link -->
-    <%= link_to 'Users', users_path, class: 'px-4 py-2 text-white hover:bg-emerald-600' %> %>
-
-    <%# <!-- Approvals Link -->
-    <%= link_to 'Approvals', approvals_path, class: 'px-4 py-2 text-white hover:bg-emerald-600' %> %>
+   
   </div>
 </div>
-

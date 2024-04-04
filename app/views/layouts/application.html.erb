@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>CareClan</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -12,17 +11,29 @@
     document.documentElement.setAttribute('data-theme', window.localStorage.getItem('theme'))
   </script>
 </head>
- <body class="flex min-h-screen">
+<body class="flex min-h-screen">
   <%= render 'layouts/nav' %> <!-- Renders the navbar partial -->
-  <div class="flex flex-1 min-h-screen"> <!-- Wrapping sidebar and content area in a flex container -->
-    <%= render 'layouts/sidebar' %> <!-- Sidebar can be fixed or scroll with the page -->
 
-    <div class="flex-1 pt-[4rem]"> <!-- Content area, adjust pt value based on your navbar height -->
-      <div class="max-w-4xl mx-auto">
-        <%= yield %> <!-- Page-specific content will be loaded here -->
+  <div class="flex flex-1 min-h-screen">
+    <% if controller_name == 'welcome' && action_name == 'index' %>
+      <!-- Full-width landing page layout -->
+      <%= yield %>
+    <% else %>
+      <!-- Default layout -->
+      <% if user_signed_in? %> <!-- Checks if a user is logged in -->
+        <%= render 'layouts/sidebar' %> <!-- Renders the sidebar if user is logged in -->
+      <% end %>
+
+      <div class="flex-1 pt-[4rem]"> <!-- Content area, adjust pt value based on your navbar height -->
+        <div class="max-w-4xl mx-auto">
+          <% flash.each do |type, message| %>
+            <%= render partial: "layouts/flash", locals: { message: message, css_class: type.to_s } %>
+          <% end %>
+          <%= yield %> <!-- Page-specific content will be loaded here -->
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
-</body>
 
+</body>
 </html>

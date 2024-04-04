@@ -92,6 +92,8 @@ gem "sqlite3", "~> 1.4"
 gem "table_print"
 gem 'ui_faces'
 
+gem 'acts_as_votable', '~> 0.14.0'
+
 group :development do
   gem "annotate"
   gem "better_errors"

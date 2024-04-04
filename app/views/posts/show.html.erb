@@ -1,40 +1,75 @@
+<!-- post/show.html.erb -->
 <div class="join join-vertical w-full">
   <!-- Notice Message (Conditional) -->
-  <% if notice.present? %>
-    <div class="collapse collapse-arrow join-item border border-base-300">
-      <input type="checkbox" /> 
-      <div class="collapse-title text-xl font-medium">
-        Notice
-      </div>
-      <div class="collapse-content"> 
-        <p class="text-green-500"><%= notice %></p>
-      </div>
-    </div>
-  <% end %>
 
   <!-- Rendered Post -->
-  <div class="collapse collapse-arrow join-item border border-base-300">
-    <input type="checkbox" checked="checked" /> 
-    <div class="collapse-title text-xl font-medium">
-      Post Content
-    </div>
-    <div class="collapse-content">
-      <%= render @post %>
-    </div>
+ <div class="collapse collapse-arrow border border-base-300 rounded-box mb-4">
+  <input type="checkbox" checked="checked" /> 
+  <div class="collapse-title text-xl font-medium">
+    Post Content
+  </div>
+  <div class="collapse-content">
+    <%= render @post, show_button: false %>
+  </div>
+</div>
   </div>
 
+<div class="join join-vertical w-full">
+  
+</div>
   <!-- Action Buttons -->
-  <div class="collapse collapse-arrow join-item border border-base-300">
-    <input type="checkbox" /> 
-    <div class="collapse-title text-xl font-medium">
-      Actions
-    </div>
-    <div class="collapse-content">
-      <div class="flex gap-2">
-        <%= link_to "Edit this post", edit_post_path(@post), class: "inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
-        <%= link_to "Back to posts", posts_path, class: "inline-block bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
-        <%= button_to "Destroy this post", @post, method: :delete, form: { class: "inline-block" }, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded", data: { confirm: "Are you sure?" } %>
-      </div>
+  <div class="collapse collapse-arrow border border-base-300 rounded-box mb-4">
+  <input type="checkbox" /> 
+  <div class="collapse-title text-xl font-medium">
+    Actions
+  </div>
+  <div class="collapse-content">
+    <div class="flex gap-2">
+      <%= link_to "Edit this post", edit_post_path(@post), class: "btn btn-primary mr-2" %>
+      <%= link_to "Back to posts", posts_path, class: "btn btn-secondary mr-2" %>
+      <%= button_to "Destroy this post", @post, method: :delete, form: { class: "inline-block" }, class: "btn btn-error", data: { confirm: "Are you sure?" } %>
     </div>
   </div>
 </div>
+
+  <!-- Medical Record Section -->
+
+  <!-- Approve Buttons Section -->
+  <div class="flex gap-2 mt-4">
+    <%= button_to 'Approve', approve_post_path(@post), method: :put, class: "btn btn-success" %>
+    <%= button_to 'Disapprove', disapprove_post_path(@post), method: :put, class: "btn btn-danger" %>
+  </div>
+
+ <!-- Approval Rating Section -->
+<div class="mt-4">
+  <h4 class="text-lg font-semibold">Approval Rating</h4>
+  <p>Approval Rating: <%= @post.approval_rating %> %</p>
+  <p>Approved: <%= @post.get_upvotes.size %> | Disapproved: <%= @post.get_downvotes.size %></p>
+  <p>Total Votes: <%= @post.get_upvotes.size + @post.get_downvotes.size %></p>
+  
+  <!-- Display the names of the voters -->
+ <h4 class="text-lg font-semibold mt-4">Voters</h4>
+
+<h4>Approved by:</h4>
+<% @voters_up.each do |voter| %>
+  <p><%= voter.name %></p>
+<% end %>
+
+<h4>Disapproved by:</h4>
+<% @voters_down.each do |voter| %>
+  <p><%= voter.name %></p>
+<% end %>
+  
+</div>
+
+   <!-- Create Comment -->
+<div class="p-4">
+  <%= render 'comments/form', comment: Comment.new(post_id: @post.id) %>
+</div>
+   <!-- Comments Section -->
+<div class="p-4 border-t border-gray-200 w-full">
+  <h3 class="text-lg font-semibold mb-2">Comments</h3>
+  <%= render partial: 'comments/comment', collection: @post.comments, as: :comment %>
+</div>
+</div>
+

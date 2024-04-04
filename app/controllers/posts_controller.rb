@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :set_post, only: [:show, :edit, :update,:destroy, :approve, :disapprove]
 
   # GET /posts or /posts.json
   def index
@@ -8,6 +8,11 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
+     @post = Post.find(params[:id])
+     @approval_rating = @post.approval_rating
+     @medical_record = @post.medical_record
+     @voters_up = User.includes(:votes).where(votes: { votable: @post, vote_flag: true })
+     @voters_down = User.includes(:votes).where(votes: { votable: @post, vote_flag: false })
   end
 
   # GET /posts/new
@@ -21,8 +26,7 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    @post = Post.new(post_params)
-
+    @post = current_user.posts.build(post_params)
     respond_to do |format|
       if @post.save
         format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
@@ -56,6 +60,17 @@ class PostsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def approve
+    @post.liked_by current_user
+    redirect_back(fallback_location: root_path)
+  end
+
+  def disapprove
+    @post.disliked_by current_user
+    redirect_back(fallback_location: root_path)
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
