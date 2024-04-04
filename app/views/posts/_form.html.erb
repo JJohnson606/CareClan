@@ -11,10 +11,10 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :author_id.name, class: "block font-medium text-gray-700" %>
-    <%= form.text_field :author_id, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
-  </div>
+  <!-- Hidden fields -->
+  <%= form.hidden_field :author_id, value: current_user.id %>
+  <%= form.hidden_field :trusted, value: false %>
+  <!-- End of hidden fields -->
 
   <div>
     <%= form.label :body, class: "block font-medium text-gray-700" %>
