@@ -1,4 +1,4 @@
-<!--comments/_comment.html.erb -->
+
 <div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
   <!-- Commenter Profile Picture -->
   <figure class="flex-shrink-0 p-4">
@@ -20,16 +20,10 @@
 
     <!-- Actions, like reply or edit, can go here -->
     <div class="card-actions justify-end">
-     <%= link_to 'Reply', new_comment_path(post_id: comment.post_id, parent_id: comment.id), class: 'btn btn-primary' %>
-      <!-- A link styled as a button ('btn btn-primary') to reply to the comment.
+     
+      <!-- A Future link styled as a button ('btn btn-primary') to reply to the comment.
            - It passes the comment's ID as a 'parent_id' parameter to the path helper. -->
-    <% if comment.children.any? %>
-    <div class="replies">
-      <% comment.children.each do |child_comment| %>
-        <%= render 'comment', comment: child_comment %>
-      <% end %>
-    </div>
-  <% end %>
+  
     
     </div>
   </div>
