@@ -17,9 +17,11 @@
           <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
             <% if @user.present? && @user.profile_picture.present? %>
               <%= image_tag @user.profile_picture, alt: "User profile picture" %>
-            <% else %>
+             <% elsif current_user && current_user.profile_picture.present? %>
               <%= image_tag current_user.profile_picture, alt: "Default profile picture" %>
-            <% end %>
+             <% else %>
+              <%= image_tag "default_profile_picture.png", alt: "Default profile picture" %>
+           <% end %>
           </div>
         </div>
       <% else %>
