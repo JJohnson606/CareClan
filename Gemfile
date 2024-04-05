@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.3'
-
+ruby '3.2.1'
+gem "simple_form"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.7", ">= 7.0.7"
 
@@ -91,7 +91,6 @@ gem "http"
 gem "sqlite3", "~> 1.4"
 gem "table_print"
 gem 'ui_faces'
-
 gem 'acts_as_votable', '~> 0.14.0'
 
 group :development do
