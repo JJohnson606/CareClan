@@ -1,5 +1,7 @@
 <!-- Medical Records Show View -->
-<%= render @medical_record %>
+<!-- app/views/medical_records/show.html.erb -->
+<%= render partial: 'medical_records/medical_record', locals: { medical_record: @medical_record } %>
+
 
 <div>
   <%= link_to "Edit this medical record", edit_medical_record_path(@medical_record) %> |
