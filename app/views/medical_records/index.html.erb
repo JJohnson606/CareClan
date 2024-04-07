@@ -1,17 +1,111 @@
-<h1>Medical records</h1>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  <% @medical_records.each do |medical_record| %>
-    <div class="border border-gray-200 rounded-lg p-4">
-      <h2 class="text-lg font-semibold mb-2">Medical Record</h2>
-      <p><strong>Record Type:</strong> <%= medical_record.record_type %></p>
-      <p><strong>Record Date:</strong> <%= medical_record.record_date.strftime("%B %d, %Y") %></p>
-      <p><strong>Notes:</strong> <%= medical_record.notes %></p>
-      <p><strong>Patient:</strong> <%= medical_record.patient.name %></p>
-      <p><strong>Created By:</strong> <%= medical_record.creator.name %></p>
-      <%= link_to "Show this medical record", medical_record, class: "text-blue-500 hover:underline" %>
-    </div>
-  <% end %>
+<!-- views/medical_records/index.html.erb -->
+<!-- Page Header and Introduction -->
+<div class="text-center mt-8 mb-6">
+  <h1 class="text-3xl font-bold mb-2">Medical Records Overview</h1>
+  <p class="text-gray-600">
+    Here you can view all medical records. Use the search and filters to find specific records easily.
+  </p>
 </div>
 
-<%= link_to "New medical record", new_medical_record_path, class: "text-blue-500 hover:underline" %>
+<!-- Search and Filter Bar with DaisyUI -->
+<div class="flex flex-wrap gap-4 justify-center mb-8">
+  <div class="input-group">
+    <%= form_tag medical_records_path, method: :get, class: "form-control" do %>
+      <%= text_field_tag :search, params[:search], placeholder: "Search records...", class: "textarea textarea-bordered" %>
+      <button type="submit" class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg btn-active">Search</button>
+    <% end %>
+  </div>
+
+  <div class="select-md select-primary">
+    <%= form_tag medical_records_path, method: :get, class: "form-control" do %>
+      <%= select_tag :record_type, options_for_select(["Choose Your Record Type", "Treatment Plan", "Diagnosis", "Lab Results", "Vaccination Records", "Progress Notes", "Prescription", "Imaging", "All Record Types"], params[:record_type]), class: "select select-primary" %>
+      <%= submit_tag 'Filter', class: "btn btn-primary ml-2" %>
+    <% end %>
+  </div>
+</div>
+
+
+
+<!-- Medical Records Table -->
+<div class="overflow-x-auto">
+  <table class="table w-full">
+    <!-- head -->
+    <thead>
+      <tr>
+        <th></th>
+        <th>Patient</th>
+        <th>Record Type</th>
+        <th>Record Date</th>
+        <th>Provider</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Medical Records Rows -->
+      <% @medical_records.each do |medical_record| %>
+        <tr>
+          <td>
+            <label>
+              <input type="checkbox" class="checkbox" />
+            </label>
+          </td>
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="avatar">
+                <div class="mask mask-squircle w-12 h-12">
+                  <% if medical_record.patient.profile_picture? %>
+                    <%= image_tag medical_record.patient.profile_picture, class: "w-full h-full object-cover rounded-full" %>
+                  <% else %>
+                    <img src="/default-profile-picture.jpg" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
+                  <% end %>
+                </div>
+              </div>
+              <div>
+                <div class="font-bold">Patient:</div>
+                <div class="text-sm opacity-50"><%= medical_record.patient.name %></div>
+              </div>
+            </div>
+             </td>
+          <td><%= medical_record.record_type&.titleize || 'Unknown' %></td>
+          <td><%= medical_record.record_date&.strftime("%B %d, %Y") || 'N/A' %></td>
+          <td><%= medical_record.creator.name %></td>
+          <td>
+            <%= link_to 'View More', medical_record, class: 'btn btn-ghost btn-xs' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <!-- foot -->
+    <tfoot>
+      <tr>
+        <th></th>
+        <th>Patient</th>
+        <th>Record Type</th>
+        <th>Record Date</th>
+        <th>Provider</th>
+        <th>Details</th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="mt-6">
+  <%= paginate @medical_records %>
+</div>
+
+<!-- No Records Found Message -->
+<% if @medical_records.empty? %>
+  <p class="text-center mt-4">No records found. <%= link_to "Add a new record?", new_medical_record_path, class: "text-blue-500 hover:underline" %></p>
+<% end %>
+
+<!-- Add New Record Button -->
+<div class="text-center mt-8">
+  <%= link_to "Add New Record", new_medical_record_path, class: "btn btn-primary" %>
+</div>
+
+<!-- Back to Medical Records Button -->
+<div class="text-center mt-8 mb-8">
+  <%= link_to 'Back to Medical Records', medical_records_path, class: "btn btn-ghost" %>
+</div>
+
