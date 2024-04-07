@@ -65,58 +65,107 @@ task sample_data: :environment do
         # Define test types and possible result ranges
         test_results = {
           "CBC" => {
-            "WBC Count" => (4000..11000),
-            "RBC Count" => (4.5..6.0),
-            "Platelet Count" => (150000..450000)
+            "WBC Count" => { normal: (4000..11000), optimal: (5000..10000), clinical: (2000..17000) },
+            "RBC Count" => { normal: (4.5..6.0), optimal: (4.7..5.7), clinical: (3.8..6.5) },
+            "Hemoglobin" => { normal: (12..18), optimal: (13..17), clinical: (10..20) },
+            "Hematocrit" => { normal: (37..52), optimal: (40..50), clinical: (30..60) },
+            "Platelet Count" => { normal: (150000..450000), optimal: (180000..400000), clinical: (100000..500000) }
           },
           "Lipid Panel" => {
-            "Total Cholesterol" => (125..240),
-            "HDL" => (40..60),
-            "LDL" => (60..160),
-            "Triglycerides" => (100..200)
+            "Total Cholesterol" => { normal: (125..240), optimal: (130..200), clinical: (100..300) },
+            "HDL" => { normal: (40..60), optimal: (45..65), clinical: (35..75) },
+            "LDL" => { normal: (60..160), optimal: (70..130), clinical: (50..190) },
+            "Triglycerides" => { normal: (100..200), optimal: (90..150), clinical: (80..220) }
           },
           "Liver Function Tests" => {
-            "ALT" => (7..56),
-            "AST" => (10..40),
-            "ALP" => (44..147),
-            "Bilirubin" => (0.1..1.2)
+            "ALT" => { normal: (7..56), optimal: (10..40), clinical: (5..100) },
+            "AST" => { normal: (10..40), optimal: (15..35), clinical: (8..80) },
+            "ALP" => { normal: (44..147), optimal: (50..130), clinical: (30..200) },
+            "Bilirubin" => { normal: (0.1..1.2), optimal: (0.2..1.0), clinical: (0.0..2.0) }
           },
           "Comprehensive Metabolic Panel" => {
-            "Glucose" => (70..100),
-            "Calcium" => (8.5..10.2),
-            "Albumin" => (3.4..5.4),
-            "Total Protein" => (6.0..8.3),
-            "Sodium" => (135..145),
-            "Potassium" => (3.5..5.1),
-            "CO2" => (23..29),
-            "Chloride" => (96..106),
-            "ALT" => (7..56),
-            "AST" => (10..40),
-            "BUN" => (7..20),
-            "Creatinine" => (0.6..1.2)
-          }
+            "Glucose" => { normal: (70..100), optimal: (75..95), clinical: (60..110) },
+            "Calcium" => { normal: (8.5..10.2), optimal: (8.7..9.9), clinical: (8.0..10.5) },
+            "Albumin" => { normal: (3.4..5.4), optimal: (3.8..5.0), clinical: (3.0..6.0) },
+            "Total Protein" => { normal: (6.0..8.3), optimal: (6.4..8.0), clinical: (5.5..8.5) },
+            "Sodium" => { normal: (135..145), optimal: (137..143), clinical: (130..150) },
+            "Potassium" => { normal: (3.5..5.1), optimal: (3.7..4.8), clinical: (3.0..5.5) },
+            "CO2" => { normal: (23..29), optimal: (24..28), clinical: (20..32) },
+            "Chloride" => { normal: (96..106), optimal: (98..104), clinical: (90..110) },
+            "BUN" => { normal: (7..20), optimal: (8..18), clinical: (5..25) },
+            "Creatinine" => { normal: (0.6..1.2), optimal: (0.7..1.1), clinical: (0.5..1.5) }
+          },
+          "Thyroid Tests" => {
+            "TSH" => { normal: (0.5..5.0), optimal: (0.8..2.5), clinical: (0.3..10.0) },
+            "Free T4" => { normal: (0.9..1.7), optimal: (1.0..1.5), clinical: (0.8..2.0) }
+          },
+          "Coagulation Panel" => {
+            "PT" => { normal: (9.5..13.5), optimal: (10..12), clinical: (9..15) },
+            "INR" => { normal: (0.8..1.2), optimal: (0.9..1.1), clinical: (0.5..1.5) },
+            "PTT" => { normal: (25..35), optimal: (26..34), clinical: (20..40) }
+          },
+          "Urinalysis" => {
+          "Color" => ["Yellow", "Amber", "Straw"],
+          "Appearance" => ["Clear", "Cloudy", "Hazy"],
+          "pH" => { normal: (4.5..8.0), optimal: (5.0..7.5), clinical: (4.0..9.0) },
+          "Specific Gravity" => { normal: (1.005..1.030), optimal: (1.010..1.025), clinical: (1.000..1.035) },
+          "Protein" => ["Negative", "Trace", "Positive"],
+          "Glucose" => ["Negative", "Trace", "Positive"],
+          "Ketones" => ["Negative", "Trace", "Positive"],
+          "Leukocyte Esterase" => ["Negative", "Trace", "Positive"],
+          "Nitrites" => ["Negative", "Positive"],
+          "Blood" => ["Negative", "Trace", "Positive"],
+          "WBCs" => { normal: (0..5), clinical: (6..20) },  
+          "RBCs" => { normal: (0..2), clinical: (3..50) },  
+          "Casts" => ["None", "Hyaline", "Granular", "Cellular"],
+          "Crystals" => ["None", "Urates", "Oxalates", "Phosphates"],
+          "Bacteria" => ["None", "Few", "Moderate", "Many"]
+         }
         }
-        
         selected_test = test_results.keys.sample
-        results = test_results[selected_test].transform_values { |range| rand(range) }
-        interpretations = results.transform_values.with_index do |(key, value), index|
-          # Find the corresponding range from the test_results for the current key
-          range = test_results[selected_test][key]
-          if range
-            value < range.begin || value > range.end ? "Abnormal" : "Normal"
-          else
-            "Range not defined"
-          end
-        end
-        
-      
-        notes = {
-          test_name: selected_test,
-          results: results,
-          interpretations: interpretations,
-          date: record_date.to_s
-        }.to_json
+  results = {}
 
+  test_results[selected_test].each do |test, ranges|
+    unless ranges.is_a?(Hash)
+      puts "Skipping test #{test} due to unexpected ranges format: #{ranges.inspect}"
+      next
+    end
+
+    range_types = ranges.keys # Get all possible range types (e.g., :normal, :optimal, :clinical)
+    range_type = range_types.sample # Randomly select one range type
+
+    selected_range = ranges[range_type] # Get the selected range
+
+    if selected_range.is_a?(Range)
+      value = rand(selected_range) # Generate a random value within the selected range
+    else
+      puts "Expected 'selected_range' to be a Range, got #{selected_range.class} for test #{test}"
+      next
+    end
+
+    results[test] = { value: value, range_type: range_type.to_s } # Store the value and its range type
+  end
+
+  interpretations = results.transform_values do |result|
+    case result[:range_type]
+    when 'normal'
+      'Normal'
+    when 'optimal'
+      'Optimal'
+    when 'clinical'
+      'Clinical'
+    else
+      'Abnormal'
+    end
+  end
+
+  notes = {
+    test_name: selected_test,
+    results: results.transform_values { |result| result[:value] }, # Only store the values in the final JSON
+    interpretations: interpretations,
+    date: record_date.to_s
+  }.to_json
+      
       when 'imaging'
         imaging_types = ["X-ray", "MRI", "CT scan", "Ultrasound"]
         findings = ["No acute disease detected", "Mild joint degeneration", "Stable cardiomegaly", "Small renal cyst"]
