@@ -1,21 +1,32 @@
-<!-- No need for 'if medical_record.present?' here since we're already checking before rendering this partial -->
-<div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
-  <!-- Healthcare Professional's Profile Picture -->
-  <figure class="flex-shrink-0 p-4">
-    <%= image_tag(medical_record.creator.profile_picture, alt: "Healthcare Professional's Profile Picture", class: "rounded-full w-24 h-24 object-cover") if medical_record.creator.profile_picture.present? %>
-  </figure>
+<!-- views/medical_records/_medical_record.html.erb -->
+<div class="medical-record-details">
+  <h3><%= @medical_record.record_type.titleize %></h3>
+  <p>Date: <%= @medical_record.record_date.strftime("%B %d, %Y") rescue 'Not specified' %></p>
 
-  <!-- Medical Record Content -->
-  <div class="card-body flex-grow">
-    <div class="flex items-center">
-      <h2 class="card-title flex-grow">Medical Record by <%= medical_record.creator.name %></h2> 
-    </div>
-    <p><strong>Patient:</strong> <%= medical_record.patient.name %></p>
-    <p><strong>Type:</strong> <%= medical_record.record_type %></p>
-    <p><strong>Date:</strong> <%= medical_record.record_date %></p>
-    <p><strong>Notes:</strong> <%= medical_record.notes %></p>
-    <div class="card-actions justify-end">
-      <%= link_to 'View Details', medical_record_path(medical_record), class: 'btn btn-secondary' %>
-    </div>
-  </div>
+  <!-- Determine which partial to render based on the record type -->
+  <% case @medical_record.record_type %>
+  <% when 'diagnosis' %>
+    <%= render partial: 'medical_records/partials/diagnosis', locals: { medical_record: @medical_record } %>
+  <% when 'treatment_plan' %>
+    <%= render partial: 'medical_records/partials/treatment_plan', locals: { medical_record: @medical_record } %>
+  <% when 'prescription' %>
+    <%= render partial: 'medical_records/partials/prescription', locals: { medical_record: @medical_record } %>
+  <% when 'lab_results' %>
+    <%= render partial: 'medical_records/partials/lab_results', locals: { medical_record: @medical_record } %>
+  <% when 'imaging' %>
+    <%= render partial: 'medical_records/partials/imaging', locals: { medical_record: @medical_record } %>
+  <% when 'progress_notes' %>
+    <%= render partial: 'medical_records/partials/progress_notes', locals: { medical_record: @medical_record } %>
+  <% when 'surgical_reports' %>
+    <%= render partial: 'medical_records/partials/surgical_reports', locals: { medical_record: @medical_record } %>
+  <% when 'vaccination_records' %>
+    <%= render partial: 'medical_records/partials/vaccination_records', locals: { medical_record: @medical_record } %>
+  <% else %>
+    <% # Default case to handle other or unknown record types %>
+  <% end %>
+
+  <!-- Notes Section -->
+
+
+  <p>Patient: <%= @medical_record.patient.name %></p>
 </div>
