@@ -10,8 +10,9 @@
 #  created_by_id :uuid             not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#
+#  
 class MedicalRecord < ApplicationRecord
+   has_many_attached :images
    belongs_to :patient, class_name: 'User', foreign_key: 'patient_id'
    belongs_to :creator, class_name: 'User', foreign_key: 'created_by_id'
    has_many :posts
