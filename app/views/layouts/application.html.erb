@@ -1,36 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CareClan</title>
+  <meta charset="UTF-8">
+  <title>CareClan - Streamline Your Family's Care</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+  <!-- Include Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Include Daisy UI CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@1.13.1/dist/full.css" rel="stylesheet">
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
   <script>
-    document.documentElement.setAttribute('data-theme', window.localStorage.getItem('theme'))
+    document.documentElement.setAttribute('data-theme', window.localStorage.getItem('theme'));
   </script>
 </head>
-<body class="flex min-h-screen">
+<body>
   <%= render 'layouts/nav' %> <!-- Renders the navbar partial -->
 
-  <div class="flex flex-1 min-h-screen">
+  <div>
     <% if controller_name == 'welcome' && action_name == 'index' %>
-      <!-- Full-width landing page layout -->
       <%= yield %>
     <% else %>
       <!-- Default layout -->
-      <% if user_signed_in? %> <!-- Checks if a user is logged in -->
-        <%= render 'layouts/sidebar' %> <!-- Renders the sidebar if user is logged in -->
-      <% end %>
-
-      <div class="flex-1 pt-[4rem]"> <!-- Content area, adjust pt value based on your navbar height -->
-        <div class="max-w-4xl mx-auto">
-          <% flash.each do |type, message| %>
-            <%= render partial: "layouts/flash", locals: { message: message, css_class: type.to_s } %>
-          <% end %>
-          <%= yield %> <!-- Page-specific content will be loaded here -->
-        </div>
+      <div> 
+        <% flash.each do |type, message| %>
+          <%= render partial: "layouts/flash", locals: { message: message, css_class: type.to_s } %>
+        <% end %>
+        <%= yield %>
       </div>
     <% end %>
   </div>
