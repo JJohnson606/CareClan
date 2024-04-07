@@ -1,42 +1,106 @@
-<%= form_with(model: medical_record) do |form| %>
-  <% if medical_record.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(medical_record.errors.count, "error") %> prohibited this medical_record from being saved:</h2>
+<!-- views/medical_records/_form.html.erb -->
 
-      <ul>
-        <% medical_record.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<%= form_with(model: medical_record, id: "medical_record_form") do |form| %>
+  <% if medical_record.errors.any? %>
+    <div class="alert alert-error">
+      <div class="flex-1">
+        <label><%= pluralize(medical_record.errors.count, "error") %> prohibited this medical record from being saved:</label>
+        <ul>
+          <% medical_record.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
     </div>
   <% end %>
+  <ul class="steps">
+    <li class="step step-primary" data-step="1">Choose Patient</li>
+    <li class="step" data-step="2">Choose Date</li>
+    <li class="step" data-step="3">Choose Record Type</li>
+    <li class="step" data-step="4">Record Creator</li>
+  </ul>
 
-  <div>
-    <%= form.label :patient_id, style: "display: block" %>
-    <%= form.text_field :patient_id %>
+  <div id="step-content">
+    <!-- Step 1: Choose Patient -->
+    <div id="step-1" class="step-content" style="display: block;">
+      <div class="form-control">
+        <%= form.label :patient_id, 'Patient', class: "label" %>
+        <%= form.collection_select :patient_id, @patients, :id, :name, {}, {class: "select select-bordered w-full max-w-xs"} %>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next</button>
+    </div>
+
+    <!-- Step 2: Choose Date -->
+    <div id="step-2" class="step-content" style="display: none;">
+      <div class="form-control">
+        <%= form.label :record_date, 'Record Date', class: "label" %>
+        <%= form.date_field :record_date, class: "input input-bordered" %>
+      </div>
+      <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Previous</button>
+      <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next</button>
+    </div>
+
+   <!-- Step 3: Choose Record Type -->
+<div id="step-3" class="step-content" style="display: none;">
+  <div class="form-control">
+    <%= form.label :record_type, 'Record Type', class: "label" %>
+    <%= form.select :record_type, MedicalRecord.record_types.keys.map { |type| [type.titleize, type] }, {}, {class: "select select-bordered w-full max-w-xs", id: "medical_record_record_type"} %>
   </div>
+  <div id="record-type-fields">
+    </div>
 
-  <div>
-    <%= form.label :record_type, style: "display: block" %>
-    <%= form.text_field :record_type %>
-  </div>
-
-  <div>
-    <%= form.label :record_date, style: "display: block" %>
-    <%= form.date_field :record_date %>
-  </div>
-
-  <div>
-    <%= form.label :notes, style: "display: block" %>
-    <%= form.text_area :notes %>
-  </div>
-
-  <div>
-    <%= form.label :created_by_id, style: "display: block" %>
-    <%= form.text_field :created_by_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+    <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Previous</button>
+      <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next</button>
+     </div>
+    <!-- Step 4: Record Creator -->
+    <div id="step-4" class="step-content" style="display: none;">
+      <div class="form-control">
+        <%= form.label :created_by_id, 'Record Creator', class: "label" %>
+        <%= form.collection_select :created_by_id, @creators, :id, :name, {}, {class: "select select-bordered w-full max-w-xs"} %>
+      </div>
+      <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Previous</button>
+      <%= form.submit "Save", class: "btn btn-primary" %>
+    </div>
   </div>
 <% end %>
+
+<script>
+  function goToStep(stepNumber) {
+    // Hide all step content by default
+    document.querySelectorAll('.step-content').forEach(function(stepContent) {
+      stepContent.style.display = 'none';
+    });
+
+    // Show the current step content
+    document.getElementById('step-' + stepNumber).style.display = 'block';
+
+    // Update step indicators
+    document.querySelectorAll('.steps .step').forEach(function(stepIndicator) {
+      if (parseInt(stepIndicator.getAttribute('data-step')) === stepNumber) {
+        stepIndicator.classList.add('step-primary');
+      } else {
+        stepIndicator.classList.remove('step-primary');
+      }
+    });
+  }
+
+  // Dynamically load the record type fields when the record type changes
+  document.addEventListener('change', function(event) {
+    if (event.target.id === 'medical_record_record_type') {
+      const recordType = event.target.value;
+      fetch(`/medical_records/fields_partials/${recordType}`, {
+  headers: {
+    'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute("content")
+  }
+})
+.then(response => response.text())
+.then(html => {
+  document.getElementById('record-type-fields').innerHTML = html;
+});
+
+    }
+  });
+
+  // Initialize the form by showing the first step
+  goToStep(1);
+</script>
