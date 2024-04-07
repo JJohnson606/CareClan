@@ -1,0 +1,21 @@
+<!-- views/medical_records/partials/_imaging_fields.html.erb -->
+<!-- Imaging Fields -->
+<div class="form-control">
+  <%= form.label :type, 'Imaging Type', class: "label" %>
+  <%= form.text_field :type, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :findings, 'Findings', class: "label" %>
+  <%= form.text_area :findings, class: "textarea textarea-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :interpretation, 'Interpretation', class: "label" %>
+  <%= form.text_field :interpretation, class: "input input-bordered" %>
+</div>
+
+<div class="form-group">
+    <%= form.label :images %>
+    <%= form.file_field :images, multiple: true, direct_upload: true %>
+  </div>
