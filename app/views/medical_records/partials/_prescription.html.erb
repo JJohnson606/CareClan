@@ -1,0 +1,13 @@
+<!-- app/views/medical_records/partials/_prescription.html.erb -->
+<div class="prescription-record">
+  <h4>Prescription Details</h4>
+  <% notes = JSON.parse(medical_record.notes) rescue nil %>
+  <% if notes %>
+    <p><strong>Medication Name:</strong> <%= notes['medication_name'] %></p>
+    <p><strong>Dosage:</strong> <%= notes['dosage'] %></p>
+    <p><strong>Duration:</strong> <%= notes['duration'] %></p>
+    <p><strong>Purpose:</strong> <%= notes['purpose'] %></p>
+  <% else %>
+    <p>Invalid or missing prescription data.</p>
+  <% end %>
+</div>

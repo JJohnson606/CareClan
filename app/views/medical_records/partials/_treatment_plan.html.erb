@@ -1,0 +1,12 @@
+<!-- app/views/medical_records/partials/_treatment_plan.html.erb -->
+<div class="treatment-plan-record bg-white shadow rounded p-4 mb-4">
+  <h4 class="text-lg font-semibold">Treatment Plan Details</h4>
+  <% notes = JSON.parse(medical_record.notes) rescue nil %>
+  <% if notes %>
+    <p><strong>Treatment:</strong> <%= notes['treatment'] %></p>
+    <p><strong>Duration:</strong> <%= notes['duration'] %></p>
+    <p><strong>Follow Up:</strong> <%= notes['follow_up'] %></p>
+  <% else %>
+    <p>Invalid or missing treatment plan data.</p>
+  <% end %>
+</div>

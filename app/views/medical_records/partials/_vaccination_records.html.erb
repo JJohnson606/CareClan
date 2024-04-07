@@ -1,0 +1,13 @@
+<!-- app/views/medical_records/partials/_vaccination_records.html.erb -->
+<div class="vaccination-records-record bg-white shadow rounded p-4 mb-4">
+  <h4 class="text-lg font-semibold">Vaccination Details</h4>
+  <% notes = JSON.parse(medical_record.notes) rescue nil %>
+  <% if notes %>
+    <p><strong>Vaccine:</strong> <%= notes['vaccine'] %></p>
+    <p><strong>Date Administered:</strong> <%= notes['date'] %></p>
+    <p><strong>Lot Number:</strong> <%= notes['lot_number'] %></p>
+    <p><strong>Administration Site:</strong> <%= notes['site'] %></p>
+  <% else %>
+    <p>Invalid or missing vaccination records data.</p>
+  <% end %>
+</div>

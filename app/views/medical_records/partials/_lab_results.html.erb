@@ -1,0 +1,59 @@
+<!-- app/views/medical_records/partials/_lab_results.html.erb --><% if notes = JSON.parse(@medical_record.notes) rescue nil %>
+  <div class="lab-results-record">
+    <h4><%= notes['test_name'] %></h4>
+    
+    <% if notes['results'] %>
+      <%# Extract results data %>
+      <% results_data = notes['results'].map { |key, value| [key, value] } %>
+      
+      <%# Create a series for the range indicators %>
+      <% range_data = {
+        "Optimal" => [],
+        "Normal" => [],
+        "Clinical" => [],
+      } %>
+      
+      <%# Populate range data if available %>
+      <% ['Optimal', 'Normal', 'Clinical'].each do |range_type| %>
+        <% if notes[range_type.downcase + '_range'] %>
+          <% range_data[range_type] << [notes['test_name'], notes[range_type.downcase + '_range']] %>
+        <% end %>
+      <% end %>
+      
+      <%# Merge the actual results and the range data %>
+      <% chart_data = [
+        { name: "Results", data: results_data, color: :black },
+        { name: "Optimal", data: range_data["Optimal"], color: :green },
+        { name: "Normal", data: range_data["Normal"], color: :blue },
+        { name: "Clinical", data: range_data["Clinical"], color: :red }
+      ] %>
+
+      <%= debug chart_data %>
+      
+      <%= bar_chart chart_data, id: "chart-#{notes['test_name'].parameterize}", height: "400px", stacked: false, library: {
+        title: { text: notes['test_name'], display: true },
+        legend: { display: true },
+        scales: {
+          yAxes: [{ ticks: { beginAtZero: true } }],
+          xAxes: [{ stacked: true }]
+        }
+      } %>
+    <% else %>
+      <p>Results data is unavailable.</p>
+    <% end %>
+
+    <% if notes['interpretations'] %>
+      <h5>Interpretations:</h5>
+      <ul>
+        <% notes['interpretations'].each do |key, value| %>
+          <li><strong><%= key %>:</strong> <%= value %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>Interpretation data is unavailable.</p>
+    <% end %>
+  </div>
+<% else %>
+  <p>Invalid or missing lab results data.</p>
+<% end %>
+
