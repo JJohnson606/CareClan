@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="apple">
 <head>
   <meta charset="UTF-8">
   <title>CareClan - Streamline Your Family's Care</title>
@@ -11,7 +11,13 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <!-- Include Daisy UI CSS -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@1.13.1/dist/full.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
   <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
+  <script src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
   <script>
     document.documentElement.setAttribute('data-theme', window.localStorage.getItem('theme'));
   </script>
@@ -32,6 +38,5 @@
       </div>
     <% end %>
   </div>
-
 </body>
 </html>
