@@ -1,3 +1,4 @@
+# lib/tasks/dev.rake
 task sample_data: :environment do
   starting = Time.now
 
@@ -103,68 +104,42 @@ task sample_data: :environment do
             "PT" => { normal: (9.5..13.5), optimal: (10..12), clinical: (9..15) },
             "INR" => { normal: (0.8..1.2), optimal: (0.9..1.1), clinical: (0.5..1.5) },
             "PTT" => { normal: (25..35), optimal: (26..34), clinical: (20..40) }
-          },
-          "Urinalysis" => {
-          "Color" => ["Yellow", "Amber", "Straw"],
-          "Appearance" => ["Clear", "Cloudy", "Hazy"],
-          "pH" => { normal: (4.5..8.0), optimal: (5.0..7.5), clinical: (4.0..9.0) },
-          "Specific Gravity" => { normal: (1.005..1.030), optimal: (1.010..1.025), clinical: (1.000..1.035) },
-          "Protein" => ["Negative", "Trace", "Positive"],
-          "Glucose" => ["Negative", "Trace", "Positive"],
-          "Ketones" => ["Negative", "Trace", "Positive"],
-          "Leukocyte Esterase" => ["Negative", "Trace", "Positive"],
-          "Nitrites" => ["Negative", "Positive"],
-          "Blood" => ["Negative", "Trace", "Positive"],
-          "WBCs" => { normal: (0..5), clinical: (6..20) },  
-          "RBCs" => { normal: (0..2), clinical: (3..50) },  
-          "Casts" => ["None", "Hyaline", "Granular", "Cellular"],
-          "Crystals" => ["None", "Urates", "Oxalates", "Phosphates"],
-          "Bacteria" => ["None", "Few", "Moderate", "Many"]
-         }
+          }      
         }
+
         selected_test = test_results.keys.sample
-  results = {}
-
-  test_results[selected_test].each do |test, ranges|
-    unless ranges.is_a?(Hash)
-      puts "Skipping test #{test} due to unexpected ranges format: #{ranges.inspect}"
-      next
-    end
-
-    range_types = ranges.keys # Get all possible range types (e.g., :normal, :optimal, :clinical)
-    range_type = range_types.sample # Randomly select one range type
-
-    selected_range = ranges[range_type] # Get the selected range
-
-    if selected_range.is_a?(Range)
-      value = rand(selected_range) # Generate a random value within the selected range
-    else
-      puts "Expected 'selected_range' to be a Range, got #{selected_range.class} for test #{test}"
-      next
-    end
-
-    results[test] = { value: value, range_type: range_type.to_s } # Store the value and its range type
-  end
-
-  interpretations = results.transform_values do |result|
-    case result[:range_type]
-    when 'normal'
-      'Normal'
-    when 'optimal'
-      'Optimal'
-    when 'clinical'
-      'Clinical'
-    else
-      'Abnormal'
-    end
-  end
-
-  notes = {
-    test_name: selected_test,
-    results: results.transform_values { |result| result[:value] }, # Only store the values in the final JSON
-    interpretations: interpretations,
-    date: record_date.to_s
-  }.to_json
+        results = {}
+        
+        test_results[selected_test].each do |test, ranges|
+          normal_range = ranges[:normal]
+          clinical_range = ranges[:clinical] || normal_range
+        
+          mean = (normal_range.begin + normal_range.end) / 2.0
+          sd = (normal_range.end - mean) / 2  # Assuming this is a simplified standard deviation calculation
+        
+          # Round the start and end points of the optimal range to integers
+          optimal_range_start = (mean - sd).round
+          optimal_range_end = (mean + sd).round
+        
+          # Create the optimal range with rounded values
+          optimal_range = (optimal_range_start..optimal_range_end)
+        
+          value = rand(normal_range)  # Ensure this uses integer values
+        
+          results[test] = {
+            value: value,
+            clinical_range: [clinical_range.begin.to_i, clinical_range.end.to_i],  # Convert to array with integer values
+            normal_range: [normal_range.begin.to_i, normal_range.end.to_i],        # Convert to array with integer values
+            optimal_range: [optimal_range_start, optimal_range_end]                # Already integers from rounding
+          }
+        end
+        
+        notes = {
+          test_name: selected_test,
+          results: results.transform_values { |result| result[:value] },
+          ranges: results.transform_values { |result| result.except(:value) },
+          date: record_date.to_s
+        }.to_json
       
       when 'imaging'
         imaging_types = ["X-ray", "MRI", "CT scan", "Ultrasound"]
