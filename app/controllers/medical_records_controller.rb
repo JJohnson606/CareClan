@@ -4,7 +4,6 @@ class MedicalRecordsController < ApplicationController
   # GET /medical_records or /medical_records.json
   def index
     @medical_records = MedicalRecord.all.order(record_date: :desc)
-
     # Filter by record type if param is present
     if params[:record_type].present?
       @medical_records = @medical_records.where(record_type: params[:record_type])
