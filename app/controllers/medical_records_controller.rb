@@ -8,7 +8,6 @@ class MedicalRecordsController < ApplicationController
     if params[:record_type].present?
       @medical_records = @medical_records.where(record_type: params[:record_type])
     end
-
     # Simple search functionality, adjust according to your needs
     if params[:search].present?
       @medical_records = @medical_records.where("notes LIKE ?", "%#{params[:search]}%")
