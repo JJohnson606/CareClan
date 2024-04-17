@@ -1,19 +1,41 @@
-# app/views/medical_records/show.html.erb or a relevant partial
-<% if notes = JSON.parse(@medical_record.notes) rescue nil %>
-  <% notes['results'].each do |test, result| %>
-    <div id="<%= "gauge-#{test.parameterize}" %>"></div>
 
-    <script>
-      FusionCharts.ready(function () {
-        var gauge = new FusionCharts({
+<% if notes = JSON.parse(@medical_record.notes) rescue nil %>
+   <div class="mb-4 font-bold text-xl">
+    Test Order: <%= notes['test_name'] %>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 bg-gray-50 rounded-lg border border-gray-200"> <!-- Enhanced grid container -->
+    <% notes['results'].each_with_index do |(test, result), index| %>
+      <% break if index >= 6 %>
+    
+      <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden"> <!-- Enhanced card -->
+        <div class="card-body p-4">
+          <h2 class="card-title text-lg font-semibold mb-3"><%= test.titleize %></h2> <!-- Enhanced title -->
+          <div id="<%= "gauge-#{test.parameterize}" %>" class="h-64"></div> <!-- Gauge container -->
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>Invalid or missing lab results data.</p>
+<% end %>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Wait until FusionCharts is fully ready
+  FusionCharts.ready(function() {
+    <% notes['results'].each_with_index do |(test, result), index| %>
+      <% if index < 6 %>
+        var gauge<%= index %> = new FusionCharts({
           type: 'angulargauge',
           renderAt: '<%= "gauge-#{test.parameterize}" %>',
-          width: '400',
+          width: '100%',
           height: '250',
           dataFormat: 'json',
           dataSource: {
             chart: {
-              caption: '<%= test %>',
+              caption: '',
               lowerLimit: '<%= notes["ranges"][test]["clinical_range"].first %>',
               upperLimit: '<%= notes["ranges"][test]["clinical_range"].last %>',
               showValue: '1',
@@ -50,10 +72,9 @@
             }
           }
         });
-        gauge.render();
-      });
-    </script>
-  <% end %>
-<% else %>
-  <p>Invalid or missing lab results data.</p>
-<% end %>
+        gauge<%= index %>.render();
+      <% end %>
+    <% end %>
+  });
+});
+</script>
