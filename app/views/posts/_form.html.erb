@@ -1,43 +1,43 @@
-<%= form_with(model: medical_record) do |form| %>
-  <% if medical_record.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(medical_record.errors.count, "error") %> prohibited this medical_record from being saved:</h2>
-
+<%= form_with(model: post, local: true, html: { class: 'w-full' }) do |form| %>
+  <% if post.errors.any? %>
+    <div class="alert alert-error">
+      <label>
+        <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+      </label>
       <ul>
-        <% medical_record.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% post.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <% if current_user.healthcare_proffesional? %>
-    <div>
-      <%= form.label :patient_id, style: "display: block" %>
-      <%= form.text_field :patient_id %>
-    </div>
-  <% end %>
-
-  <div>
-    <%= form.label :record_type, style: "display: block" %>
-    <%= form.text_field :record_type %>
+  <div class="form-control w-full max-w-xs mx-auto">
+    <label class="label">
+      <span class="label-text">Title</span>
+    </label>
+    <%= form.text_field :title, placeholder: 'Type the title here', class: 'input input-bordered w-full' %>
   </div>
 
-  <div>
-    <%= form.label :record_date, style: "display: block" %>
-    <%= form.date_field :record_date, value: Time.zone.now %>
+  <div class="form-control w-full max-w-xs mx-auto">
+    <label class="label">
+      <span class="label-text">Your message</span>
+    </label>
+    <%= form.text_area :body, placeholder: 'Type your message here', rows: 4, class: 'textarea textarea-bordered w-full' %>
   </div>
 
-  <div>
-    <%= form.label :notes, style: "display: block" %>
-    <%= form.text_area :notes %>
+  <div class="form-control w-full max-w-xs mx-auto">
+    <label class="label">
+      <span class="label-text">Image</span>
+    </label>
+    <%= form.file_field :image, class: 'input input-bordered w-full' %>
   </div>
 
-  <div>
-    <%= form.hidden_field :created_by_id, value: current_user.id %>
-  </div>
+  <%= form.hidden_field :medical_record_id, value: @medical_record.id if @medical_record %>
 
-  <div>
-    <%= form.submit %>
+  <%= form.hidden_field :author_id, value: current_user.id %>
+
+  <div class="form-control mt-4 w-full flex justify-center">
+    <%= form.submit 'Submit', class: 'btn btn-primary' %>
   </div>
 <% end %>
