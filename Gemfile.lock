@@ -461,6 +461,7 @@ DEPENDENCIES
   rails-erd
   rails_db
   rake (= 13.1.0)
+  ransack
   redis (~> 4.0)
   rspec-html-matchers
   rspec-rails (~> 6.0.0)
