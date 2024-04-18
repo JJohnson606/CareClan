@@ -18,8 +18,11 @@
 #  cached_weighted_score   :integer          default(0)
 #  cached_weighted_total   :integer          default(0)
 #  cached_weighted_average :float            default(0.0)
+#  title                   :string
+#  comments_count          :integer          default(0), not null
 #
 class Post < ApplicationRecord
+  has_one_attached :image
   belongs_to :author, class_name: 'User', foreign_key: 'author_id' # author association
   belongs_to :medical_record, optional: true  # medical record association optional
   has_many :comments, dependent: :destroy # comments association
@@ -33,4 +36,10 @@ class Post < ApplicationRecord
     approval_votes = self.get_upvotes.size
     (approval_votes.to_f / total_votes * 100).round(2)
   end
+
+  scope :controversial, -> {
+    select('posts.*, ABS(posts.cached_votes_up - posts.cached_votes_down) AS vote_diff')
+    .where('posts.comments_count > ?', 5) 
+    .order('vote_diff ASC, posts.comments_count DESC')
+  }
 end
