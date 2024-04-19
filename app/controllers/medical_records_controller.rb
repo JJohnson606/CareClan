@@ -3,17 +3,20 @@ class MedicalRecordsController < ApplicationController
 
   # GET /medical_records or /medical_records.json
   def index
-    @medical_records = MedicalRecord.all.order(record_date: :desc)
-    # Filter by record type if param is present
-    if params[:record_type].present?
-      @medical_records = @medical_records.where(record_type: params[:record_type])
+    @q = MedicalRecord.ransack(params[:q])
+    case params[:search_type]
+    when 'name'
+      # Joining with the User model where User is the creator of the medical record.
+      @q = MedicalRecord.joins(:creator).ransack(creator_name_cont: params[:search])
+    when 'date'
+      @q = MedicalRecord.ransack(record_date_eq: params[:search])
+    when 'record_type'
+      @q = MedicalRecord.ransack(record_type_eq: params[:search])
+    else
+      @q = MedicalRecord.ransack(params[:q])
     end
-    # Simple search functionality, adjust according to your needs
-    if params[:search].present?
-      @medical_records = @medical_records.where("notes LIKE ?", "%#{params[:search]}%")
-    end
-
-    @medical_records = @medical_records.page(params[:page]) # Paginate the final query
+  
+    @medical_records = @q.result(distinct: true).page(params[:page])
   end
 
   # GET /medical_records/1 or /medical_records/1.json

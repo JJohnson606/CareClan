@@ -27,4 +27,13 @@ class MedicalRecord < ApplicationRecord
     surgical_reports: 'Surgical Reports',
     vaccination_records: 'Vaccination Records'
   }
+
+   # Specified which fields can be searched and sorted
+   def self.ransackable_attributes(auth_object = nil)
+    super & %w[record_date record_type notes]  # Only allow these fields to be searchable
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[patient creator]  # Specified associations that can be included in the search
+  end
  end
