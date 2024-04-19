@@ -20,6 +20,7 @@
 #  cached_weighted_average :float            default(0.0)
 #  title                   :string
 #  comments_count          :integer          default(0), not null
+#  cached_vote_diff        :integer          default(0)
 #
 class Post < ApplicationRecord
   has_one_attached :image
@@ -28,6 +29,16 @@ class Post < ApplicationRecord
   has_many :comments, dependent: :destroy # comments association
   acts_as_votable cacheable_strategy: :update_columns # for liking/disliking posts
 
+  # Defined which attributes are searchable/sortable with Ransack
+  def self.ransackable_attributes(auth_object = nil)
+    %w[title created_at comments_count cached_votes_up cached_votes_down cached_vote_diff]
+  end
+
+  # Defined which associations should be searchable
+  def self.ransackable_associations(auth_object = nil)
+    %w[author comments]
+  end
+ 
   
   def approval_rating
     total_votes = self.votes_for.size
@@ -37,9 +48,6 @@ class Post < ApplicationRecord
     (approval_votes.to_f / total_votes * 100).round(2)
   end
 
-  scope :controversial, -> {
-    select('posts.*, ABS(posts.cached_votes_up - posts.cached_votes_down) AS vote_diff')
-    .where('posts.comments_count > ?', 5) 
-    .order('vote_diff ASC, posts.comments_count DESC')
-  }
+  scope :controversial, -> { order(cached_vote_diff: :desc) }
 end
+
