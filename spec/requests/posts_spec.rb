@@ -20,6 +20,7 @@
 #  cached_weighted_average :float            default(0.0)
 #  title                   :string
 #  comments_count          :integer          default(0), not null
+#  cached_vote_diff        :integer          default(0)
 #
 require 'rails_helper'
 
