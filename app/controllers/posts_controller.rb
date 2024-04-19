@@ -3,24 +3,18 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
-    case params[:sort]
-    when 'newest'
-      @posts = @posts.order(created_at: :desc)
-    when 'oldest'
-      @posts = @posts.order(created_at: :asc)
-    when 'popularity'
-      @posts = @posts.order(comments_count: :desc)
-    when 'controversial'
-      @posts = @posts.controversial
-    end
+    # Starting a Ransack search based on query parameters `q`
+  @q = Post.ransack(params[:q])
+  @posts = @q.result(distinct: true).includes(:author) # assuming you want to show the author and avoid N+1 queries
+
+  # Optional: Paginate the results
+  @posts = @posts.page(params[:page])
   end
 
   # GET /posts/1 or /posts/1.json
   def show
     @post = Post.find(params[:id])
     @comments = sort_comments # Only top-level comments
-
     @approval_rating = @post.approval_rating
     @medical_record = @post.medical_record
     @voters_up = User.includes(:votes).where(votes: { votable: @post, vote_flag: true })
@@ -85,24 +79,15 @@ class PostsController < ApplicationController
   end
 
   def sort_comments
-    case params[:sort_comments]
-    when 'newest'
-      puts "Comments sorted by newest"
-      @post.comments.newest
-    when 'oldest'
-      puts "Comments sorted by oldest"
-      @post.comments.oldest
-    when 'popularity'
-      puts "Comments sorted by popularity"
-      @post.comments.popularity
-    when 'controversial'
-      @post.comments.controversial
-      puts "Comments sorted by Controversy"
-    else
-      puts "The Default Comment"
-      @post.comments.newest # Default to newest if no sort parameter given
-    end
+    # Initialize a Ransack search on comments of the post
+    @q = @post.comments.ransack(params[:q])
+    @comments = @q.result(distinct: true)
+  
+    # Log the sorted comments
+    Rails.logger.debug "Sorted Comments: #{@comments.to_a}"
+    @comments
   end
+  
 
   private
 
