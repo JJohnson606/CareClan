@@ -105,12 +105,20 @@
   </div>
 
   <!-- Comment Sorting Links -->
-  <div class="comments-sorting">
-    <%= link_to 'Newest', post_path(@post, sort_comments: 'newest'), class: 'btn' %>
-    <%= link_to 'Oldest', post_path(@post, sort_comments: 'oldest'), class: 'btn' %>
-    <%= link_to 'Most Popular', post_path(@post, sort_comments: 'popularity'), class: 'btn' %>
-    <%= link_to 'Most Controversial', post_path(@post, sort_comments: 'controversial'), class: 'btn' %>
+  <div class="flex justify-center mb-4">
+    <div class="dropdown">
+      <button class="btn btn-black dropdown-toggle" tabindex="0">
+        Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
+      </button>
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">   
+        <li> <%= link_to 'Newest', post_path(@post, q: {s: 'created_at desc'}) %> </li>
+        <li> <%= link_to 'Oldest', post_path(@post, q: {s: 'created_at asc'}) %></li>
+        <li> <%= link_to 'Most Popular', post_path(@post, q: {s: 'replies_count desc'}) %> </li>
+        <li> <%= link_to 'Most Controversial', post_path(@post, q: {s: 'cached_vote_diff desc'}) %> </li>
+      </ul>
+    </div>
   </div>
+
 
   <div class="flex gap-4 mb-4">
     <!-- Comment Section -->
