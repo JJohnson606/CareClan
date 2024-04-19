@@ -32,6 +32,17 @@ class Comment < ApplicationRecord
   # Callbacks
   after_save :update_vote_cache
 
+
+    # Defined which attributes are searchable/sortable with Ransack
+    def self.ransackable_attributes(auth_object = nil)
+      %w[created_at replies_count cached_votes_up cached_votes_down cached_vote_diff cached_votes_total]
+    end
+  
+    # Attributes that should not be searchable
+    def self.ransackable_associations(auth_object = nil)
+      []
+    end
+  
   # Instance methods
   def depth
     parent ? 1 + parent.depth : 0
@@ -45,22 +56,16 @@ class Comment < ApplicationRecord
     (approval_votes.to_f / total_votes * 100).round(2)
   end
 
-  # Scopes
-  scope :newest, -> { order(created_at: :desc) }
-  scope :oldest, -> { order(created_at: :asc) }
-  scope :popularity, -> { order(replies_count: :desc) }
-  scope :controversial, -> { order(cached_vote_diff: :desc, cached_votes_total: :desc) }
-
-  private
-
   def update_vote_cache
     upvotes = get_upvotes.size
     downvotes = get_downvotes.size
+    total_votes = upvotes + downvotes
     vote_diff = (upvotes - downvotes).abs
 
     update_columns(
       cached_votes_up: upvotes,
       cached_votes_down: downvotes,
+      cached_votes_total: total_votes,
       cached_vote_diff: vote_diff
     )
   end
