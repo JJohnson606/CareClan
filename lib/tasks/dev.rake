@@ -3,6 +3,8 @@ task sample_data: :environment do
   starting = Time.now
 
   # Clear out existing data
+  ClanMembership.delete_all
+  Clan.delete_all
   MedicalRecord.delete_all
   Comment.delete_all
   Post.delete_all
@@ -10,37 +12,88 @@ task sample_data: :environment do
   ActsAsVotable::Vote.delete_all
   puts "Cleared all existing data."
 
-  # Create predefined users
-  alice = User.create!(email: "alice@example.com", password: "password", name: "Alice Smith", role: 3, trust: true, profile_picture: "Alice.jpeg")
-  bob = User.create!(email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true, profile_picture: "Bob.jpeg")
-  gary = User.create!(email: "gary@example.com", password: "password", name: "Gary Nixon", role: 0, trust: true, profile_picture: "Gary.jpeg")
-  puts "Predefined users Alice, Gary, and Bob created."
+  # Ensure the file path is correct and the file exists
+  default_image_path = Rails.root.join('app', 'assets', 'images', 'default_profile_picture.png')
+  if File.exist?(default_image_path)
+    user = User.create!(
+      email: "example@example.com",
+      password: "password",
+      name: "Example User"
+    )
 
+    # Attach the file using Rails Active Storage
+    user.profile_picture.attach(
+      io: File.open(default_image_path),
+      filename: File.basename(default_image_path),
+      content_type: 'image/png'
+    )
+
+    if user.save
+      puts "User with default profile picture created."
+    else
+      puts "Failed to save user: #{user.errors.full_messages.join(", ")}"
+    end
+  else
+    puts "The file does not exist at the specified path: #{default_image_path}"
+  end
+
+  # Create predefined users
+  alice_image_path = Rails.root.join('app', 'assets', 'images', 'Alice.jpeg')
+  bob_image_path = Rails.root.join('app', 'assets', 'images', 'Bob.jpeg')
+  gary_image_path = Rails.root.join('app', 'assets', 'images', 'Gary.jpeg')
+
+  # Create users with predefined data
+  alice = User.create(email: "alice@example.com", password: "password", name: "Alice Smith", role: 3, trust: true)
+  bob = User.create(email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true)
+  gary = User.create(email: "gary@example.com", password: "password", name: "Gary Nixon", role: 0, trust: true)
+
+  # Attach profile pictures for predefined users
+  alice.profile_picture.attach(io: File.open(alice_image_path), filename: 'Alice.jpeg', content_type: 'image/jpeg')
+  bob.profile_picture.attach(io: File.open(bob_image_path), filename: 'Bob.jpeg', content_type: 'image/jpeg')
+  gary.profile_picture.attach(io: File.open(gary_image_path), filename: 'Gary.jpeg', content_type: 'image/jpeg')
+
+  puts "Predefined users Alice, Gary, and Bob created with profile pictures."
+
+  # Create predefined doctors
   doctors = [
-    { email: "radiologist@example.com", password: "password", name: "Dr. Ray Scan", role: 1, profile_picture: "Ray.jpeg" },
-    { email: "orthopedist@example.com", password: "password", name: "Dr. Jane Setter", role: 1, profile_picture: "Jane.jpeg" },
-    { email: "gp@example.com", password: "password", name: "Dr. Samuel Green", role: 1, profile_picture: "Samuel.jpeg" },
-    { email: "therapist@example.com", password: "password", name: "Dr. Alma Chavez", role: 1, profile_picture: "Alma.jpeg" }
-  ].map { |u| User.create!(u) }
-  puts "Doctor users created."
+    { email: "radiologist@example.com", password: "password", name: "Dr. Ray Scan", role: 1, image_file: "Ray.jpeg" },
+    { email: "orthopedist@example.com", password: "password", name: "Dr. Jane Setter", role: 1, image_file: "Jane.jpeg" },
+    { email: "gp@example.com", password: "password", name: "Dr. Samuel Green", role: 1, image_file: "Samuel.jpeg" },
+    { email: "therapist@example.com", password: "password", name: "Dr. Alma Chavez", role: 1, image_file: "Alma.jpeg" }
+  ].map do |doc_data|
+    doc_image_path = Rails.root.join('app', 'assets', 'images', doc_data[:image_file])
+    doctor = User.create(email: doc_data[:email], password: doc_data[:password], name: doc_data[:name], role: doc_data[:role], trust: doc_data[:trust])
+    doctor.profile_picture.attach(io: File.open(doc_image_path), filename: File.basename(doc_image_path), content_type: 'image/jpeg') if File.exist?(doc_image_path)
+    doctor  # Return the doctor object to store in the array
+  end
 
   # Create family and friends users
   family_and_friends = [
-    { email: "carol@example.com", password: "password", name: "Carol Smith", role: 2, trust: false, profile_picture: "Carol.jpeg" },  # POA family member
-    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, profile_picture: "Doug.jpeg" },  # Non-POA family member
-    { email: "emily@example.com", password: "password", name: "Emily Johnson", role: 3, trust: false, profile_picture: "Emily.jpeg" },
-    { email: "frank@example.com", password: "password", name: "Frank Brown", role: 3, trust: true, profile_picture: "Frank.jpeg" },
-    { email: "grace@example.com", password: "password", name: "Grace Davis", role: 2, trust: false, profile_picture: "Grace.jpeg" },
-    { email: "harry@example.com", password: "password", name: "Harry Wilson", role: 3, trust: true, profile_picture: "Harry.jpeg" },
-    { email: "irene@example.com", password: "password", name: "Irene Morgan", role: 2, trust: false, profile_picture: "Irene.jpeg" },
-    { email: "jack@example.com", password: "password", name: "Jack Lee", role: 3, trust: true, profile_picture: "Jack.jpeg" },
-    { email: "kelly@example.com", password: "password", name: "Kelly Young", role: 3, trust: false, profile_picture: "Kelly.jpeg" },
-    { email: "liam@example.com", password: "password", name: "Liam Davis", role: 2, trust: true, profile_picture: "Liam.jpeg" }
-    # Family and friends data...
-  ].map { |u| User.create!(u) }
+    { email: "carol@example.com", password: "password", name: "Carol Smith", role: 2, trust: false, image_file: "Carol.jpeg" },  # POA family member
+    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, image_file: "Doug.jpeg" },  # Non-POA family member
+    { email: "emily@example.com", password: "password", name: "Emily Johnson", role: 3, trust: false, image_file: "Emily.jpeg" },
+    { email: "frank@example.com", password: "password", name: "Frank Brown", role: 3, trust: true, image_file: "Frank.jpeg" },
+    { email: "grace@example.com", password: "password", name: "Grace Davis", role: 2, trust: false, image_file: "Grace.jpeg" },
+    { email: "harry@example.com", password: "password", name: "Harry Wilson", role: 3, trust: true, image_file: "Harry.jpeg" },
+    { email: "irene@example.com", password: "password", name: "Irene Morgan", role: 2, trust: false, image_file: "Irene.jpeg" },
+    { email: "jack@example.com", password: "password", name: "Jack Lee", role: 3, trust: true, image_file: "Jack.jpeg" },
+    { email: "kelly@example.com", password: "password", name: "Kelly Young", role: 3, trust: false, image_file: "Kelly.jpeg" },
+    { email: "liam@example.com", password: "password", name: "Liam Davis", role: 2, trust: true, image_file: "Liam.jpeg" }   # Family and friends data...
+  ].map do |person_data|
+    person_image_path = Rails.root.join('app', 'assets', 'images', person_data[:image_file])
+    person = User.create(email: person_data[:email], password: person_data[:password], name: person_data[:name], role: person_data[:role], trust: person_data[:trust])
+    if File.exist?(person_image_path)
+      person.profile_picture.attach(io: File.open(person_image_path), filename: File.basename(person_image_path), content_type: 'image/jpeg')
+    end
+    person  # Return the person object to store in the array
+  end
 
-  valid_family_and_friends = family_and_friends.select(&:persisted?)
-  puts "#{valid_family_and_friends.size} valid family and friends users created."
+  # Create Sample Clans
+  example_clan = Clan.create!(name: "Nixon Clan")
+  ClanMembership.create!(clan: example_clan, user: alice, role: "member")
+  ClanMembership.create!(clan: example_clan, user: bob, role: "member")
+  ClanMembership.create!(clan: example_clan, user: gary, role: "admin")
+  puts "Clans and clan memberships created."
 
   xray = MedicalRecord.create!(
     record_type: 'imaging',
@@ -269,57 +322,58 @@ task sample_data: :environment do
         medical_record_id: record.id
       )
       puts "Post #{post.id} created linked to medical record #{record.id}."
-# Generate primary comments
+      
+    # Generate primary comments and nested replies for each post
+    # Recursive method to generate nested comments
+    def generate_nested_comments(commenter, post, parent_id = nil, depth = 0, max_depth = 5)
+      return if depth >= max_depth
 
-  # Recursive method to generate nested comments
-  def generate_nested_comments(commenter, post, parent_id = nil, depth = 0, max_depth = 5)
-    return if depth >= max_depth
+      num_comments = rand(1..8) # Each comment can have 1 to 8 replies
+      num_comments.times do
+        comment = Comment.create!(
+          body: Faker::Lorem.sentence(word_count: rand(5..30)),
+          author: commenter.sample,
+          post: post,
+          parent_id: parent_id
+        )
+        puts "#{comment.author.name} commented on post #{post.id}, depth #{depth + 1}"
 
-    num_comments = rand(1..8) # Each comment can have 1 to 3 replies
-    num_comments.times do
+        # Recursively create replies to the current comment
+        if rand > 0.3 # 70% chance to continue creating deeper comments
+          generate_nested_comments(commenter, post, comment.id, depth + 1, max_depth)
+        end
+      end
+    end
+
+    5.times do |i|
+      commenter = family_and_friends.sample
       comment = Comment.create!(
-        body: Faker::Lorem.sentence(word_count: rand(5..30)),
-        author: commenter.sample,
-        post: post,
-        parent_id: parent_id
+        body: Faker::Lorem.sentence(word_count: 40),
+        author_id: commenter.id,
+        post_id: post.id
       )
-      puts "#{comment.author.name} commented on post #{post.id}, depth #{depth + 1}"
+      puts "#{commenter.name} commented on post #{post.id}."
 
-      # Recursively create replies to the current comment
-      if rand > 0.3 # 70% chance to continue creating deeper comments
-        generate_nested_comments(commenter, post, comment.id, depth + 1, max_depth)
+      # Generate nested reply comments up to 10 levels deep
+      depth = 0
+      while depth < 10 && [true, false].sample
+        reply_commenter = family_and_friends.sample
+        comment = Comment.create!(
+          body: Faker::Lorem.sentence(word_count: 30),
+          author_id: reply_commenter.id,
+          post_id: post.id,
+          parent_id: comment.id
+        )
+        puts "#{reply_commenter.name} replied to comment #{comment.id} on post #{post.id}."
+        depth += 1
       end
     end
   end
-  5.times do |i|
-    commenter = valid_family_and_friends.sample
-    comment = Comment.create!(
-      body: Faker::Lorem.sentence(word_count: 40),
-      author_id: commenter.id,
-      post_id: post.id
-    )
-    puts "#{commenter.name} commented on post #{post.id}."
-
-    # Generate nested reply comments up to 10 levels deep
-    depth = 0
-    while depth < 10 && [true, false].sample
-      reply_commenter = valid_family_and_friends.sample
-      comment = Comment.create!(
-        body: Faker::Lorem.sentence(word_count: 30),
-        author_id: reply_commenter.id,
-        post_id: post.id,
-        parent_id: comment.id
-      )
-      puts "#{reply_commenter.name} replied to comment #{comment.id} on post #{post.id}."
-      depth += 1
-    end
-  end
-end
 end
 
 # Generate votes
 Post.find_each do |post|
-valid_family_and_friends.each do |family_member|
+   family_and_friends.each do |family_member|
   next if post.voted_on_by?(family_member)
 
   vote_type = [true, false].sample
@@ -334,7 +388,7 @@ puts "An error occurred for family_member #{family_member.name} on post #{post.i
 end
 
 Comment.find_each do |comment|
-  valid_family_and_friends.each do |family_member|
+     family_and_friends.each do |family_member|
     next if comment.voted_on_by?(family_member)
 
     vote_type = [true, false].sample
