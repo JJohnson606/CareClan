@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_19_192105) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_20_002616) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -55,6 +55,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_19_192105) do
     t.index ["voter_id"], name: "index_approvals_on_voter_id"
   end
 
+  create_table "clan_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "clan_id", null: false
+    t.uuid "user_id", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["clan_id"], name: "index_clan_memberships_on_clan_id"
+    t.index ["user_id"], name: "index_clan_memberships_on_user_id"
+  end
+
+  create_table "clans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_clans_on_name", unique: true
+  end
+
   create_table "comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "body"
     t.uuid "post_id", null: false
@@ -86,30 +104,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_19_192105) do
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_medical_records_on_created_by_id"
     t.index ["patient_id"], name: "index_medical_records_on_patient_id"
-  end
-
-  create_table "noticed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "type"
-    t.string "record_type"
-    t.uuid "record_id"
-    t.jsonb "params"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "notifications_count"
-    t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"
-  end
-
-  create_table "noticed_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "type"
-    t.uuid "event_id", null: false
-    t.string "recipient_type", null: false
-    t.uuid "recipient_id", null: false
-    t.datetime "read_at", precision: nil
-    t.datetime "seen_at", precision: nil
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["event_id"], name: "index_noticed_notifications_on_event_id"
-    t.index ["recipient_type", "recipient_id"], name: "index_noticed_notifications_on_recipient"
   end
 
   create_table "posts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -144,7 +138,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_19_192105) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "role"
-    t.string "profile_picture"
     t.boolean "trust"
     t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -169,6 +162,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_19_192105) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "posts"
   add_foreign_key "approvals", "users", column: "voter_id"
+  add_foreign_key "clan_memberships", "clans"
+  add_foreign_key "clan_memberships", "users"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "medical_records", "users", column: "created_by_id"
