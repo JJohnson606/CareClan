@@ -11,7 +11,6 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  role                   :integer
-#  profile_picture        :string
 #  trust                  :boolean
 #  name                   :string
 #
@@ -20,12 +19,14 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-
+         has_one_attached :profile_picture
   # Associations
   acts_as_voter # for liking/disliking posts
  # Associations common for all users
  has_many :posts, foreign_key: 'author_id', dependent: :destroy
  has_many :comments, foreign_key: 'author_id', dependent: :destroy
+ has_many :clan_memberships
+ has_many :clans, through: :clan_memberships
 
  # Associations specific to medical patients
  has_many :medical_records_as_patient, foreign_key: 'patient_id', class_name: 'MedicalRecord', dependent: :destroy
