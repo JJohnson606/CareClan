@@ -77,6 +77,6 @@ class User < ApplicationRecord
 
  # Family friend-specific attributes
  attribute :relationship_to_patient, :string
- attribute :interests, :text # Could be serialized or linked to an interests table
+ attribute :bio, :text # Could be serialized or linked to an interests table
 
 end
