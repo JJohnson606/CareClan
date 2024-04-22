@@ -5,7 +5,7 @@ class PostsController < ApplicationController
   def index
     # Starting a Ransack search based on query parameters `q`
   @q = Post.ransack(params[:q])
-  @posts = @q.result(distinct: true).includes(:author) # assuming you want to show the author and avoid N+1 queries
+  @posts = @q.result(distinct: true).includes(:author, :comments) # show the author and avoid N+1 queries
 
   # Optional: Paginate the results
   @posts = @posts.page(params[:page])
@@ -94,6 +94,7 @@ class PostsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_post
     @post = Post.find(params[:id])
+    redirect_to posts_path, alert: "Post not found." unless @post
   end
 
   # Only allow a list of trusted parameters through.
