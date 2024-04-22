@@ -1,38 +1,40 @@
 <!-- views/medical_records/index.html.erb -->
 <!-- Page Header and Introduction -->
 <div class="text-center mt-8 mb-6">
-  <h1 class="text-3xl font-bold mb-2">Medical Records Overview</h1>
-  <p class="text-gray-600">
-    Here you can view all medical records. Use the search and filters to find specific records easily.
-  </p>
+  <h1 class="text-3xl font-bold mb-2">Medical Records</h1>
 </div>
 
 <!-- Search and Filter Bar with DaisyUI -->
 <div class="flex flex-wrap gap-4 justify-center mb-8">
-  <div class="input-group">
-    <%= form_tag medical_records_path, method: :get, class: "form-control" do %>
-      <%= text_field_tag :search, params[:search], placeholder: "Search records...", class: "textarea textarea-bordered" %>
-      <button type="submit" class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg btn-active">Search</button>
-    <% end %>
-  </div>
+  <%= form_tag medical_records_path, method: :get, class: "flex gap-2" do %>
+    <%= text_field_tag :search, params[:search], placeholder: "Search records...", class: "input input-bordered" %>
 
-  <div class="select-md select-primary">
-    <%= form_tag medical_records_path, method: :get, class: "form-control" do %>
-      <%= select_tag :record_type, options_for_select(["Choose Your Record Type", "Treatment Plan", "Diagnosis", "Lab Results", "Vaccination Records", "Progress Notes", "Prescription", "Imaging", "All Record Types"], params[:record_type]), class: "select select-primary" %>
-      <%= submit_tag 'Filter', class: "btn btn-primary ml-2" %>
-    <% end %>
-  </div>
+    <%= select_tag :record_type, options_for_select(["Choose Your Record Type", "Treatment Plan", "Diagnosis", "Lab Results", "Vaccination Records", "Progress Notes", "Prescription", "Imaging", "All Record Types"].zip(["", "treatment_plan", "diagnosis", "lab_results", "vaccination_records", "progress_notes", "prescription", "imaging", ""]), selected: params[:record_type], include_blank: true), class: "select select-bordered" %>
+
+    <%= submit_tag 'Search', class: "btn btn-primary" %>
+  <% end %>
 </div>
 
+
+<!-- Toggle Switch -->
+<div class="flex justify-center mb-4">
+  <label class="flex items-center cursor-pointer">
+    <div class="mr-3 text-lg">Create Post</div>
+    <div class="relative">
+      <!-- Use 'class' instead of 'className' for HTML -->
+      <input type="checkbox" id="postToggle" class="toggle custom-toggle bg-emerald-500 hover:bg-emerald-700 border-emerald-500" />
+    </div>
+  </label>
+</div>
 
 
 <!-- Medical Records Table -->
 <div class="overflow-x-auto">
-  <table class="table w-full">
+  <table class="table w-full table-fixed" id="medicalRecordsTable">
     <!-- head -->
     <thead>
       <tr>
-        <th></th>
+        <th>Status</th>
         <th>Patient</th>
         <th>Record Type</th>
         <th>Record Date</th>
@@ -45,10 +47,8 @@
       <% @medical_records.each do |medical_record| %>
         <tr>
           <td>
-            <label>
-              <input type="checkbox" class="checkbox" />
-            </label>
-          </td>
+         <div class="badge badge-primary">Shareable</div>
+         </td>
           <td>
             <div class="flex items-center gap-3">
               <div class="avatar">
@@ -68,9 +68,26 @@
              </td>
           <td><%= medical_record.record_type&.titleize || 'Unknown' %></td>
           <td><%= medical_record.record_date&.strftime("%B %d, %Y") || 'N/A' %></td>
-          <td><%= medical_record.creator.name %></td>
-          <td>
-            <%= link_to 'View More', medical_record, class: 'btn btn-ghost btn-xs' %>
+          <td> 
+            <div class="flex items-center gap-3">
+              <div class="avatar">
+                <div class="mask mask-squircle w-12 h-12">
+                  <% if medical_record.creator.profile_picture? %>
+                    <%= image_tag medical_record.creator.profile_picture, class: "w-full h-full object-cover rounded-full" %>
+                  <% else %>
+                    <img src="/default-profile-picture.jpg" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
+                  <% end %>
+                </div>
+              </div>
+              <div>
+                <div class="font-bold">Provider:</div>
+                <div class="text-sm opacity-50"><%= medical_record.creator.name %></div>
+              </div>
+            </div>
+            
+           </td>
+          <td class="action-cell">
+          <%= link_to 'View More', medical_record, class: 'btn btn-ghost btn-xs view-more-btn', data: {recordId: medical_record.id} %>
           </td>
         </tr>
       <% end %>
@@ -109,3 +126,65 @@
   <%= link_to 'Back to Medical Records', medical_records_path, class: "btn btn-ghost" %>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const toggle = document.getElementById('postToggle');
+  const selectColumns = document.querySelectorAll('.select-column');
+  const table = document.getElementById('medicalRecordsTable');
+
+  // Function to show select columns
+  function showSelectColumns() {
+  selectColumns.forEach(column => column.classList.remove('hidden-placeholder'));  // Show the column
+  }
+
+  // Function to hide select columns
+  function hideSelectColumns() {
+   selectColumns.forEach(column => column.classList.add('hidden-placeholder'));// Hide the column
+  }
+
+  // Initially hide the select columns
+  hideSelectColumns();
+
+  toggle.addEventListener('change', function() {
+    if (this.checked) {
+      showSelectColumns();
+      changeButtonsToSharePost();
+    } else {
+      hideSelectColumns();
+      revertButtonsToViewMore();
+    }
+  });
+
+  function changeButtonsToSharePost() {
+    const buttons = table.querySelectorAll('.view-more-btn');
+    buttons.forEach(function(button) {
+      button.textContent = 'Share Post';
+      // Remove 'btn-ghost' and add 'btn-active' and 'btn-primary'
+      button.classList.remove('btn-ghost');
+      button.classList.add('btn-active', 'btn-primary');
+      // Update the button's click event or link to share the post
+      button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const recordId = this.dataset.recordId;
+        // Implement the logic to share the post for the selected medical record
+        console.log('Share post for record:', recordId);
+      });
+    });
+  }
+
+  function revertButtonsToViewMore() {
+    const buttons = table.querySelectorAll('.view-more-btn');
+    buttons.forEach(function(button) {
+      button.textContent = 'View More';
+      // Remove 'btn-active' and 'btn-primary', add 'btn-ghost'
+      button.classList.remove('btn-active', 'btn-primary');
+      button.classList.add('btn-ghost');
+      // Update the button's link back to the original view more link
+      const recordId = button.dataset.recordId;
+      button.href = `/medical_records/${recordId}`;
+    });
+  }
+});
+
+
+</script>

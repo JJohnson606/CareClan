@@ -10,6 +10,7 @@
     "chartkick": "^5.0.1",
     "daisyui": "^3.5.1",
     "esbuild": "^0.19.0",
+    "fusioncharts": "^3.23.0",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3",
     "tinymce": "^6.6.2"

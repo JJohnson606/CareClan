@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'home/chartview'
   root "welcome#index"
   resources :medical_records
   resources :approvals

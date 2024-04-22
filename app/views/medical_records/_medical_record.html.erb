@@ -1,7 +1,67 @@
-<!-- views/medical_records/_medical_record.html.erb -->
-<div class="medical-record-details">
-  <h3><%= @medical_record.record_type.titleize %></h3>
-  <p>Date: <%= @medical_record.record_date.strftime("%B %d, %Y") rescue 'Not specified' %></p>
+<div class="medical-record-details p-6 bg-white rounded-lg shadow-md">
+  <!-- Flex container for the title and button -->
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-xl font-semibold"><%= @medical_record.record_type.titleize %></h3>
+    <!-- Create Post Button -->
+    <% unless controller_name == 'posts' && action_name == 'show' %>
+      <label for="create-post-modal" class="btn btn-primary">Create Post</label>
+      <input type="checkbox" id="create-post-modal" class="modal-toggle" />
+      <div class="modal modal-middle">
+        <div class="modal-box w-full max-w-md mx-auto">
+          <h3 class="text-lg font-bold text-center">Create a New Post</h3>
+          <%= render partial: 'posts/form', locals: { post: Post.new(medical_record: @medical_record) } %>
+          <label for="create-post-modal" class="btn btn-outline btn-accent mt-4">Close</label>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+
+  <!-- Display patient information with standardized avatar -->
+  <div class="flex justify-between">
+    <div class="card flex-1 m-2 bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex items-center">
+          <div class="avatar">
+            <div class="mask mask-squircle w-12 h-12">
+              <% if @medical_record.patient.profile_picture? %>
+                <%= image_tag(@medical_record.patient.profile_picture, class: "w-full h-full object-cover rounded-full") %>
+              <% else %>
+                <img src="default_profile.png" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
+              <% end %>
+            </div>
+          </div>
+          <p class="font-bold ml-2"><%= @medical_record.patient.name %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Display doctor information with standardized avatar -->
+    <div class="card flex-1 m-2 bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex items-center">
+          <div class="avatar">
+            <div class="mask mask-squircle w-12 h-12">
+              <% if @medical_record.creator.profile_picture? %>
+                <%= image_tag(@medical_record.creator.profile_picture, class: "w-full h-full object-cover rounded-full") %>
+              <% else %>
+                <img src="default_profile.png" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
+              <% end %>
+            </div>
+          </div>
+          <p class="font-bold ml-2">Ordered by: <%= @medical_record.creator.name %></p>
+          <div>
+           
+          <p class="font-mono italic text-sm" id="phone_number"><i class="fas fa-phone-alt mr-2"></i>555-217-7777<p>
+            
+          <p class="font-mono italic text-sm" id="address"> <i class="fas fa-map-marker-alt mr-2"></i>123 Main St, Anytown, CA 90210</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="font-mono italic text-sm">Date: <%= @medical_record.record_date.strftime("%B %d, %Y") rescue 'Not specified' %></p>
 
   <!-- Determine which partial to render based on the record type -->
   <% case @medical_record.record_type %>
@@ -26,7 +86,4 @@
   <% end %>
 
   <!-- Notes Section -->
-
-
-  <p>Patient: <%= @medical_record.patient.name %></p>
 </div>
