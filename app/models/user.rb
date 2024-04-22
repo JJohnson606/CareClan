@@ -35,6 +35,15 @@ class User < ApplicationRecord
  has_many :patients, class_name: 'User', foreign_key: 'healthcare_provider_id'
  has_many :medical_records_as_creator, foreign_key: 'created_by_id', class_name: 'MedicalRecord', dependent: :destroy
 
+ def self.ransackable_attributes(auth_object = nil)
+       %w[name email role] 
+     end
+   
+     # Defined which associations are ransackable
+     def self.ransackable_associations(auth_object = nil)
+       %w[posts comments medical_records_as_patient medical_records_as_creator]
+     end
+
  # Enum for role to distinguish between different types of users
  enum role: { patient: 0, healthcare_professional: 1, clan_poa: 2, clan_non_poa: 3, family_friend: 4 }
  # Added scope for patients

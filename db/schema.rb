@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_07_033122) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_19_192105) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -62,6 +62,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_07_033122) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "parent_id"
+    t.integer "replies_count", default: 0, null: false
+    t.integer "cached_votes_total", default: 0, null: false
+    t.integer "cached_votes_score", default: 0, null: false
+    t.integer "cached_votes_up", default: 0, null: false
+    t.integer "cached_votes_down", default: 0, null: false
+    t.integer "cached_weighted_score", default: 0, null: false
+    t.integer "cached_weighted_total", default: 0, null: false
+    t.float "cached_weighted_average", default: 0.0, null: false
+    t.integer "cached_vote_diff", default: 0
     t.index ["author_id"], name: "index_comments_on_author_id"
     t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
@@ -119,7 +128,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_07_033122) do
     t.integer "cached_weighted_score", default: 0
     t.integer "cached_weighted_total", default: 0
     t.float "cached_weighted_average", default: 0.0
+    t.string "title"
+    t.integer "comments_count", default: 0, null: false
+    t.integer "cached_vote_diff", default: 0
     t.index ["author_id"], name: "index_posts_on_author_id"
+    t.index ["title"], name: "index_posts_on_title"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -1,23 +1,30 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :edit, :update,:destroy, :approve, :disapprove]
+  before_action :set_post, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    # Starting a Ransack search based on query parameters `q`
+  @q = Post.ransack(params[:q])
+  @posts = @q.result(distinct: true).includes(:author) # assuming you want to show the author and avoid N+1 queries
+
+  # Optional: Paginate the results
+  @posts = @posts.page(params[:page])
   end
 
   # GET /posts/1 or /posts/1.json
   def show
-     @post = Post.find(params[:id])
-     @approval_rating = @post.approval_rating
-     @medical_record = @post.medical_record
-     @voters_up = User.includes(:votes).where(votes: { votable: @post, vote_flag: true })
-     @voters_down = User.includes(:votes).where(votes: { votable: @post, vote_flag: false })
+    @post = Post.find(params[:id])
+    @comments = sort_comments # Only top-level comments
+    @approval_rating = @post.approval_rating
+    @medical_record = @post.medical_record
+    @voters_up = User.includes(:votes).where(votes: { votable: @post, vote_flag: true })
+    @voters_down = User.includes(:votes).where(votes: { votable: @post, vote_flag: false })
   end
 
   # GET /posts/new
   def new
     @post = Post.new
+    @medical_record = MedicalRecord.find(params[:medical_record_id]) if params[:medical_record_id].present?
   end
 
   # GET /posts/1/edit
@@ -71,15 +78,26 @@ class PostsController < ApplicationController
     redirect_back(fallback_location: root_path)
   end
 
+  def sort_comments
+    # Initialize a Ransack search on comments of the post
+    @q = @post.comments.ransack(params[:q])
+    @comments = @q.result(distinct: true)
+  
+    # Log the sorted comments
+    Rails.logger.debug "Sorted Comments: #{@comments.to_a}"
+    @comments
+  end
+  
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def post_params
-      params.require(:post).permit(:author_id, :body, :image, :trusted)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_post
+    @post = Post.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def post_params
+    params.require(:post).permit(:title, :author_id, :body, :image, :trusted, :medical_record_id)
+  end
 end

@@ -1,33 +1,80 @@
+<!-- views/comments/_comment.html.erb -->
+<style>
+  /* Base styles for all cards */
+  .comment-card {
+    border: 1px solid #ccc; /* Adds a subtle border to the card */  
+    margin-bottom: 10px; /* Spacing between cards */
+  }
 
-<div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
-  <!-- Commenter Profile Picture -->
-  <figure class="flex-shrink-0 p-4">
-    <% if comment.author.profile_picture.present? %>
-      <%= image_tag comment.author.profile_picture, alt: "Profile Picture", class: "rounded-full w-24 h-24 object-cover" %>
-    <% else %>
-      <%= image_tag "default_profile_picture.png", alt: "Default Profile Picture", class: "rounded-full w-24 h-24 object-cover" %>
-    <% end %>
-  </figure>
+  /* Alternating background colors */
+  .comment-card:nth-child(odd) {
+    background-color: #f9f9f9; /* Light grey for odd cards */
+  }
 
-  <!-- Comment Content -->
-  <div class="card-body flex-grow">
-    <h2 class="card-title">Comment by <%= comment.author.name %></h2>
-    <p><%= comment.body %></p>
+  .comment-card:nth-child(even) {
+    background-color: #ffffff; /* White for even cards */
+  }
 
-    <!-- Additional Comment Details -->
-    <p><strong>On Post:</strong> <%= comment.post.body %></p>
-    <p><strong>By Poster:</strong> <%= comment.post.author.name %></p>
+  /* Styling for nested comments */
+  .nested-comments .comment-card {
+    border-left: 2px solid #ccc;  
+    padding-left: 20px; /* Offset for nested cards */
+  }
 
-    <!-- Actions, like reply or edit, can go here -->
-    <div class="card-actions justify-end">
-      <!-- TODO: Implement Reply functionality -->
-      <!-- A Future link styled as a button ('btn btn-primary') to reply to the comment.
-           - It passes the comment's ID as a 'parent_id' parameter to the path helper. -->
-     
-      <!-- TODO: Implement Edit functionality for comments if the user is authorized -->
-      
-      <!-- TODO: Consider adding Delete functionality for comments with proper authorization and confirmation dialog -->
-     
+</style>
+<!-- Ensure that each nested comment is wrapped with the appropriate classes -->
+<li class="timeline-item card comment-card">
+  <div class="card-body">
+    <div class="flex items-start gap-4">
+      <div class="avatar">
+        <div class="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+          <% if comment.author.profile_picture.present? %>
+            <%= image_tag comment.author.profile_picture, alt: "#{comment.author.name}'s profile picture", class: "rounded-full" %>
+          <% else %>
+            <%= image_tag "default_profile_picture.png", alt: "Default profile picture", class: "rounded-full" %>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex-grow">
+        <h4 class="font-bold"><%= comment.author.name %></h4>
+        <time class="font-mono italic text-sm"><%= time_ago_in_words(comment.created_at) %> ago</time>
+        <p><%= comment.body %></p>
+      </div>
     </div>
+    <!-- Comment Actions -->
+    <div class="flex justify-between items-center mt-2">
+      <!-- Vote Buttons -->
+      <div class="flex space-x-2">
+        <%= button_to approve_comment_path(comment), method: :put, class: "btn btn-primary btn-xs" do %>
+          <i class="fa-solid fa-arrow-up"></i>
+        <% end %>
+        <%= button_to disapprove_comment_path(comment), method: :put, class: "btn btn-accent btn-xs" do %>
+          <i class="fa-solid fa-arrow-down"></i>
+        <% end %>
+        <%= comment.approval_rating %>
+      </div>
+      <!-- Reply Button -->
+      <label for="reply-modal-<%= comment.id %>" class="btn btn-xs btn-secondary cursor-pointer">
+        <i class="fa-solid fa-reply"></i> Reply
+      </label>
+    </div>
+    <!-- Modal for reply -->
+    <input type="checkbox" id="reply-modal-<%= comment.id %>" class="modal-toggle" />
+    <div class="modal">
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">Reply to <%= comment.author.name %></h3>
+        <%= render partial: 'comments/form', locals: { post: @post, comment: Comment.new(parent_id: comment.id) } %>
+        <label for="reply-modal-<%= comment.id %>" class="btn btn-outline btn-accent">Close</label>
+      </div>
+      <label for="reply-modal-<%= comment.id %>" class="modal-backdrop cursor-pointer"></label>
+    </div>
+    <!-- Nested Comments -->
+    <% if comment.replies.any? %>
+      <ul class="nested-comments ml-10 mt-4">
+        <% comment.replies.each do |child_comment| %>
+          <%= render 'comments/comment', comment: child_comment %>
+        <% end %>
+      </ul>
+    <% end %>
   </div>
-</div>
+</li>

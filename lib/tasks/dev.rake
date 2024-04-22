@@ -11,30 +11,96 @@ task sample_data: :environment do
   puts "Cleared all existing data."
 
   # Create predefined users
-  alice = User.create!(email: "alice@example.com", password: "password", name: "Alice Smith", role: 0, trust: true, profile_picture: "Alice.jpeg")
+  alice = User.create!(email: "alice@example.com", password: "password", name: "Alice Smith", role: 3, trust: true, profile_picture: "Alice.jpeg")
   bob = User.create!(email: "bob@example.com", password: "password", name: "Bob Smith", role: 1, trust: true, profile_picture: "Bob.jpeg")
-  puts "Predefined users Alice and Bob created."
+  gary = User.create!(email: "gary@example.com", password: "password", name: "Gary Nixon", role: 0, trust: true, profile_picture: "Gary.jpeg")
+  puts "Predefined users Alice, Gary, and Bob created."
+
+  doctors = [
+    { email: "radiologist@example.com", password: "password", name: "Dr. Ray Scan", role: 1, profile_picture: "Ray.jpeg" },
+    { email: "orthopedist@example.com", password: "password", name: "Dr. Jane Setter", role: 1, profile_picture: "Jane.jpeg" },
+    { email: "gp@example.com", password: "password", name: "Dr. Samuel Green", role: 1, profile_picture: "Samuel.jpeg" },
+    { email: "therapist@example.com", password: "password", name: "Dr. Alma Chavez", role: 1, profile_picture: "Alma.jpeg" }
+  ].map { |u| User.create!(u) }
+  puts "Doctor users created."
 
   # Create family and friends users
   family_and_friends = [
     { email: "carol@example.com", password: "password", name: "Carol Smith", role: 2, trust: false, profile_picture: "Carol.jpeg" },  # POA family member
     { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, profile_picture: "Doug.jpeg" },  # Non-POA family member
-    { email: "emily@example.com", password: "password", name: "Emily Johnson", role: 3, trust: false, profile_picture: "https://robohash.org/#{rand(9999)}" },
-    { email: "frank@example.com", password: "password", name: "Frank Brown", role: 3, trust: true, profile_picture: "https://robohash.org/#{rand(9999)}" },
-    { email: "grace@example.com", password: "password", name: "Grace Davis", role: 2, trust: false, profile_picture: "https://robohash.org/#{rand(9999)}" },
-    { email: "harry@example.com", password: "password", name: "Harry Wilson", role: 3, trust: true, profile_picture: "https://robohash.org/#{rand(9999)}" }
+    { email: "emily@example.com", password: "password", name: "Emily Johnson", role: 3, trust: false, profile_picture: "Emily.jpeg" },
+    { email: "frank@example.com", password: "password", name: "Frank Brown", role: 3, trust: true, profile_picture: "Frank.jpeg" },
+    { email: "grace@example.com", password: "password", name: "Grace Davis", role: 2, trust: false, profile_picture: "Grace.jpeg" },
+    { email: "harry@example.com", password: "password", name: "Harry Wilson", role: 3, trust: true, profile_picture: "Harry.jpeg" },
+    { email: "irene@example.com", password: "password", name: "Irene Morgan", role: 2, trust: false, profile_picture: "Irene.jpeg" },
+    { email: "jack@example.com", password: "password", name: "Jack Lee", role: 3, trust: true, profile_picture: "Jack.jpeg" },
+    { email: "kelly@example.com", password: "password", name: "Kelly Young", role: 3, trust: false, profile_picture: "Kelly.jpeg" },
+    { email: "liam@example.com", password: "password", name: "Liam Davis", role: 2, trust: true, profile_picture: "Liam.jpeg" }
     # Family and friends data...
   ].map { |u| User.create!(u) }
 
   valid_family_and_friends = family_and_friends.select(&:persisted?)
   puts "#{valid_family_and_friends.size} valid family and friends users created."
 
+  xray = MedicalRecord.create!(
+    record_type: 'imaging',
+    record_date: Date.today - 30.day,
+    notes: { type: "X-ray", findings: "The X-ray image reveals a clear fracture in the metacarpal bone. 
+       This includes a transverse fracture of the fourth metacarpal, which is characterized by a break that extends horizontally across the bone shaft.
+       The fracture line is sharp and well-defined, indicating a recent and acute injury. 
+       There is slight displacement and angulation of the fracture fragments, suggesting that some movement of the bone fragments has occurred since the injury. No other bone abnormalities or associated injuries,
+       such as additional fractures or dislocations in adjacent bones, are visible. Soft tissue swelling is noted around the fracture site, which is consistent with trauma.",
+       interpretation: "The radiographic findings confirm the clinical suspicion of a metacarpal fracture. 
+       The nature of the fracture—transverse with slight displacement—suggests that significant force was applied across the metacarpal, 
+       typical of direct trauma or an impact injury. Given the displacement, orthopedic consultation is recommended for possible reduction,
+       where the bone fragments will be realigned. This is crucial to ensure proper healing and to restore the normal anatomical structure of the hand,
+       thereby preventing future complications such as malunion (improper healing leading to deformity) or impaired hand function." }.to_json,
+    patient_id: gary.id,
+    created_by_id: doctors[0].id
+  )
+  
+  diagnosis = MedicalRecord.create!(
+    record_type: 'diagnosis',
+    record_date: Date.today - 30.day,
+    notes: { condition: "Fractured Hand", symptoms: "Pain and swelling", recommended_treatment: "Orthopedic consultation and casting" }.to_json,
+    patient_id: gary.id,
+    created_by_id: doctors[1].id
+  )
+  
+  # Step 2: Treatment plan and prescription
+  treatment_plan = MedicalRecord.create!(
+    record_type: 'treatment_plan',
+    record_date: Date.today - 23.day,
+    notes: { treatment: "Casting and pain management", duration: "6 weeks", follow_up: "Regular check-ups and potential physical therapy" }.to_json,
+    patient_id: gary.id,
+    created_by_id: doctors[1].id
+  )
+  
+  prescription = MedicalRecord.create!(
+    record_type: 'prescription',
+    record_date: Date.today - 23.day,
+    notes: { medication_name: "Ibuprofen", dosage: "400 mg every 8 hours", duration: "2 weeks", purpose: "Manage pain and inflammation" }.to_json,
+    patient_id: gary.id,
+    created_by_id: doctors[2].id
+  )
+  
+  # Step 3: Follow-up and rehabilitation
+  physical_therapy = MedicalRecord.create!(
+    record_type: 'treatment_plan',
+    record_date: Date.today + 42.days,
+    notes: { treatment: "Physical Therapy", duration: "4 weeks", follow_up: "Re-assess functional recovery" }.to_json,
+    patient_id: gary.id,
+    created_by_id: doctors[3].id
+  )
+  
+
   # Generate medical records and posts
   User.where(role: :patient).each do |patient|
-    20.times do
+    10.times do
       record_type = MedicalRecord.record_types.keys.sample
-      record_date = Faker::Date.between(from: 2.years.ago, to: Date.today)
+      record_date = Faker::Date.between(from: 2.years.ago, to: Date.today - 14.days)
       notes = ""
+      title = Faker::Lorem.sentence(word_count: 3) 
 
       case record_type
       when 'diagnosis'
@@ -197,40 +263,89 @@ task sample_data: :environment do
       puts "Medical record #{record.id} (#{record.record_type}) created for patient #{patient.name}."
 
       post = Post.create!(
+        title: title,
         body: Faker::Lorem.sentence(word_count: 12),
         author_id: patient.id,
         medical_record_id: record.id
       )
       puts "Post #{post.id} created linked to medical record #{record.id}."
+# Generate primary comments
 
-      valid_family_and_friends.each do |family_member|
-        Comment.create!(
-          body: Faker::Lorem.sentence(word_count: 8),
-          author_id: family_member.id,
-          post_id: post.id
-        )
-        puts "#{family_member.name} commented on post #{post.id}."
+  # Recursive method to generate nested comments
+  def generate_nested_comments(commenter, post, parent_id = nil, depth = 0, max_depth = 5)
+    return if depth >= max_depth
+
+    num_comments = rand(1..8) # Each comment can have 1 to 3 replies
+    num_comments.times do
+      comment = Comment.create!(
+        body: Faker::Lorem.sentence(word_count: rand(5..30)),
+        author: commenter.sample,
+        post: post,
+        parent_id: parent_id
+      )
+      puts "#{comment.author.name} commented on post #{post.id}, depth #{depth + 1}"
+
+      # Recursively create replies to the current comment
+      if rand > 0.3 # 70% chance to continue creating deeper comments
+        generate_nested_comments(commenter, post, comment.id, depth + 1, max_depth)
       end
     end
   end
+  5.times do |i|
+    commenter = valid_family_and_friends.sample
+    comment = Comment.create!(
+      body: Faker::Lorem.sentence(word_count: 40),
+      author_id: commenter.id,
+      post_id: post.id
+    )
+    puts "#{commenter.name} commented on post #{post.id}."
 
-
-  # Generate votes
-  Post.find_each do |post|
-    valid_family_and_friends.each do |family_member|
-      next if post.voted_on_by?(family_member)
-
-      vote_type = [true, false].sample
-      action = vote_type ? :likes : :dislikes
-
-      family_member.send(action, post)
-      puts "#{family_member.name} #{vote_type ? 'approved' : 'disapproved'} post #{post.id}." if post.vote_registered?
+    # Generate nested reply comments up to 10 levels deep
+    depth = 0
+    while depth < 10 && [true, false].sample
+      reply_commenter = valid_family_and_friends.sample
+      comment = Comment.create!(
+        body: Faker::Lorem.sentence(word_count: 30),
+        author_id: reply_commenter.id,
+        post_id: post.id,
+        parent_id: comment.id
+      )
+      puts "#{reply_commenter.name} replied to comment #{comment.id} on post #{post.id}."
+      depth += 1
     end
-  rescue StandardError => e
-    puts "An error occurred for family_member #{family_member.name} on post #{post.id}: #{e.message}"
   end
+end
+end
 
-  ending = Time.now
-  puts "Sample data creation completed in #{ending - starting} seconds."
-  puts "Summary: #{User.count} users, #{Post.count} posts, #{Comment.count} comments, #{ActsAsVotable::Vote.count} votes, #{MedicalRecord.count} medical records."
+# Generate votes
+Post.find_each do |post|
+valid_family_and_friends.each do |family_member|
+  next if post.voted_on_by?(family_member)
+
+  vote_type = [true, false].sample
+  action = vote_type ? :likes : :dislikes
+
+  family_member.send(action, post)
+  puts "#{family_member.name} #{vote_type ? 'approved' : 'disapproved'} post #{post.id}." if post.vote_registered?
+end
+
+rescue StandardError => e
+puts "An error occurred for family_member #{family_member.name} on post #{post.id}: #{e.message}"
+end
+
+Comment.find_each do |comment|
+  valid_family_and_friends.each do |family_member|
+    next if comment.voted_on_by?(family_member)
+
+    vote_type = [true, false].sample
+    action = vote_type ? :likes : :dislikes
+
+    family_member.send(action, comment)
+    puts "#{family_member.name} #{vote_type ? 'approved' : 'disapproved'} comment #{comment.id}." if comment.vote_registered?
+  end
+end
+
+ending = Time.now
+puts "Sample data creation completed in #{(ending - starting).round(2)} seconds."
+puts "Summary: #{User.count} users, #{Post.count} posts, #{Comment.count} comments, #{ActsAsVotable::Vote.count} votes, #{MedicalRecord.count} medical records."
 end

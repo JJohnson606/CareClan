@@ -1,12 +1,13 @@
 <!--views/layouts/_nav.html.erb -->
-<div class="navbar bg-primary">
+<div class="navbar bg-primary text-white">
   <div class="flex-1">
-    <%= link_to 'Care Clan', user_signed_in? ? dashboard_path : root_path, class: "btn btn-ghost text-xl" %>
+    <%= image_tag "cclogo1.png", alt: "CareClan Logo", class: "w-10" %>
+    <%= link_to 'CareClan', user_signed_in? ? dashboard_path : root_path, class: "btn btn-ghost normal-case text-2xl tracking-wide font-semibold" %>
   </div>
   <div class="flex-none">
     <% if user_signed_in? %>
       <!-- Dropdown for user actions -->
-      <div class="dropdown dropdown-end">
+      <div class="dropdown dropdown-end text-black">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
           <% if @user.present? && @user.profile_picture.present? %>
             <%= image_tag @user.profile_picture, alt: "User profile picture", class: "w-10 rounded-full" %>
@@ -16,7 +17,7 @@
             <%= image_tag "default_profile_picture.png", alt: "Default profile picture", class: "w-10 rounded-full" %>
           <% end %>
         </div>
-        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-300 rounded-box w-52">
           <!-- Menu items -->
           <li>
           <select data-choose-theme>
@@ -25,7 +26,7 @@
           <option value="pink">Pink</option>
            </select>
            </li>
-          <li><%= link_to 'Dashboard', dashboard_path %> </li>
+          <li><%= link_to 'Dashboard', posts_path %> </li>
           <li><%= link_to 'Medical Records', medical_records_path %></li>
           <li><%= link_to "Edit Profile", edit_user_registration_path %></li>
           <li><%= link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %></li>
