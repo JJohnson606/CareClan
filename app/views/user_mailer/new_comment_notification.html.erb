@@ -1,0 +1,8 @@
+<!-- app/views/user_mailer/new_comment_notification.html.erb -->
+<h1>New Comment Notification</h1>
+<p>Hi <%= @user.email %>,</p>
+<p>A new comment has been posted on your post titled "<%= @post.title %>":</p>
+<blockquote>
+  <%= @message %>
+</blockquote>
+<p>Check it out at: <%= link_to 'View Comment', post_url(@post) %></p>
