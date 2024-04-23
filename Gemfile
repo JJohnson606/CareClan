@@ -111,6 +111,7 @@ group :development do
   gem "specs_to_readme"
   gem "web_git"
   gem 'bullet'
+  gem 'letter_opener', '~> 1.10'
 end
 
 group :development, :test do
@@ -123,3 +124,7 @@ group :test do
   gem "rspec-html-matchers"
   gem "webmock"
 end
+
+gem "sidekiq", "~> 7.2"
+
+gem "noticed", "~> 2.2"
