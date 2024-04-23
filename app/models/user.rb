@@ -23,6 +23,7 @@ class User < ApplicationRecord
   # Associations
   acts_as_voter # for liking/disliking posts
  # Associations common for all users
+ has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
  has_many :posts, foreign_key: 'author_id', dependent: :destroy
  has_many :comments, foreign_key: 'author_id', dependent: :destroy
  has_many :clan_memberships
@@ -78,5 +79,4 @@ class User < ApplicationRecord
  # Family friend-specific attributes
  attribute :relationship_to_patient, :string
  attribute :bio, :text # Could be serialized or linked to an interests table
-
 end
