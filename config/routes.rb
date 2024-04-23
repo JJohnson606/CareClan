@@ -1,3 +1,4 @@
+require "sidekiq/web"
 Rails.application.routes.draw do
   get 'home/chartview'
   root "welcome#index"
@@ -32,4 +33,5 @@ Rails.application.routes.draw do
 
   get 'dashboard', to: 'dashboard#index', as: 'dashboard'
 
+  mount Sidekiq::Web => '/sidekiq'
 end
