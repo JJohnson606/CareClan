@@ -1,5 +1,4 @@
 <!-- views/medical_records/_form.html.erb -->
-
 <%= form_with(model: medical_record, id: "medical_record_form") do |form| %>
   <% if medical_record.errors.any? %>
     <div class="alert alert-error">
@@ -13,6 +12,7 @@
       </div>
     </div>
   <% end %>
+
   <ul class="steps">
     <li class="step step-primary" data-step="1">Choose Patient</li>
     <li class="step" data-step="2">Choose Date</li>
@@ -40,18 +40,18 @@
       <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next</button>
     </div>
 
-   <!-- Step 3: Choose Record Type -->
-<div id="step-3" class="step-content" style="display: none;">
-  <div class="form-control">
-    <%= form.label :record_type, 'Record Type', class: "label" %>
-    <%= form.select :record_type, MedicalRecord.record_types.keys.map { |type| [type.titleize, type] }, {}, {class: "select select-bordered w-full max-w-xs", id: "medical_record_record_type"} %>
-  </div>
-  <div id="record-type-fields">
+    <!-- Step 3: Choose Record Type -->
+    <div id="step-3" class="step-content" style="display: none;">
+      <div class="form-control">
+        <%= form.label :record_type, 'Record Type', class: "label" %>
+        <%= form.select :record_type, MedicalRecord.record_types.keys.map { |type| [type.titleize, type] }, {}, {class: "select select-bordered w-full max-w-xs", id: "medical_record_record_type"} %>
+      </div>
+      <div id="record-type-fields">
+      </div>
+      <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Previous</button>
+      <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next</button>
     </div>
 
-    <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Previous</button>
-      <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next</button>
-     </div>
     <!-- Step 4: Record Creator -->
     <div id="step-4" class="step-content" style="display: none;">
       <div class="form-control">
@@ -89,15 +89,14 @@
     if (event.target.id === 'medical_record_record_type') {
       const recordType = event.target.value;
       fetch(`/medical_records/fields_partials/${recordType}`, {
-  headers: {
-    'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute("content")
-  }
-})
-.then(response => response.text())
-.then(html => {
-  document.getElementById('record-type-fields').innerHTML = html;
-});
-
+        headers: {
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute("content")
+        }
+      })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('record-type-fields').innerHTML = html;
+      });
     }
   });
 
