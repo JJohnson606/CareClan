@@ -11,5 +11,11 @@ class UserMailer < ApplicationMailer
       @post = post
       mail(to: @user.email, subject: 'New Post Published')
     end
+
+    def new_medical_record_notification(user, medical_record)
+      @user = user
+      @medical_record = medical_record
+      mail(to: @user.email, subject: 'New Medical Record Added')
+    end
   end
   
