@@ -1,0 +1,13 @@
+<%= form_for @clan, url: clan_path(@clan), method: :patch do |f| %>
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <div>
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+  </div>
+  <div>
+    <%= f.submit "Update Clan" %>
+  </div>
+<% end %>
