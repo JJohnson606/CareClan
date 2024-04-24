@@ -1,5 +1,5 @@
 class ClansController < ApplicationController
-    before_action :set_clan, only: [:show, :edit, :update, :show_members, :trust_user, :untrust_user]
+    before_action :set_clan, only: [:show, :edit, :update, :destroy, :show_members, :trust_user, :untrust_user]
   
     def index
       @clans = Clan.all
@@ -25,6 +25,14 @@ class ClansController < ApplicationController
         render :edit
       end
     end
+
+    def destroy
+        @clan.destroy
+        respond_to do |format|
+          format.html { redirect_to clans_url, notice: 'Clan was successfully destroyed.' }
+          format.json { head :no_content }
+        end
+      end
 
     def toggle_trust
         @user = User.find(params[:user_id])
