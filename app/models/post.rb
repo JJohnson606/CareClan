@@ -27,6 +27,8 @@ class Post < ApplicationRecord
   belongs_to :author, class_name: 'User', foreign_key: 'author_id' # author association
   belongs_to :medical_record, optional: true  # medical record association optional
   has_many :comments, dependent: :destroy # comments association
+  has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
+  has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
   acts_as_votable cacheable_strategy: :update_columns # for liking/disliking posts
 
   # Defined which attributes are searchable/sortable with Ransack

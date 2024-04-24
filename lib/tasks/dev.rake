@@ -66,34 +66,52 @@ task sample_data: :environment do
     doctor.profile_picture.attach(io: File.open(doc_image_path), filename: File.basename(doc_image_path), content_type: 'image/jpeg') if File.exist?(doc_image_path)
     doctor  # Return the doctor object to store in the array
   end
+   
+   puts "Predefined doctors created with profile pictures."
+
+  relationships = [
+    "aunt", "uncle", "cousin", "grandson", "granddaughter", 
+    "niece", "nephew", "grandfather", "grandmother", 
+    "stepfather", "stepmother", "half-brother", "half-sister", 
+    "son-in-law", "daughter-in-law", "brother-in-law", "sister-in-law", 
+    "mother-in-law", "father-in-law", "godfather", "godmother", 
+    "foster parent", "foster child", "family friend", "long-time neighbor"
+    ]
 
   # Create family and friends users
   family_and_friends = [
     { email: "carol@example.com", password: "password", name: "Carol Smith", role: 2, trust: false, image_file: "Carol.jpeg" },  # POA family member
-    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 2, trust: true, image_file: "Doug.jpeg" },  # Non-POA family member
+    { email: "doug@example.com", password: "password", name: "Doug Smith", role: 3, trust: true, image_file: "Doug.jpeg" },  # Non-POA family member
     { email: "emily@example.com", password: "password", name: "Emily Johnson", role: 3, trust: false, image_file: "Emily.jpeg" },
     { email: "frank@example.com", password: "password", name: "Frank Brown", role: 3, trust: true, image_file: "Frank.jpeg" },
     { email: "grace@example.com", password: "password", name: "Grace Davis", role: 2, trust: false, image_file: "Grace.jpeg" },
     { email: "harry@example.com", password: "password", name: "Harry Wilson", role: 3, trust: true, image_file: "Harry.jpeg" },
-    { email: "irene@example.com", password: "password", name: "Irene Morgan", role: 2, trust: false, image_file: "Irene.jpeg" },
+    { email: "irene@example.com", password: "password", name: "Irene Morgan", role: 3, trust: false, image_file: "Irene.jpeg" },
     { email: "jack@example.com", password: "password", name: "Jack Lee", role: 3, trust: true, image_file: "Jack.jpeg" },
     { email: "kelly@example.com", password: "password", name: "Kelly Young", role: 3, trust: false, image_file: "Kelly.jpeg" },
     { email: "liam@example.com", password: "password", name: "Liam Davis", role: 2, trust: true, image_file: "Liam.jpeg" }   # Family and friends data...
   ].map do |person_data|
     person_image_path = Rails.root.join('app', 'assets', 'images', person_data[:image_file])
-    person = User.create(email: person_data[:email], password: person_data[:password], name: person_data[:name], role: person_data[:role], trust: person_data[:trust])
+    person = User.create(email: person_data[:email], password: person_data[:password], name: person_data[:name], role: person_data[:role], trust: person_data[:trust], relationship_to_patient: relationships.sample)
     if File.exist?(person_image_path)
       person.profile_picture.attach(io: File.open(person_image_path), filename: File.basename(person_image_path), content_type: 'image/jpeg')
     end
     person  # Return the person object to store in the array
   end
+  
+   # Clan creation
+   example_clan = Clan.find_or_create_by!(name: "Nixon Clan")
+   puts "Clan 'Nixon Clan' either found or created."
 
-  # Create Sample Clans
-  example_clan = Clan.create!(name: "Nixon Clan")
-  ClanMembership.create!(clan: example_clan, user: alice, role: "member")
-  ClanMembership.create!(clan: example_clan, user: bob, role: "member")
-  ClanMembership.create!(clan: example_clan, user: gary, role: "admin")
-  puts "Clans and clan memberships created."
+   # Adding users to the clan
+   family_and_friends.each do |user|
+     ClanMembership.find_or_create_by!(clan: example_clan, user: user, role: "member")
+   end
+
+   # Setting Alice, Bob, and Gary with specific roles
+   ClanMembership.find_or_create_by!(clan: example_clan, user: gary, role: "admin")  # Gary as admin
+
+   puts "Gary set as admin, others added as members in 'Nixon Clan'."
 
   xray = MedicalRecord.create!(
     record_type: 'imaging',

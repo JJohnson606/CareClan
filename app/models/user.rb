@@ -2,17 +2,18 @@
 #
 # Table name: users
 #
-#  id                     :uuid             not null, primary key
-#  email                  :string           default(""), not null
-#  encrypted_password     :string           default(""), not null
-#  reset_password_token   :string
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  role                   :integer
-#  trust                  :boolean
-#  name                   :string
+#  id                      :uuid             not null, primary key
+#  email                   :string           default(""), not null
+#  encrypted_password      :string           default(""), not null
+#  reset_password_token    :string
+#  reset_password_sent_at  :datetime
+#  remember_created_at     :datetime
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  role                    :integer
+#  trust                   :boolean
+#  name                    :string
+#  relationship_to_patient :string
 #
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
@@ -23,6 +24,7 @@ class User < ApplicationRecord
   # Associations
   acts_as_voter # for liking/disliking posts
  # Associations common for all users
+ has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
  has_many :posts, foreign_key: 'author_id', dependent: :destroy
  has_many :comments, foreign_key: 'author_id', dependent: :destroy
  has_many :clan_memberships
@@ -51,6 +53,16 @@ class User < ApplicationRecord
  scope :patients, -> { where(role: :patient) }
  # Added scope for healthcare professionals
  scope :healthcare_professionals, -> { where(role: :healthcare_professional) }
+
+  # Check if the user has admin rights
+  def admin?
+    clan_poa? || patient?
+  end
+
+  # Check if the user is a regular member
+  def member?
+    clan_non_poa? || healthcare_professional?
+  end
  
  # Validations
  # TODO: Add validation for email format
@@ -78,5 +90,4 @@ class User < ApplicationRecord
  # Family friend-specific attributes
  attribute :relationship_to_patient, :string
  attribute :bio, :text # Could be serialized or linked to an interests table
-
 end
