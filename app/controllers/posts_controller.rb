@@ -3,22 +3,36 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    # Starting a Ransack search based on query parameters `q`
-  @q = Post.ransack(params[:q])
-  @posts = @q.result(distinct: true).includes(:author, :comments) # show the author and avoid N+1 queries
-
-  # Optional: Paginate the results
-  @posts = @posts.page(params[:page])
+    @q = Post.ransack(params[:q])
+    @posts = @q.result(distinct: true).includes(:author, :image_attachment)
+    @posts = @posts.page(params[:page])
   end
+  
 
   # GET /posts/1 or /posts/1.json
   def show
-    @post = Post.find(params[:id])
+     def show
+      @post = Post.includes(
+        :image_attachment,
+        author: { profile_picture_attachment: :blob },
+        comments: [
+          { author: { profile_picture_attachment: :blob } },
+          { replies: [:author, { author: { profile_picture_attachment: :blob } }] }
+        ]
+      ).find(params[:id])
+      
     @comments = sort_comments # Only top-level comments
     @approval_rating = @post.approval_rating
     @medical_record = @post.medical_record
-    @voters_up = User.includes(:votes).where(votes: { votable: @post, vote_flag: true })
-    @voters_down = User.includes(:votes).where(votes: { votable: @post, vote_flag: false })
+    @voters_up = User.joins(:votes).where(votes: { votable: @post, vote_flag: true }).includes(:profile_picture_attachment)
+    @voters_down = User.joins(:votes).where(votes: { votable: @post, vote_flag: false }).includes(:profile_picture_attachment)
+  end
+
+    @comments = sort_comments # Only top-level comments
+    @approval_rating = @post.approval_rating
+    @medical_record = @post.medical_record
+    @voters_up = User.joins(:votes).where(votes: { votable: @post, vote_flag: true }).includes(:profile_picture_attachment)
+    @voters_down = User.joins(:votes).where(votes: { votable: @post, vote_flag: false }).includes(:profile_picture_attachment)
   end
 
   # GET /posts/new
@@ -81,7 +95,7 @@ class PostsController < ApplicationController
 
   def sort_comments
     # Initialize a Ransack search on comments of the post
-    @q = @post.comments.ransack(params[:q])
+    @q = @post.comments.includes(author: { profile_picture_attachment: :blob }).ransack(params[:q])
     @comments = @q.result(distinct: true)
   
     # Log the sorted comments
