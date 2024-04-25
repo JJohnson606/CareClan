@@ -2,13 +2,13 @@
 
 <div class="card bg-base-100 shadow-xl mb-4">
   <!-- Card Header -->
-  <div class="card-header flex items-center space-x-4 p-4">
+    <div class="card-header flex items-center space-x-4 p-4">
     <div class="avatar">
       <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-        <% if post.author.profile_picture.present? %>
+        <% if post.author.profile_picture.attached? %>
           <%= image_tag post.author.profile_picture, alt: "#{post.author.name}'s profile picture", class: "rounded-full" %>
         <% else %>
-          <img src="https://via.placeholder.com/150/000000/FFFFFF/?text=User" alt="Default Profile Picture" class="rounded-full">
+          <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="rounded-full">
         <% end %>
       </div>
     </div>
