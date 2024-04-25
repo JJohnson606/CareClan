@@ -55,7 +55,7 @@
                                     <% if medical_record.patient.profile_picture? %>
                                         <%= image_tag medical_record.patient.profile_picture, class: "w-full h-full object-cover rounded-full" %>
                                     <% else %>
-                                        <img src="/default-profile-picture.jpg" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
+                                        <img src="<%= asset_path('default_profile_picture.png') %>" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
                                     <% end %>
                                 </div>
                             </div>
