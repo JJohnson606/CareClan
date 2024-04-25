@@ -2,6 +2,14 @@
 task sample_data: :environment do
   starting = Time.now
 
+  start_date = 4.months.ago.to_date
+  end_date = Date.today
+
+  def random_date_between(start_date, end_date)
+    rand(start_date..end_date)
+  end
+
+
   # Clear out existing data
   ClanMembership.delete_all
   Clan.delete_all
@@ -100,7 +108,7 @@ task sample_data: :environment do
   end
   
    # Clan creation
-   example_clan = Clan.find_or_create_by!(name: "Nixon Clan")
+   example_clan = Clan.find_or_create_by!(name: "Gary's Recovery Warriors", description: "An example clan for users sharing recovery stories and support for each other.")
    puts "Clan 'Nixon Clan' either found or created."
 
    # Adding users to the clan
@@ -169,7 +177,7 @@ task sample_data: :environment do
   User.where(role: :patient).each do |patient|
     10.times do
       record_type = MedicalRecord.record_types.keys.sample
-      record_date = Faker::Date.between(from: 2.years.ago, to: Date.today - 14.days)
+      record_date = record_date = random_date_between(start_date, end_date)
       notes = ""
       title = Faker::Lorem.sentence(word_count: 3) 
 
@@ -333,9 +341,57 @@ task sample_data: :environment do
       )
       puts "Medical record #{record.id} (#{record.record_type}) created for patient #{patient.name}."
 
+      sample_post_titles = [
+  "I'm recovering well",
+  "Just received a new medical record",
+  "Feeling great today but my condition is acting up a bit",
+  "Update on my health journey",
+  "Reflecting on my recovery process",
+  "New health update from today's visit",
+  "Challenges I faced in recovery today",
+  "Good news from today's doctor visit!",
+  "A minor setback, but staying positive",
+  "Feeling hopeful after today's appointment",
+  "A day in my recovery journey",
+  "Sharing a quick health update",
+  "Some thoughts on my health progress",
+  "My recovery status this week",
+  "Today's wins and challenges",
+  "Feeling different about my health today",
+  "Grateful for today's medical outcomes",
+  "Navigating the ups and downs of recovery",
+  "Today's reflections on health and wellness",
+  "My health story continues"
+]
+
+sample_post_bodies = [
+  "Today was a good day in terms of recovery, feeling a bit better and hopeful about the progress I'm making!",
+  "Received my latest medical records and it’s a mix of emotions, but I’m staying optimistic about the journey ahead.",
+  "Feeling great physically, though I did have a few moments where my symptoms flared up. Staying mindful of my health.",
+  "Reflecting on my recovery journey, it’s been a road of ups and downs but every step forward is worth celebrating.",
+  "Had a follow-up today and the news was encouraging. It's a long road but I'm ready for the challenges ahead.",
+  "Faced some challenges in my recovery process today, but I'm learning that resilience is key in this journey.",
+  "Got some good news from the doctor today which really lifted my spirits! Recovery is going well.",
+  "Today was tough, not going to lie. Had a bit of a setback, but I'm committed to my recovery.",
+  "Feeling hopeful after today’s medical consultation. It’s reassuring to see some positive progress in my health.",
+  "Just sharing a quick update: today was a good day, felt better than usual and managed to be quite active.",
+  "I spent some time today reflecting on my health progress. It's not easy, but I'm proud of how far I've come.",
+  "This week's recovery status has its highs and lows, but every small victory feels like a major win.",
+  "Today brought both wins and challenges, but I’m learning to celebrate the small victories on my path to recovery.",
+  "Felt different about my health today, some new symptoms appeared but staying in touch with my doctor about everything.",
+  "I'm truly grateful for the medical outcomes today, it's a relief to see some improvements in my health.",
+  "Navigating recovery isn’t straightforward, there are good days and hard days, but I'm committed to the process.",
+  "Today’s reflections are mixed. Health is a journey and I’m trying to stay positive through the tougher moments.",
+  "Sharing some thoughts on my health progress: it's a slow process, but I am seeing improvements and that's what matters.",
+  "Continuing my health story with cautious optimism after today’s check-up. Every day brings new learning and healing.",
+  "Thankful for everyone’s support as I share my ongoing health journey. Your encouragement means the world to me."
+]
+
+      
+      
       post = Post.create!(
-        title: title,
-        body: Faker::Lorem.sentence(word_count: 12),
+        title: sample_post_titles.sample,
+        body: sample_post_bodies.sample,
         author_id: patient.id,
         medical_record_id: record.id
       )
@@ -343,13 +399,37 @@ task sample_data: :environment do
       
     # Generate primary comments and nested replies for each post
     # Recursive method to generate nested comments
+    sample_comments = [
+      "Everyone at the office is thinking of you, Gary, and we are all hoping for a full and speedy recovery. Stay strong and positive!",
+      "It’s great to hear about your progress, Gary! Keep that positive attitude and keep moving forward. We believe in your strength and determination.",
+      "Gary, we're all cheering for you as you recover. Your resilience in this challenging time is truly an inspiration to everyone around you.",
+      "You’re doing an incredible job, Gary! Your progress is a testament to your grit and perseverance. Keep up the fantastic work!",
+      "Gary, every day brings you closer to a full recovery. Keep your spirits high and keep fighting. We're all rooting for your complete healing.",
+      "As you recover, Gary, remember that you’re surrounded by people who care deeply about you and are sending you positive energy and love.",
+      "Stay strong, Gary, and know that better days are coming. Your recovery journey is inspiring, and we're all here supporting you every step of the way.",
+      "Keep pushing through, Gary, even on the tough days. Your strength and courage don't go unnoticed. We're all behind you, cheering you on.",
+      "Seeing your progress, Gary, gives us all hope and joy. You’re more than halfway there, and we're excited for the day you're fully recovered!",
+      "Gary, your determination and resilience during this recovery process are nothing short of inspiring. Keep it up, and know we're with you!",
+      "You are doing so well, Gary! It’s amazing to see how far you’ve come in your recovery. Keep up the excellent progress!",
+      "We are all amazed by your strength and persistence, Gary. Your recovery is going splendidly, and it’s a joy to witness your improvements.",
+      "Gary, remember that it's okay to rest when you need to. Taking time to heal is just as important as pushing forward.",
+      "Your recovery is a marathon, not a sprint, Gary. Take all the time you need to heal, and know we're cheering for you.",
+      "Just a little message to remind you how strong and brave you are, Gary! Everyone is so proud of your progress and cheering for you.",
+      "Gary, your journey to recovery is an inspiration to us all. Continue to be strong and know that we’re all in your corner.",
+      "We know this recovery process isn’t easy, Gary, but your strength during this time is truly awe-inspiring. Keep going; you're doing great!",
+      "You’ve shown such bravery and strength during your recovery, Gary. Everyone is thinking of you and wishing you a swift and smooth recovery.",
+      "Every step you take towards your recovery is a step towards a brighter future, Gary. We're all supporting you in this journey.",
+      "Gary, your resilience in facing this recovery is admirable. You're not alone in this; we're all here for you, sending our best wishes."
+    ]
+    
+
     def generate_nested_comments(commenter, post, parent_id = nil, depth = 0, max_depth = 5)
       return if depth >= max_depth
-
+   
       num_comments = rand(1..8) # Each comment can have 1 to 8 replies
       num_comments.times do
         comment = Comment.create!(
-          body: Faker::Lorem.sentence(word_count: rand(5..30)),
+          body: sample_comments.sample,
           author: commenter.sample,
           post: post,
           parent_id: parent_id
@@ -362,11 +442,11 @@ task sample_data: :environment do
         end
       end
     end
-
+       
     5.times do |i|
       commenter = family_and_friends.sample
       comment = Comment.create!(
-        body: Faker::Lorem.sentence(word_count: 40),
+        body: sample_comments.sample,
         author_id: commenter.id,
         post_id: post.id
       )
@@ -377,7 +457,7 @@ task sample_data: :environment do
       while depth < 10 && [true, false].sample
         reply_commenter = family_and_friends.sample
         comment = Comment.create!(
-          body: Faker::Lorem.sentence(word_count: 30),
+          body: sample_comments.sample,
           author_id: reply_commenter.id,
           post_id: post.id,
           parent_id: comment.id
