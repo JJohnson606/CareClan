@@ -1,9 +1,31 @@
-<h1>All Clans</h1>
-<ul>
+<div class="grid grid-cols-1 gap-4">
   <% @clans.each do |clan| %>
-    <li>
-      <%= link_to clan.name, clan_path(clan) %>
-      - <%= clan.description %>
-    </li>
+    <div class="card glass overflow-hidden">
+      <div class="flex flex-wrap gap-4 p-4 bg-gray-100">
+        <% clan.users.each do |user| %>
+          <div class="avatar">
+            <div class="w-12 h-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+              <% if user.profile_picture.attached? %>
+                <%= image_tag user.profile_picture.variant(resize_to_fill: [48, 48]), alt: user.name, class: "rounded-full" %>
+              <% else %>
+                <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="rounded-full">
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <% if clan.users.size == 0 %>
+          <p>No members to display.</p>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">
+          <%= link_to clan.name, clan_path(clan), class: "text-xl" %>
+        </h2>
+        <p><%= clan.description %></p>
+        <div class="card-actions justify-end">
+          <%= link_to 'View Clan', clan_path(clan), class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
   <% end %>
-</ul>
+</div>
