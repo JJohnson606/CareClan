@@ -8,11 +8,13 @@ class ClansController < ApplicationController
     def show
       @clan = Clan.includes(:users).find(params[:id])
       @clan_memberships = @clan.clan_memberships.includes(:user)
+                         .sort_by { |membership| membership.user.role == "admin" ? 0 : 1 }
     end
   
     def show_members
       @clan = Clan.find(params[:id])
-      @members = @clan.users.includes(:profile_picture_attachment).order('name ASC')
+      @members = @clan.users.includes(:profile_picture_attachment)
+                           .sort_by { |user| user.role == "admin" ? 0 : 1 }
     end
   
     def edit
