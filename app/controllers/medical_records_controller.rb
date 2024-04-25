@@ -6,8 +6,8 @@ class MedicalRecordsController < ApplicationController
     @q = MedicalRecord.ransack(params[:q])
     case params[:search_type]
     when 'name'
-      # Joining with the User model where User is the creator of the medical record.
-      @q = MedicalRecord.joins(:creator).ransack(creator_name_cont: params[:search])
+      # Ensure creators and their profile pictures are preloaded
+      @q = MedicalRecord.joins(:creator).includes(creator: [:profile_picture_attachment]).ransack(creator_name_cont: params[:search])
     when 'date'
       @q = MedicalRecord.ransack(record_date_eq: params[:search])
     when 'record_type'
@@ -16,8 +16,14 @@ class MedicalRecordsController < ApplicationController
       @q = MedicalRecord.ransack(params[:q])
     end
   
-    @medical_records = @q.result(distinct: true).page(params[:page])
+    # Preload patients and their profile pictures as well as creators and their profile pictures
+    @medical_records = @q.result(distinct: true)
+    .includes(patient: [profile_picture_attachment: :blob], 
+              creator: [profile_picture_attachment: :blob])
+    .page(params[:page])
+
   end
+  
 
   # GET /medical_records/1 or /medical_records/1.json
   def show
