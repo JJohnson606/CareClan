@@ -1,11 +1,15 @@
-# This migration comes from noticed (originally 20231215190233)
 class CreateNoticedTables < ActiveRecord::Migration[6.1]
   def change
+    # Determine the key types for primary and foreign keys
     primary_key_type, foreign_key_type = primary_and_foreign_key_types
-    create_table :noticed_events, id: uuid do |t|
+
+    # Create the noticed_events table with a UUID primary key
+    create_table :noticed_events, id: :uuid do |t|
       t.string :type
-      t.belongs_to :record, polymorphic: true, type: foreign_key_type
-      if t.respond_to?(:jsonb)
+      t.references :record, polymorphic: true, type: foreign_key_type, index: true
+
+      # Use jsonb for params if supported, otherwise fallback to json
+      if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
         t.jsonb :params
       else
         t.json :params
@@ -14,10 +18,12 @@ class CreateNoticedTables < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    create_table :noticed_notifications, id: uuid do |t|
+    # Create the noticed_notifications table with a UUID primary key
+    create_table :noticed_notifications, id: :uuid do |t|
       t.string :type
-      t.belongs_to :event, null: false, type: uuid
-      t.belongs_to :recipient, polymorphic: true, null: false, type: uuid
+      t.references :event, type: :uuid, null: false, foreign_key: { to_table: :noticed_events }
+      t.references :recipient, polymorphic: true, type: :uuid, null: false
+
       t.datetime :read_at
       t.datetime :seen_at
 
@@ -27,11 +33,12 @@ class CreateNoticedTables < ActiveRecord::Migration[6.1]
 
   private
 
+  # This method determines the types to be used for primary and foreign keys based on the application's configuration
   def primary_and_foreign_key_types
     config = Rails.configuration.generators
     setting = config.options[config.orm][:primary_key_type]
     primary_key_type = setting || :primary_key
-    foreign_key_type = setting || :bigint
+    foreign_key_type = setting || (primary_key_type == :uuid ? :uuid : :bigint)
     [primary_key_type, foreign_key_type]
   end
 end
