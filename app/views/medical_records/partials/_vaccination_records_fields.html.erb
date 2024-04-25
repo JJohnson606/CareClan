@@ -1,0 +1,21 @@
+<!--- views/medical_records/partials/_vaccination_records_fields.html.erb -->
+<!-- Vaccination Records Fields -->
+<div class="form-control">
+  <%= form.label :vaccine, 'Vaccine', class: "label" %>
+  <%= form.text_field :vaccine, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :date, 'Vaccination Date', class: "label" %>
+  <%= form.date_field :date, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :lot_number, 'Lot Number', class: "label" %>
+  <%= form.text_field :lot_number, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :site, 'Vaccination Site', class: "label" %>
+  <%= form.text_field :site, class: "input input-bordered" %>
+</div>

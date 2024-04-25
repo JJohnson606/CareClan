@@ -3,6 +3,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.1'
 gem "simple_form"
+gem 'kaminari', '~> 1.2', '>= 1.2.2'
+gem 'chartkick'
+gem 'debug'
+gem 'ransack'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.7", ">= 7.0.7"
 
@@ -59,7 +64,7 @@ gem "image_processing", "~> 1.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  #gem "debug", platforms: %i[ mri mingw x64_mingw ]
 end
 
 group :development do
@@ -105,6 +110,8 @@ group :development do
   gem "rufo"
   gem "specs_to_readme"
   gem "web_git"
+  gem 'bullet'
+  gem 'letter_opener', '~> 1.10'
 end
 
 group :development, :test do
@@ -117,3 +124,7 @@ group :test do
   gem "rspec-html-matchers"
   gem "webmock"
 end
+
+gem "sidekiq", "~> 7.2"
+
+gem "noticed", "~> 2.2"

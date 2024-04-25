@@ -1,25 +1,86 @@
+<!-- app/views/devise/registrations/new.html.erb -->
 <h2>Sign up</h2>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="w-full max-w-lg px-8 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
+    <h2 class="text-center text-2xl font-extrabold">Sign up</h2>
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'space-y-6' }) do |f| %>
+      <%= f.error_notification %>
 
-  <div class="form-inputs">
-    <%= f.input :email,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" }%>
-    <%= f.input :password,
-                required: true,
-                hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: true,
-                input_html: { autocomplete: "new-password" } %>
-  </div>
+      <div class="form-inputs space-y-4">
+        <%= f.input :email, required: true, autofocus: true, input_html: { autocomplete: "email", class: 'input input-bordered w-full mb-4' } %>
+        <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html: { autocomplete: "new-password", class: 'input input-bordered w-full mb-4' } %>
+        <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password", class: 'input input-bordered w-full mb-4' } %>
+        
+        <!-- Additional fields for the user -->
+        <%= f.input :date_of_birth, as: :date, start_year: Date.today.year - 100, end_year: Date.today.year - 18, label: 'Date of Birth', input_html: { class: 'input input-bordered w-full mb-4' } %>
+        <%= f.input :phone_number, input_html: { class: 'input input-bordered w-full mb-4' } %>
+        <%= f.input :profile_picture, input_html: { class: 'input input-bordered w-full mb-4' } %>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
+        <!-- Role selection with proper styling -->
+        <%= f.input :role, collection: User.roles.keys.map { |role| [role.titleize, role] }, prompt: "Select your role", input_html: { id: 'user_role', class: 'select select-bordered w-full max-w-xs mb-4' } %>
+      </div>
+
+      <!-- Conditional fields based on the user's role -->
+      <div id="healthcare_professional_fields" class="hidden space-y-4">
+        <%= f.input :professional_license, input_html: { class: 'input input-bordered w-full' } %>
+        <%= f.input :specialization, input_html: { class: 'input input-bordered w-full' } %>
+        <%= f.input :work_institution, input_html: { class: 'input input-bordered w-full' } %>
+      </div>
+
+      <div id="patient_fields" class="hidden space-y-4">
+        <%= f.input :medical_conditions, input_html: { class: 'input input-bordered w-full' } %>
+        <%= f.input :emergency_contact, input_html: { class: 'input input-bordered w-full' } %>
+      </div>
+
+      <div id="family_friend_fields" class="hidden space-y-4">
+        <%= f.input :relationship_to_patient, input_html: { class: 'input input-bordered w-full' } %>
+        <%= f.input :bio, input_html: { class: 'input input-bordered w-full' } %>
+      </div>
+
+      <div class="form-actions mt-4">
+        <%= f.button :submit, "Sign up", class: "btn btn-primary w-full" %>
+      </div>
+    <% end %>
   </div>
-<% end %>
+</div>
 
 <%= render "devise/shared/links" %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the role select dropdown by its ID
+    var roleSelect = document.getElementById('user_role');
+
+    // Get the div elements that contain the conditional fields
+    var healthcareFields = document.getElementById('healthcare_professional_fields');
+    var patientFields = document.getElementById('patient_fields');
+    var familyFriendFields = document.getElementById('family_friend_fields');
+
+    // Function to hide all fields
+    function hideAllFields() {
+      healthcareFields.style.display = 'none';
+      patientFields.style.display = 'none';
+      familyFriendFields.style.display = 'none';
+    }
+
+    // Initially hide all fields
+    hideAllFields();
+
+    // Add event listener to role select dropdown
+    roleSelect.addEventListener('change', function() {
+      // Hide all fields when the role changes
+      hideAllFields();
+
+      // Check the selected role and show the corresponding fields
+      var selectedRole = roleSelect.value;
+      if (selectedRole === 'healthcare_professional') {
+        healthcareFields.style.display = 'block';
+      } else if (selectedRole === 'patient') {
+        patientFields.style.display = 'block';
+      } else if (selectedRole === 'family_friend') {
+        familyFriendFields.style.display = 'block';
+      }
+    });
+  });
+</script>

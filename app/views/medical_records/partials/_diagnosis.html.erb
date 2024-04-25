@@ -1,0 +1,12 @@
+<!-- app/views/medical_records/partials/_diagnosis.html.erb -->
+<div class="diagnosis-record bg-white shadow rounded p-4 mb-4">
+  <h4 class="text-lg font-semibold">Diagnosis Details</h4>
+  <% notes = JSON.parse(medical_record.notes) rescue nil %>
+  <% if notes %>
+    <p><strong>Condition:</strong> <%= notes['condition'] %></p>
+    <p><strong>Symptoms:</strong> <%= notes['symptoms'] %></p>
+    <p><strong>Recommended Treatment:</strong> <%= notes['recommended_treatment'] %></p>
+  <% else %>
+    <p>Invalid or missing diagnosis data.</p>
+  <% end %>
+</div>

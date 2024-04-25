@@ -1,0 +1,22 @@
+<!-- views/medical_records/partials/_lab_results_fields.html.erb -->
+<% if form.object && form.object.test_name == "Comprehensive Metabolic Panel" %>
+  <div class="grid grid-cols-2 gap-4">
+    <%= form.fields_for :results do |results_fields| %>
+      <% form.object.results.each do |test, value| %>
+        <div class="form-control">
+          <%= results_fields.label test, test.titleize, class: "label" %>
+          <%= results_fields.number_field test, value: value, class: "input input-bordered", step: :any %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= form.fields_for :interpretations do |interpretations_fields| %>
+    <% form.object.interpretations.each do |test, interpretation| %>
+      <div class="form-control">
+        <%= interpretations_fields.label "#{test}_interpretation", "#{test.titleize} Interpretation", class: "label" %>
+        <%= interpretations_fields.select "#{test}_interpretation", [["Normal", "Normal"], ["Abnormal", "Abnormal"]], selected: interpretation, class: "select select-bordered" %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

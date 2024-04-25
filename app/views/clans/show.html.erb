@@ -1,0 +1,72 @@
+<h1><%= @clan.name %></h1>
+<p><%= @clan.description %></p>
+
+<h2>Members</h2>
+<div class="overflow-x-auto">
+  <table class="table w-full">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Trust Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @clan.clan_memberships.includes(:user).each do |membership| %>
+      <tr>
+        <th>
+          <label>
+            <input type="checkbox" class="checkbox" />
+          </label>
+        </th>
+        <td>
+          <div class="flex items-center space-x-3">
+            <div class="avatar">
+              <div class="mask mask-squircle w-12 h-12">
+                <%= image_tag(membership.user.profile_picture, alt: "#{membership.user.name} profile") if membership.user.profile_picture.attached? %>
+              </div>
+            </div>
+            <div>
+              <div class="font-bold"><%= membership.user.name %></div>
+              <div class="text-sm opacity-50"><%= membership.user.relationship_to_patient %></div>
+            </div>
+          </div>
+        </td>
+        <td><%= membership.user.role.capitalize %></td>
+        <td>
+          <%= form_with url: toggle_trust_clan_path(@clan, user_id: membership.user.id), method: :patch, local: false do |form| %>
+            <label class="swap swap-rotate">
+              <input type="checkbox" <%= 'checked' if membership.user.trust %> onchange="this.form.submit();">
+              <div class="swap-on">Trusted</div>
+              <div class="swap-off">Untrusted</div>
+            </label>
+          <% end %>
+        </td>
+        <td>
+          <% if current_user_is_admin?(@clan) %>
+            <%= link_to 'Remove', clan_clan_membership_path(@clan, membership), method: :delete, data: { confirm: 'Are you sure?', turbo_method: :delete }, class: "btn btn-ghost btn-xs" %>
+          <% end %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Trust Status</th>
+        <th>Actions</th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<% if current_user_is_admin?(@clan) %>
+  <%= link_to 'Edit Clan', edit_clan_path(@clan), class: "btn btn-primary" %> |
+  <%= link_to 'Delete Clan', @clan, method: :delete, data: { confirm: 'Are you sure you want to delete this clan?' }, class: "btn btn-error" %>
+<% end %>
+
+<%= link_to 'Back to Clans', clans_path, class: "btn" %>

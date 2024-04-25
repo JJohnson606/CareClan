@@ -1,34 +1,45 @@
-<div class="fixed top-0 w-full z-50">
-  <div class="navbar bg-emerald-500 text-white">
-    <div class="flex-1">
-      <% if user_signed_in? %>
-        <%= link_to 'Care Clan', dashboard_path, class: "btn btn-ghost text-xl" %>
-      <% else %>
-        <%= link_to 'Care Clan', root_path, class: "btn btn-ghost text-xl" %>
-      <% end %>
-    </div>
-
-    <div class="flex-none">
-      <% if user_signed_in? %>
-        <div class="nav-end">
-          <%= link_to "Edit #{current_user.name}", edit_user_registration_path, class: "nav-link" %>
-          <%= link_to "Sign out", destroy_user_session_path, method: :delete, class: "btn btn-accent", data: { turbo_method: :delete } %>
-
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-            <% if @user.present? && @user.profile_picture.present? %>
-              <%= image_tag @user.profile_picture, alt: "User profile picture" %>
-             <% elsif current_user && current_user.profile_picture.present? %>
-              <%= image_tag current_user.profile_picture, alt: "Default profile picture" %>
-             <% else %>
-              <%= image_tag "default_profile_picture.png", alt: "Default profile picture" %>
-           <% end %>
-          </div>
+<!--views/layouts/_nav.html.erb -->
+<div class="navbar bg-primary text-white">
+  <div class="flex-1">
+    <%= image_tag "cclogo1.png", alt: "CareClan Logo", class: "w-10" %>
+    <%= link_to 'CareClan', user_signed_in? ? dashboard_path : root_path, class: "btn btn-ghost normal-case text-2xl tracking-wide font-semibold" %>
+  </div>
+  <div class="flex-none">
+    <% if user_signed_in? %>
+      <!-- Dropdown for user actions -->
+      <div class="dropdown dropdown-end text-black">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+          <% if @user.present? && @user.profile_picture.present? %>
+            <%= image_tag @user.profile_picture, alt: "User profile picture", class: "w-10 rounded-full" %>
+          <% elsif current_user && current_user.profile_picture.present? %>
+            <%= image_tag current_user.profile_picture, alt: "User profile picture", class: "w-10 rounded-full" %>
+          <% else %>
+            <%= image_tag "default_profile_picture.png", alt: "Default profile picture", class: "w-10 rounded-full" %>
+          <% end %>
         </div>
-      <% else %>
-        <%= link_to 'Login', new_user_session_path, class: "btn" %>
-        <%= link_to 'Sign Up', new_user_registration_path, class: "btn" %>
-      <% end %>
-    </div>
+        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-300 rounded-box w-52">
+          <!-- Menu items -->
+          <li>
+          <select data-choose-theme>
+          <option value="emerald">Default</option>
+          <option value="dark">Dark</option>
+          <option value="pink">Pink</option>
+           </select>
+           </li>
+          <li><%= link_to 'Dashboard', posts_path %> </li>
+          <li><%= link_to 'Medical Records', medical_records_path %></li>
+          <li><%= link_to 'My Clan', clans_path %></li>
+          <li><%= link_to "Edit Profile", edit_user_registration_path %></li>
+          <li><%= link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %></li>
+        </ul>
+      </div>
+
+          <!-- Notifications Link Here-->
+          <!-- Approvals Rank Link Here-->
+
+    <% else %>
+      <%= link_to 'Login', new_user_session_path, class: "btn" %>
+      <%= link_to 'Sign Up', new_user_registration_path, class: "btn" %>
+    <% end %>
   </div>
 </div>
-

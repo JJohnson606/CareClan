@@ -1,0 +1,16 @@
+<!-- views/medical_records/partials/_diagnosis_fields.html.erb -->
+<!-- Diagnosis Fields -->
+<div class="form-control">
+  <%= form.label :condition, 'Condition', class: "label" %>
+  <%= form.text_field :condition, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :symptoms, 'Symptoms', class: "label" %>
+  <%= form.text_area :symptoms, class: "textarea textarea-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :recommended_treatment, 'Recommended Treatment', class: "label" %>
+  <%= form.text_area :recommended_treatment, class: "textarea textarea-bordered" %>
+</div>

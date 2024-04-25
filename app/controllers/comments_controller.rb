@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
-  before_action :set_post
-  before_action :set_comment, only: %i[ show edit update destroy ]
+  before_action :set_post, except: [:show, :edit, :update, :destroy, :approve, :disapprove]
+  before_action :set_comment, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
+  before_action :set_parent_comment, only: [:create, :new]
 
   # GET /comments or /comments.json
   def index
@@ -13,9 +14,7 @@ class CommentsController < ApplicationController
 
   # GET /comments/new
   def new
-    @post = Post.find(params[:post_id])
-    @parent_comment = Comment.find_by(id: params[:parent_id]) # Optional, find parent comment if present
-    @comment = Comment.new(post_id: params[:post_id], parent_id: params[:parent_id])
+    @comment = @post.comments.create(parent_id: params[:parent_id])
   end
 
   # GET /comments/1/edit
@@ -24,10 +23,10 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-    @post = Post.find(params[:comment][:post_id])
-    @comment = @post.comments.build(comment_params.merge(author: current_user))
-    
+    @comment = @post.comments.create(comment_params.merge(author: current_user))
     if @comment.save
+      # Trigger notification after successful save
+      NewCommentNotifier.with(post: @post, user: current_user, message: "New comment on your post!").deliver(current_user)
       redirect_to @post, notice: 'Comment was successfully created.'
     else
       flash.now[:alert] = 'Failed to create comment.'
@@ -58,18 +57,42 @@ class CommentsController < ApplicationController
     end
   end
 
+
+  def approve
+    @comment.liked_by current_user
+    redirect_to post_path(@comment.post), notice: 'Comment approved!'
+  end
+
+  def disapprove
+    @comment.disliked_by current_user
+    redirect_to post_path(@comment.post), notice: 'Comment disapproved!'
+  end
+
+
   private
 
-  def set_post
-    @post = Post.find(params[:comment][:post_id])
+   def set_post
+    if params[:post_id]
+    @post = Post.find(params[:post_id])
+  elsif params[:comment_id]
+    #'comment_id' is the parent comment's ID when replying
+    parent_comment = Comment.find(params[:comment_id])
+    @post = parent_comment.post
+  else
+    redirect_to root_url, alert: "Post not found."
   end
+end
 
   def set_comment
     @comment = Comment.find(params[:id])
   end
 
+  def set_parent_comment
+    @parent_comment = Comment.find_by(id: params[:parent_id]) if params[:parent_id].present?  #`comment_id` is how you pass the parent comment's ID
+  end
+
   def comment_params
-    params.require(:comment).permit(:body, :post_id, :author_id)
+    params.require(:comment).permit(:body, :parent_id)
   end
 end
 

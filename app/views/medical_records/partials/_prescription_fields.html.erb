@@ -1,0 +1,20 @@
+<!-- views/medical_records/partials/_prescription_fields.html.erb --><!-- Prescription Fields -->
+<div class="form-control">
+  <%= form.label :medication_name, 'Medication Name', class: "label" %>
+  <%= form.text_field :medication_name, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :dosage, 'Dosage', class: "label" %>
+  <%= form.text_field :dosage, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :duration, 'Duration', class: "label" %>
+  <%= form.text_field :duration, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :purpose, 'Purpose', class: "label" %>
+  <%= form.text_area :purpose, class: "textarea textarea-bordered" %>
+</div>

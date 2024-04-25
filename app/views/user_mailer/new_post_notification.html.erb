@@ -1,0 +1,7 @@
+  <h1>New Post Created</h1>
+  <p>Hi <%= @user.email %>,</p>
+  <p>A new post has been added to your clan. "<%= @post.title %>". Here’s a preview of your post:</p>
+  <blockquote>
+    <%= @post.body %>
+  </blockquote>
+  <p>View the full post and engage with your readers: <%= link_to 'View Post', post_path(@post) %></p>

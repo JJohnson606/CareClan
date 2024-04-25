@@ -1,0 +1,21 @@
+<!-- views/medical_records/partials/_surgical_reports_fields.html.erb -->
+<!-- Specific Fields for Surgical Reports -->
+<div class="form-control">
+  <%= form.label :procedure, 'Procedure', class: "label" %>
+  <%= form.text_field :procedure, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :date, 'Date of Surgery', class: "label" %>
+  <%= form.date_field :date, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :findings, 'Findings', class: "label" %>
+  <%= form.text_area :findings, class: "textarea textarea-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :outcome, 'Outcome', class: "label" %>
+  <%= form.text_area :outcome, class: "textarea textarea-bordered" %>
+</div>

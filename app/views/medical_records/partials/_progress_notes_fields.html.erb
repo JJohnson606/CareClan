@@ -1,0 +1,10 @@
+<!-- views/medical_records/partials/_progress_notes_fields.html.erb --><!-- Progress Notes Fields -->
+<div class="form-control">
+  <%= form.label :date, 'Date', class: "label" %>
+  <%= form.date_field :date, class: "input input-bordered" %>
+</div>
+
+<div class="form-control">
+  <%= form.label :note, 'Note', class: "label" %>
+  <%= form.text_area :note, class: "textarea textarea-bordered" %>
+</div>

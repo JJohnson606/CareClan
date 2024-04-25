@@ -1,27 +1,49 @@
 <!-- app/views/posts/_post.html.erb -->
-<div class="card lg:card-side bg-base-100 shadow-xl mb-4 flex">
-  <!-- Profile Picture -->
-  <figure class="flex-shrink-0 p-4">
-    <%= image_tag post.author.profile_picture, alt: "Profile Picture", class: "rounded-full w-24 h-24 object-cover" if post.author.profile_picture.present? %>
-  </figure>
 
-  <!-- Post Content -->
-  <div class="card-body flex-grow">
-    <div class="flex items-center">
-      <h2 class="card-title flex-grow">Post by <%= post.author.name %></h2> 
+<div class="card bg-base-100 shadow-xl mb-4">
+  <!-- Card Header -->
+    <div class="card-header flex items-center space-x-4 p-4">
+    <div class="avatar">
+      <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+        <% if post.author.profile_picture.attached? %>
+          <%= image_tag post.author.profile_picture, alt: "#{post.author.name}'s profile picture", class: "rounded-full" %>
+        <% else %>
+          <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="rounded-full">
+        <% end %>
+      </div>
     </div>
+    <h5 class="card-title text-lg font-semibold">
+      <%= post.author.name %>
+    </h5>
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
     <p><%= post.body %></p>
-    <div class="card-actions justify-end">
-      <% if local_assigns[:show_button].nil? || local_assigns[:show_button] %>
-      <%= link_to 'Show this post', post_path(post), class: 'btn btn-primary' %>
+    <% if post.image.present? %>
+      <div class="p-4">
+        <%= image_tag post.image, alt: "Post Image", class: "rounded-lg w-full object-cover" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Card Actions -->
+  <div class="card-footer flex justify-between items-center p-4">
+    <div class="flex space-x-2">
+      <%= button_to approve_post_path(post), method: :put, class: "btn btn-primary btn-xs" do %>
+        <i class="fa-solid fa-arrow-up"></i>
+      <% end %>
+      <%= button_to disapprove_post_path(post), method: :put, class: "btn btn-accent btn-xs" do %>
+        <i class="fa-solid fa-arrow-down"></i>
+      <% end %>
+    </div>
+    <div>
+      <%= link_to edit_post_path(post), class: "btn btn-outline btn-accent btn-xs" do %>
+        <i class="fa-solid fa-pencil"></i>
+      <% end %>
+      <%= link_to post_path(post), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline btn-accent btn-xs" do %>
+        <i class="fa-solid fa-trash"></i>
       <% end %>
     </div>
   </div>
-
-  <!-- Post Image, make it conditional to only show if there is an image -->
-  <% if post.image.present? %>
-    <figure class="flex-shrink-0">
-      <%= image_tag post.image, alt: "Post Image", class: "w-full h-full object-cover" %>
-    </figure>
-  <% end %>
 </div>

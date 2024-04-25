@@ -1,0 +1,13 @@
+<!-- app/views/medical_records/partials/_surgical_reports.html.erb -->
+<div class="surgical-report">
+  <h4>Surgical Report Details</h4>
+  <% notes = JSON.parse(medical_record.notes) rescue nil %>
+  <% if notes %>
+    <p><strong>Procedure:</strong> <%= notes['procedure'] %></p>
+    <p><strong>Date:</strong> <%= notes['date'] %></p>
+    <p><strong>Findings:</strong> <%= notes['findings'] %></p>
+    <p><strong>Outcome:</strong> <%= notes['outcome'] %></p>
+  <% else %>
+    <p>Invalid or missing surgical report data.</p>
+  <% end %>
+</div>
