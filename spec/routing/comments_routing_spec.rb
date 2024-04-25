@@ -18,6 +18,7 @@
 #  cached_weighted_total   :integer          default(0), not null
 #  cached_weighted_average :float            default(0.0), not null
 #  cached_vote_diff        :integer          default(0)
+#  votes_count             :integer          default(0), not null
 #
 require "rails_helper"
 
