@@ -1,7 +1,12 @@
-<h1><%= @clan.name %></h1>
-<p><%= @clan.description %></p>
+<div class="text-center p-4 bg-gray-100">
+  <h1 class="text-3xl font-bold text-primary mb-2"><%= @clan.name %></h1>
+  <p class="text-lg text-primary mb-4"><%= @clan.description %></p>
+</div>
 
-<h2>Members</h2>
+<div class="text-center p-4">
+  <h2 class="text-2xl font-bold text-primary mt-8 mb-4">Members</h2>
+</div>
+
 <div class="overflow-x-auto">
   <table class="table w-full">
     <thead>
@@ -34,16 +39,27 @@
             </div>
           </div>
         </td>
-        <td><%= membership.user.role.capitalize %></td>
         <td>
-          <%= form_with url: toggle_trust_clan_path(@clan, user_id: membership.user.id), method: :patch, local: false do |form| %>
-            <label class="swap swap-rotate">
-              <input type="checkbox" <%= 'checked' if membership.user.trust %> onchange="this.form.submit();">
-              <div class="swap-on">Trusted</div>
-              <div class="swap-off">Untrusted</div>
-            </label>
-          <% end %>
-        </td>
+      <% case membership.role %>
+      <% when 'clan_poa' %>
+        <div class="badge badge-primary">POA</div>
+      <% when 'admin' %>
+        <div class="badge badge-accent">Admin</div>
+      <% when 'member' %>
+        <div class="badge badge-secondary">Member</div>
+      <% else %>
+        <div class="badge badge-neutral"><%= membership.role.capitalize %></div>
+      <% end %>
+    </td>
+        <td>
+  <%= form_with url: toggle_trust_clan_path(@clan, user_id: membership.user.id), method: :patch, local: false, html: { class: "form-control w-52" } do |form| %>
+    <label class="cursor-pointer label">
+      <span class="label-text"><%= membership.user.trust ? 'Trusted' : 'Untrusted' %></span>
+      <input type="checkbox" class="toggle <%= membership.user.trust ? 'toggle-primary' : 'toggle-secondary' %>" <%= 'checked' if membership.user.trust %> onchange="this.form.submit();">
+    </label>
+  <% end %>
+</td>
+
         <td>
           <% if current_user_is_admin?(@clan) %>
             <%= link_to 'Remove', clan_clan_membership_path(@clan, membership), method: :delete, data: { confirm: 'Are you sure?', turbo_method: :delete }, class: "btn btn-ghost btn-xs" %>
