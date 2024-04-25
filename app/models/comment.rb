@@ -19,12 +19,13 @@
 #  cached_weighted_total   :integer          default(0), not null
 #  cached_weighted_average :float            default(0.0), not null
 #  cached_vote_diff        :integer          default(0)
+#  votes_count             :integer          default(0), not null
 #
 class Comment < ApplicationRecord
   acts_as_votable
-
+  
   # Associations
-  belongs_to :post, counter_cache: true
+  belongs_to :post, counter_cache: :comments_count
   belongs_to :author, class_name: 'User', foreign_key: 'author_id'
   belongs_to :parent, class_name: 'Comment', optional: true, counter_cache: :replies_count
   has_many :replies, class_name: 'Comment', foreign_key: 'parent_id', dependent: :destroy
