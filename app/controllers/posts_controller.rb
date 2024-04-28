@@ -5,9 +5,8 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @q = Post.ransack(params[:q])
-    @posts = @q.result(distinct: true).includes(:author, image_attachment: :blob)
-    @posts = @posts.page(params[:page])
+    @q = Post.with_author_and_image.ransack(params[:q])
+    @posts = @q.result(distinct: true).page(params[:page])
   end
 
 
