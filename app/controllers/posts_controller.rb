@@ -24,8 +24,8 @@ class PostsController < ApplicationController
     @comments = CommentSorter.new(@post, params[:q]).sort
     @approval_rating = @post.approval_rating
     @medical_record = @post.medical_record
-    @voters_up = User.joins(:votes).where(votes: { votable: @post, vote_flag: true }).includes(:profile_picture_attachment)
-    @voters_down = User.joins(:votes).where(votes: { votable: @post, vote_flag: false }).includes(:profile_picture_attachment)
+    @voters_up = @post.voters_up
+    @voters_down = @post.voters_down
   end
 
   # GET /posts/new

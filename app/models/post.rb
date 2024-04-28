@@ -43,5 +43,13 @@ class Post < ApplicationRecord
   end
 
 
+  def voters_up
+    User.joins(:votes).where(votes: { votable: self, vote_flag: true }).includes(:profile_picture_attachment)
+  end
+
+  def voters_down
+    User.joins(:votes).where(votes: { votable: self, vote_flag: false }).includes(:profile_picture_attachment)
+  end
+
   scope :controversial, -> { order(cached_vote_diff: :desc) }
 end
