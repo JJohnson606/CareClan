@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
+  before_action :set_medical_record, only: [:new]
   respond_to :html, :json
 
   # GET /posts or /posts.json
@@ -89,5 +90,9 @@ class PostsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def post_params
     params.require(:post).permit(:title, :author_id, :body, :image, :trusted, :medical_record_id)
+  end
+
+  def set_medical_record
+    @medical_record = MedicalRecord.find(params[:medical_record_id]) if params[:medical_record_id].present?
   end
 end
