@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: posts
@@ -24,31 +26,36 @@
 #
 class Post < ApplicationRecord
   include Votable
+  include Ransackable
   has_one_attached :image
   belongs_to :author, class_name: 'User', foreign_key: 'author_id' # author association
-  belongs_to :medical_record, optional: true  # medical record association optional
+  belongs_to :medical_record, optional: true # medical record association optional
   has_many :comments, dependent: :destroy # comments association
-  has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
-  has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
-
+  has_many :noticed_events, as: :record, dependent: :destroy, class_name: 'Noticed::Event'
+  has_many :notifications, through: :noticed_events, class_name: 'Noticed::Notification'
 
   scope :with_author_and_image, -> { includes(:author, image_attachment: :blob) }
-  scope :with_comments_and_replies, -> { includes(comments: [{ author: { profile_picture_attachment: :blob } }, { replies: [:author, { author: { profile_picture_attachment: :blob } }] }]) }
-
-  def self.find_with_associations(id)
-    with_author_and_image.with_comments_and_replies.find(id)
-  end
-
-  # Defined which attributes are searchable/sortable with Ransack
-  def self.ransackable_attributes(auth_object = nil)
-    %w[title created_at comments_count cached_votes_up cached_votes_down cached_vote_diff]
-  end
-
-  # Defined which associations should be searchable
-  def self.ransackable_associations(auth_object = nil)
-    %w[author comments]
-  end
-
+  scope :with_comments_and_replies, lambda {
+    includes(
+      comments: [
+        {
+          author: {
+            profile_picture_attachment: :blob
+          }
+        },
+        {
+          replies: [
+            :author,
+            {
+              author: {
+                profile_picture_attachment: :blob
+              }
+            }
+          ]
+        }
+      ]
+    )
+  }
 
   scope :controversial, -> { order(cached_vote_diff: :desc) }
 end
