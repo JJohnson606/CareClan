@@ -22,8 +22,8 @@
 #  votes_count             :integer          default(0), not null
 #
 class Comment < ApplicationRecord
-  acts_as_votable
-  
+  include Votable
+
   # Associations
   belongs_to :post, counter_cache: :comments_count
   belongs_to :author, class_name: 'User', foreign_key: 'author_id'
@@ -38,24 +38,18 @@ class Comment < ApplicationRecord
     def self.ransackable_attributes(auth_object = nil)
       %w[created_at replies_count cached_votes_up cached_votes_down cached_vote_diff cached_votes_total]
     end
-  
+
     # Attributes that should not be searchable
     def self.ransackable_associations(auth_object = nil)
       []
     end
-  
+
   # Instance methods
   def depth
     parent ? 1 + parent.depth : 0
   end
 
-  def approval_rating
-    total_votes = votes_for.size
-    return 0 if total_votes.zero?
 
-    approval_votes = get_upvotes.size
-    (approval_votes.to_f / total_votes * 100).round(2)
-  end
 
   def update_vote_cache
     upvotes = get_upvotes.size
