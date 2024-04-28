@@ -1,17 +1,17 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
+  respond_to :html, :json
 
   # GET /posts or /posts.json
   def index
     @q = Post.ransack(params[:q])
-    @posts = @q.result(distinct: true).includes(:author, :image_attachment)
+    @posts = @q.result(distinct: true).includes(:author, image_attachment: :blob)
     @posts = @posts.page(params[:page])
   end
-  
+
 
   # GET /posts/1 or /posts/1.json
   def show
-     def show
       @post = Post.includes(
         :image_attachment,
         author: { profile_picture_attachment: :blob },
@@ -20,15 +20,8 @@ class PostsController < ApplicationController
           { replies: [:author, { author: { profile_picture_attachment: :blob } }] }
         ]
       ).find(params[:id])
-      
-    @comments = sort_comments # Only top-level comments
-    @approval_rating = @post.approval_rating
-    @medical_record = @post.medical_record
-    @voters_up = User.joins(:votes).where(votes: { votable: @post, vote_flag: true }).includes(:profile_picture_attachment)
-    @voters_down = User.joins(:votes).where(votes: { votable: @post, vote_flag: false }).includes(:profile_picture_attachment)
-  end
 
-    @comments = sort_comments # Only top-level comments
+    @comments = CommentSorter.new(@post, params[:q]).sort
     @approval_rating = @post.approval_rating
     @medical_record = @post.medical_record
     @voters_up = User.joins(:votes).where(votes: { votable: @post, vote_flag: true }).includes(:profile_picture_attachment)
@@ -48,28 +41,20 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = current_user.posts.build(post_params)
-    respond_to do |format|
-      if @post.save
-        NewPostNotificationJob.perform_later(@post)
-        format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
-        format.json { render :show, status: :created, location: @post }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
-      end
-    end
+  if @post.save
+    NewPostNotificationJob.perform_later(@post)
+    respond_with @post, location: post_url(@post), notice: "Post was successfully created."
+  else
+    respond_with @post.errors, status: :unprocessable_entity
+  end
   end
 
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
-    respond_to do |format|
-      if @post.update(post_params)
-        format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
-        format.json { render :show, status: :ok, location: @post }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
-      end
+    if @post.update(post_params)
+      respond_with @post, location: post_url(@post), notice: "Post was successfully updated."
+    else
+      respond_with @post.errors, status: :unprocessable_entity
     end
   end
 
@@ -92,17 +77,6 @@ class PostsController < ApplicationController
     @post.disliked_by current_user
     redirect_back(fallback_location: root_path)
   end
-
-  def sort_comments
-    # Initialize a Ransack search on comments of the post
-    @q = @post.comments.includes(author: { profile_picture_attachment: :blob }).ransack(params[:q])
-    @comments = @q.result(distinct: true)
-  
-    # Log the sorted comments
-    Rails.logger.debug "Sorted Comments: #{@comments.to_a}"
-    @comments
-  end
-  
 
   private
 
