@@ -32,6 +32,13 @@ class Post < ApplicationRecord
   has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
 
 
+  scope :with_author_and_image, -> { includes(:author, image_attachment: :blob) }
+  scope :with_comments_and_replies, -> { includes(comments: [{ author: { profile_picture_attachment: :blob } }, { replies: [:author, { author: { profile_picture_attachment: :blob } }] }]) }
+
+  def self.find_with_associations(id)
+    with_author_and_image.with_comments_and_replies.find(id)
+  end
+
   # Defined which attributes are searchable/sortable with Ransack
   def self.ransackable_attributes(auth_object = nil)
     %w[title created_at comments_count cached_votes_up cached_votes_down cached_vote_diff]
@@ -42,14 +49,6 @@ class Post < ApplicationRecord
     %w[author comments]
   end
 
-
-  def voters_up
-    User.joins(:votes).where(votes: { votable: self, vote_flag: true }).includes(:profile_picture_attachment)
-  end
-
-  def voters_down
-    User.joins(:votes).where(votes: { votable: self, vote_flag: false }).includes(:profile_picture_attachment)
-  end
 
   scope :controversial, -> { order(cached_vote_diff: :desc) }
 end
