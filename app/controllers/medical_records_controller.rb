@@ -37,7 +37,7 @@ class MedicalRecordsController < ApplicationController
       if @medical_record.save
         NewMedicalRecordNotificationJob.perform_later(current_user, @medical_record)
         format.html do
-          redirect_to medical_record_url(@medical_record), notice: 'Medical record was successfully created.'
+          redirect_to medical_record_url(@medical_record), notice: "Medical record was successfully created."
         end
         format.json { render :show, status: :created, location: @medical_record }
       else
@@ -52,7 +52,7 @@ class MedicalRecordsController < ApplicationController
     respond_to do |format|
       if @medical_record.update(medical_record_params)
         format.html do
-          redirect_to medical_record_url(@medical_record), notice: 'Medical record was successfully updated.'
+          redirect_to medical_record_url(@medical_record), notice: "Medical record was successfully updated."
         end
         format.json { render :show, status: :ok, location: @medical_record }
       else
@@ -66,7 +66,7 @@ class MedicalRecordsController < ApplicationController
   def destroy
     @medical_record.destroy
     respond_to do |format|
-      format.html { redirect_to medical_records_url, notice: 'Medical record was successfully destroyed.' }
+      format.html { redirect_to medical_records_url, notice: "Medical record was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -80,7 +80,7 @@ class MedicalRecordsController < ApplicationController
   end
 
   def form_builder
-    SimpleForm::FormBuilder.new('medical_record', @medical_record, view_context, {})
+    SimpleForm::FormBuilder.new("medical_record", @medical_record, view_context, {})
   end
 
   private
@@ -93,23 +93,23 @@ class MedicalRecordsController < ApplicationController
     params.require(:medical_record).permit(:patient_id, :record_type, :record_date, :created_by_id,
                                            images: []).tap do |permitted_params|
       permitted_params[:notes] = case permitted_params[:record_type]
-                                 when 'diagnosis'
-                                   RecordTypes::DiagnosisNotes.permitted_params(params)
-                                 when 'treatment_plan'
-                                   RecordTypes::TreatmentPlanNotes.permitted_params(params)
-                                 when 'prescription'
-                                   RecordTypes::PrescriptionNotes.permitted_params(params)
-                                 when 'imaging'
-                                   RecordTypes::ImagingNotes.permitted_params(params)
-                                 when 'progress_notes'
-                                   RecordTypes::ProgressNotesNotes.permitted_params(params)
-                                 when 'surgical_reports'
-                                   RecordTypes::SurgicalReportsNotes.permitted_params(params)
-                                 when 'vaccination_records'
-                                   RecordTypes::VaccinationRecordsNotes.permitted_params(params)
-                                 when 'lab_results'
-                                   RecordTypes::LabResultsNotes.permitted_params(params)
-                                 end
+        when "diagnosis"
+          RecordTypes::DiagnosisNotes.permitted_params(params)
+        when "treatment_plan"
+          RecordTypes::TreatmentPlanNotes.permitted_params(params)
+        when "prescription"
+          RecordTypes::PrescriptionNotes.permitted_params(params)
+        when "imaging"
+          RecordTypes::ImagingNotes.permitted_params(params)
+        when "progress_notes"
+          RecordTypes::ProgressNotesNotes.permitted_params(params)
+        when "surgical_reports"
+          RecordTypes::SurgicalReportsNotes.permitted_params(params)
+        when "vaccination_records"
+          RecordTypes::VaccinationRecordsNotes.permitted_params(params)
+        when "lab_results"
+          RecordTypes::LabResultsNotes.permitted_params(params)
+        end
     end
   end
 end
