@@ -3,25 +3,11 @@ class MedicalRecordsController < ApplicationController
 
   # GET /medical_records or /medical_records.json
   def index
-    @q = MedicalRecord.ransack(params[:q])
-    case params[:search_type]
-    when 'name'
-      # Ensure creators and their profile pictures are preloaded
-      @q = MedicalRecord.joins(:creator).includes(creator: [:profile_picture_attachment]).ransack(creator_name_cont: params[:search])
-    when 'date'
-      @q = MedicalRecord.ransack(record_date_eq: params[:search])
-    when 'record_type'
-      @q = MedicalRecord.ransack(record_type_eq: params[:search])
-    else
-      @q = MedicalRecord.ransack(params[:q])
-    end
-
-    # Preload patients and their profile pictures as well as creators and their profile pictures
+    @q = MedicalRecordSearchService.new(params).call
     @medical_records = @q.result(distinct: true)
-    .includes(patient: [profile_picture_attachment: :blob],
-              creator: [profile_picture_attachment: :blob])
-    .page(params[:page])
-
+                         .includes(patient: [profile_picture_attachment: :blob],
+                                   creator: [profile_picture_attachment: :blob])
+                         .page(params[:page])
   end
 
   # GET /medical_records/1 or /medical_records/1.json
@@ -81,7 +67,6 @@ class MedicalRecordsController < ApplicationController
   end
 
   def load_partial
-    # Ensure this 'form' object is correctly initialized as needed for your partials
     render partial: "medical_records/partials/#{params[:record_type]}", locals: { medical_record: @medical_record }
   end
 
@@ -90,19 +75,15 @@ class MedicalRecordsController < ApplicationController
   end
 
   def form_builder
-    # This method should return a form builder instance that can be used in the partial
-    # For example, if using simple_form, you might do something like this:
     SimpleForm::FormBuilder.new('medical_record', @medical_record, self.view_context, {})
-    # If using Rails' form builder, you might need to instantiate it differently
   end
+
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_medical_record
     @medical_record = MedicalRecord.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def medical_record_params
     params.require(:medical_record).permit(:patient_id, :record_type, :record_date, :created_by_id, images: []).tap do |permitted_params|
       permitted_params[:notes] = case permitted_params[:record_type]
