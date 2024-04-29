@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/comment.rb
 # == Schema Information
 #
@@ -23,6 +25,7 @@
 #
 class Comment < ApplicationRecord
   include Votable
+  include Ransackable
 
   # Associations
   belongs_to :post, counter_cache: :comments_count
@@ -32,17 +35,6 @@ class Comment < ApplicationRecord
 
   # Callbacks
   after_save :update_vote_cache
-
-
-    # Defined which attributes are searchable/sortable with Ransack
-    def self.ransackable_attributes(auth_object = nil)
-      %w[created_at replies_count cached_votes_up cached_votes_down cached_vote_diff cached_votes_total]
-    end
-
-    # Attributes that should not be searchable
-    def self.ransackable_associations(auth_object = nil)
-      []
-    end
 
   # Instance methods
   def depth
