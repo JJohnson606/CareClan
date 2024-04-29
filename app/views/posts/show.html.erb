@@ -110,7 +110,7 @@
       <button class="btn btn-black dropdown-toggle" tabindex="0">
         Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
       </button>
-      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">   
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">   
         <li> <%= link_to 'Newest', post_path(@post, q: {s: 'created_at desc'}) %> </li>
         <li> <%= link_to 'Oldest', post_path(@post, q: {s: 'created_at asc'}) %></li>
         <li> <%= link_to 'Most Popular', post_path(@post, q: {s: 'replies_count desc'}) %> </li>

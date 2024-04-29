@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  include PostFindable
+  before_action :find_post, except: [:show, :edit, :update, :destroy, :approve, :disapprove]
   before_action :set_post, except: [:show, :edit, :update, :destroy, :approve, :disapprove]
   before_action :set_comment, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
   before_action :set_parent_comment, only: [:create, :new]
@@ -14,6 +16,7 @@ class CommentsController < ApplicationController
 
   # GET /comments/new
   def new
+    find_parent_comment
     @comment = @post.comments.create(parent_id: params[:parent_id])
   end
 
@@ -23,6 +26,7 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
+    find_parent_comment
     @comment = @post.comments.create(comment_params.merge(author: current_user))
     if @comment.save
       # Trigger notification after successful save
@@ -83,16 +87,17 @@ class CommentsController < ApplicationController
   end
 end
 
+
+def find_parent_comment
+  @parent_comment = Comment.find_by(id: params[:parent_id]) if params[:parent_id].present?
+end
+
   def set_comment
     @comment = Comment.find(params[:id])
   end
 
-  def set_parent_comment
-    @parent_comment = Comment.find_by(id: params[:parent_id]) if params[:parent_id].present?  #`comment_id` is how you pass the parent comment's ID
-  end
 
   def comment_params
     params.require(:comment).permit(:body, :parent_id)
   end
 end
-

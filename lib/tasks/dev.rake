@@ -1,6 +1,18 @@
 # lib/tasks/dev.rake
+
 task sample_data: :environment do
+  ActiveRecord::Base.transaction do
+
+
   starting = Time.now
+
+  start_date = 4.months.ago.to_date
+  end_date = Date.today
+
+  def random_date_between(start_date, end_date)
+    rand(start_date..end_date)
+  end
+
 
   # Clear out existing data
   ClanMembership.delete_all
@@ -66,15 +78,15 @@ task sample_data: :environment do
     doctor.profile_picture.attach(io: File.open(doc_image_path), filename: File.basename(doc_image_path), content_type: 'image/jpeg') if File.exist?(doc_image_path)
     doctor  # Return the doctor object to store in the array
   end
-   
+
    puts "Predefined doctors created with profile pictures."
 
   relationships = [
-    "aunt", "uncle", "cousin", "grandson", "granddaughter", 
-    "niece", "nephew", "grandfather", "grandmother", 
-    "stepfather", "stepmother", "half-brother", "half-sister", 
-    "son-in-law", "daughter-in-law", "brother-in-law", "sister-in-law", 
-    "mother-in-law", "father-in-law", "godfather", "godmother", 
+    "aunt", "uncle", "cousin", "grandson", "granddaughter",
+    "niece", "nephew", "grandfather", "grandmother",
+    "stepfather", "stepmother", "half-brother", "half-sister",
+    "son-in-law", "daughter-in-law", "brother-in-law", "sister-in-law",
+    "mother-in-law", "father-in-law", "godfather", "godmother",
     "foster parent", "foster child", "family friend", "long-time neighbor"
     ]
 
@@ -98,9 +110,9 @@ task sample_data: :environment do
     end
     person  # Return the person object to store in the array
   end
-  
+
    # Clan creation
-   example_clan = Clan.find_or_create_by!(name: "Nixon Clan")
+   example_clan = Clan.find_or_create_by!(name: "Gary's Recovery Warriors", description: "An example clan for users sharing recovery stories and support for each other.")
    puts "Clan 'Nixon Clan' either found or created."
 
    # Adding users to the clan
@@ -116,20 +128,20 @@ task sample_data: :environment do
   xray = MedicalRecord.create!(
     record_type: 'imaging',
     record_date: Date.today - 30.day,
-    notes: { type: "X-ray", findings: "The X-ray image reveals a clear fracture in the metacarpal bone. 
+    notes: { type: "X-ray", findings: "The X-ray image reveals a clear fracture in the metacarpal bone.
        This includes a transverse fracture of the fourth metacarpal, which is characterized by a break that extends horizontally across the bone shaft.
-       The fracture line is sharp and well-defined, indicating a recent and acute injury. 
+       The fracture line is sharp and well-defined, indicating a recent and acute injury.
        There is slight displacement and angulation of the fracture fragments, suggesting that some movement of the bone fragments has occurred since the injury. No other bone abnormalities or associated injuries,
        such as additional fractures or dislocations in adjacent bones, are visible. Soft tissue swelling is noted around the fracture site, which is consistent with trauma.",
-       interpretation: "The radiographic findings confirm the clinical suspicion of a metacarpal fracture. 
-       The nature of the fracture—transverse with slight displacement—suggests that significant force was applied across the metacarpal, 
+       interpretation: "The radiographic findings confirm the clinical suspicion of a metacarpal fracture.
+       The nature of the fracture—transverse with slight displacement—suggests that significant force was applied across the metacarpal,
        typical of direct trauma or an impact injury. Given the displacement, orthopedic consultation is recommended for possible reduction,
        where the bone fragments will be realigned. This is crucial to ensure proper healing and to restore the normal anatomical structure of the hand,
        thereby preventing future complications such as malunion (improper healing leading to deformity) or impaired hand function." }.to_json,
     patient_id: gary.id,
     created_by_id: doctors[0].id
   )
-  
+
   diagnosis = MedicalRecord.create!(
     record_type: 'diagnosis',
     record_date: Date.today - 30.day,
@@ -137,7 +149,7 @@ task sample_data: :environment do
     patient_id: gary.id,
     created_by_id: doctors[1].id
   )
-  
+
   # Step 2: Treatment plan and prescription
   treatment_plan = MedicalRecord.create!(
     record_type: 'treatment_plan',
@@ -146,7 +158,7 @@ task sample_data: :environment do
     patient_id: gary.id,
     created_by_id: doctors[1].id
   )
-  
+
   prescription = MedicalRecord.create!(
     record_type: 'prescription',
     record_date: Date.today - 23.day,
@@ -154,7 +166,7 @@ task sample_data: :environment do
     patient_id: gary.id,
     created_by_id: doctors[2].id
   )
-  
+
   # Step 3: Follow-up and rehabilitation
   physical_therapy = MedicalRecord.create!(
     record_type: 'treatment_plan',
@@ -163,15 +175,15 @@ task sample_data: :environment do
     patient_id: gary.id,
     created_by_id: doctors[3].id
   )
-  
+
 
   # Generate medical records and posts
   User.where(role: :patient).each do |patient|
     10.times do
       record_type = MedicalRecord.record_types.keys.sample
-      record_date = Faker::Date.between(from: 2.years.ago, to: Date.today - 14.days)
+      record_date = record_date = random_date_between(start_date, end_date)
       notes = ""
-      title = Faker::Lorem.sentence(word_count: 3) 
+      title = Faker::Lorem.sentence(word_count: 3)
 
       case record_type
       when 'diagnosis'
@@ -181,7 +193,7 @@ task sample_data: :environment do
           symptoms: Faker::Lorem.words(number: 4).join(', '),
           recommended_treatment: Faker::Lorem.sentence
         }.to_json
-      
+
       when 'treatment_plan'
         treatments = ["Physical therapy sessions", "Adjustment of medication regimen", "Dietary changes", "Scheduled surgery"]
         notes = {
@@ -189,7 +201,7 @@ task sample_data: :environment do
           duration: "#{rand(1..6)} weeks",
           follow_up: Faker::Lorem.sentence
         }.to_json
-      
+
       when 'prescription'
         medications = ["Amoxicillin", "Ibuprofen", "Paracetamol"]
         notes = {
@@ -198,7 +210,7 @@ task sample_data: :environment do
           duration: "#{rand(5..14)} days",
           purpose: Faker::Lorem.sentence
         }.to_json
-      
+
       when 'lab_results'
         # Define test types and possible result ranges
         test_results = {
@@ -241,28 +253,28 @@ task sample_data: :environment do
             "PT" => { normal: (9.5..13.5), optimal: (10..12), clinical: (9..15) },
             "INR" => { normal: (0.8..1.2), optimal: (0.9..1.1), clinical: (0.5..1.5) },
             "PTT" => { normal: (25..35), optimal: (26..34), clinical: (20..40) }
-          }      
+          }
         }
 
         selected_test = test_results.keys.sample
         results = {}
-        
+
         test_results[selected_test].each do |test, ranges|
           normal_range = ranges[:normal]
           clinical_range = ranges[:clinical] || normal_range
-        
+
           mean = (normal_range.begin + normal_range.end) / 2.0
           sd = (normal_range.end - mean) / 2  # Assuming this is a simplified standard deviation calculation
-        
+
           # Round the start and end points of the optimal range to integers
           optimal_range_start = (mean - sd).round
           optimal_range_end = (mean + sd).round
-        
+
           # Create the optimal range with rounded values
           optimal_range = (optimal_range_start..optimal_range_end)
-        
+
           value = rand(normal_range)  # Ensure this uses integer values
-        
+
           results[test] = {
             value: value,
             clinical_range: [clinical_range.begin.to_i, clinical_range.end.to_i],  # Convert to array with integer values
@@ -270,14 +282,14 @@ task sample_data: :environment do
             optimal_range: [optimal_range_start, optimal_range_end]                # Already integers from rounding
           }
         end
-        
+
         notes = {
           test_name: selected_test,
           results: results.transform_values { |result| result[:value] },
           ranges: results.transform_values { |result| result.except(:value) },
           date: record_date.to_s
         }.to_json
-      
+
       when 'imaging'
         imaging_types = ["X-ray", "MRI", "CT scan", "Ultrasound"]
         findings = ["No acute disease detected", "Mild joint degeneration", "Stable cardiomegaly", "Small renal cyst"]
@@ -287,7 +299,7 @@ task sample_data: :environment do
           date: record_date.to_s,
           interpretation: ["Normal", "Requires follow-up"].sample
         }.to_json
-      
+
       when 'progress_notes'
         updates = [
           "Symptoms improving with current treatment",
@@ -301,8 +313,8 @@ task sample_data: :environment do
             note: update
           }
         }.to_json
-      
-      
+
+
       when 'surgical_reports'
         procedures = ["Appendectomy", "Cholecystectomy", "Total knee replacement", "Coronary artery bypass grafting"]
         outcomes = ["Procedure successful, patient recovering well", "Complications encountered, monitoring closely", "Unremarkable post-operative course", "Patient discharged with follow-up care instructions"]
@@ -312,7 +324,7 @@ task sample_data: :environment do
           findings: Faker::Lorem.sentence(word_count: 6),
           outcome: outcomes.sample
         }.to_json
-      
+
       when 'vaccination_records'
         vaccines = ["Influenza", "Tetanus booster", "Pneumococcal", "COVID-19"]
         notes = {
@@ -321,7 +333,7 @@ task sample_data: :environment do
           lot_number: Faker::Number.number(digits: 5).to_s,
           site: ["Left arm", "Right arm"].sample
         }.to_json
-      
+
       end
 
       record = MedicalRecord.create!(
@@ -333,23 +345,95 @@ task sample_data: :environment do
       )
       puts "Medical record #{record.id} (#{record.record_type}) created for patient #{patient.name}."
 
+      sample_post_titles = [
+  "I'm recovering well",
+  "Just received a new medical record",
+  "Feeling great today but my condition is acting up a bit",
+  "Update on my health journey",
+  "Reflecting on my recovery process",
+  "New health update from today's visit",
+  "Challenges I faced in recovery today",
+  "Good news from today's doctor visit!",
+  "A minor setback, but staying positive",
+  "Feeling hopeful after today's appointment",
+  "A day in my recovery journey",
+  "Sharing a quick health update",
+  "Some thoughts on my health progress",
+  "My recovery status this week",
+  "Today's wins and challenges",
+  "Feeling different about my health today",
+  "Grateful for today's medical outcomes",
+  "Navigating the ups and downs of recovery",
+  "Today's reflections on health and wellness",
+  "My health story continues"
+]
+
+sample_post_bodies = [
+  "Today was a good day in terms of recovery, feeling a bit better and hopeful about the progress I'm making!",
+  "Received my latest medical records and it’s a mix of emotions, but I’m staying optimistic about the journey ahead.",
+  "Feeling great physically, though I did have a few moments where my symptoms flared up. Staying mindful of my health.",
+  "Reflecting on my recovery journey, it’s been a road of ups and downs but every step forward is worth celebrating.",
+  "Had a follow-up today and the news was encouraging. It's a long road but I'm ready for the challenges ahead.",
+  "Faced some challenges in my recovery process today, but I'm learning that resilience is key in this journey.",
+  "Got some good news from the doctor today which really lifted my spirits! Recovery is going well.",
+  "Today was tough, not going to lie. Had a bit of a setback, but I'm committed to my recovery.",
+  "Feeling hopeful after today’s medical consultation. It’s reassuring to see some positive progress in my health.",
+  "Just sharing a quick update: today was a good day, felt better than usual and managed to be quite active.",
+  "I spent some time today reflecting on my health progress. It's not easy, but I'm proud of how far I've come.",
+  "This week's recovery status has its highs and lows, but every small victory feels like a major win.",
+  "Today brought both wins and challenges, but I’m learning to celebrate the small victories on my path to recovery.",
+  "Felt different about my health today, some new symptoms appeared but staying in touch with my doctor about everything.",
+  "I'm truly grateful for the medical outcomes today, it's a relief to see some improvements in my health.",
+  "Navigating recovery isn’t straightforward, there are good days and hard days, but I'm committed to the process.",
+  "Today’s reflections are mixed. Health is a journey and I’m trying to stay positive through the tougher moments.",
+  "Sharing some thoughts on my health progress: it's a slow process, but I am seeing improvements and that's what matters.",
+  "Continuing my health story with cautious optimism after today’s check-up. Every day brings new learning and healing.",
+  "Thankful for everyone’s support as I share my ongoing health journey. Your encouragement means the world to me."
+]
+
+
+
       post = Post.create!(
-        title: title,
-        body: Faker::Lorem.sentence(word_count: 12),
+        title: sample_post_titles.sample,
+        body: sample_post_bodies.sample,
         author_id: patient.id,
         medical_record_id: record.id
       )
       puts "Post #{post.id} created linked to medical record #{record.id}."
-      
+
     # Generate primary comments and nested replies for each post
     # Recursive method to generate nested comments
+    sample_comments = [
+      "Everyone at the office is thinking of you, Gary, and we are all hoping for a full and speedy recovery. Stay strong and positive!",
+      "It’s great to hear about your progress, Gary! Keep that positive attitude and keep moving forward. We believe in your strength and determination.",
+      "Gary, we're all cheering for you as you recover. Your resilience in this challenging time is truly an inspiration to everyone around you.",
+      "You’re doing an incredible job, Gary! Your progress is a testament to your grit and perseverance. Keep up the fantastic work!",
+      "Gary, every day brings you closer to a full recovery. Keep your spirits high and keep fighting. We're all rooting for your complete healing.",
+      "As you recover, Gary, remember that you’re surrounded by people who care deeply about you and are sending you positive energy and love.",
+      "Stay strong, Gary, and know that better days are coming. Your recovery journey is inspiring, and we're all here supporting you every step of the way.",
+      "Keep pushing through, Gary, even on the tough days. Your strength and courage don't go unnoticed. We're all behind you, cheering you on.",
+      "Seeing your progress, Gary, gives us all hope and joy. You’re more than halfway there, and we're excited for the day you're fully recovered!",
+      "Gary, your determination and resilience during this recovery process are nothing short of inspiring. Keep it up, and know we're with you!",
+      "You are doing so well, Gary! It’s amazing to see how far you’ve come in your recovery. Keep up the excellent progress!",
+      "We are all amazed by your strength and persistence, Gary. Your recovery is going splendidly, and it’s a joy to witness your improvements.",
+      "Gary, remember that it's okay to rest when you need to. Taking time to heal is just as important as pushing forward.",
+      "Your recovery is a marathon, not a sprint, Gary. Take all the time you need to heal, and know we're cheering for you.",
+      "Just a little message to remind you how strong and brave you are, Gary! Everyone is so proud of your progress and cheering for you.",
+      "Gary, your journey to recovery is an inspiration to us all. Continue to be strong and know that we’re all in your corner.",
+      "We know this recovery process isn’t easy, Gary, but your strength during this time is truly awe-inspiring. Keep going; you're doing great!",
+      "You’ve shown such bravery and strength during your recovery, Gary. Everyone is thinking of you and wishing you a swift and smooth recovery.",
+      "Every step you take towards your recovery is a step towards a brighter future, Gary. We're all supporting you in this journey.",
+      "Gary, your resilience in facing this recovery is admirable. You're not alone in this; we're all here for you, sending our best wishes."
+    ]
+
+
     def generate_nested_comments(commenter, post, parent_id = nil, depth = 0, max_depth = 5)
       return if depth >= max_depth
 
       num_comments = rand(1..8) # Each comment can have 1 to 8 replies
       num_comments.times do
         comment = Comment.create!(
-          body: Faker::Lorem.sentence(word_count: rand(5..30)),
+          body: sample_comments.sample,
           author: commenter.sample,
           post: post,
           parent_id: parent_id
@@ -366,7 +450,7 @@ task sample_data: :environment do
     5.times do |i|
       commenter = family_and_friends.sample
       comment = Comment.create!(
-        body: Faker::Lorem.sentence(word_count: 40),
+        body: sample_comments.sample,
         author_id: commenter.id,
         post_id: post.id
       )
@@ -377,7 +461,7 @@ task sample_data: :environment do
       while depth < 10 && [true, false].sample
         reply_commenter = family_and_friends.sample
         comment = Comment.create!(
-          body: Faker::Lorem.sentence(word_count: 30),
+          body: sample_comments.sample,
           author_id: reply_commenter.id,
           post_id: post.id,
           parent_id: comment.id
@@ -420,4 +504,5 @@ end
 ending = Time.now
 puts "Sample data creation completed in #{(ending - starting).round(2)} seconds."
 puts "Summary: #{User.count} users, #{Post.count} posts, #{Comment.count} comments, #{ActsAsVotable::Vote.count} votes, #{MedicalRecord.count} medical records."
+end
 end

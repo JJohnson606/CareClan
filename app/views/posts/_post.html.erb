@@ -20,9 +20,9 @@
   <!-- Card Body -->
   <div class="card-body">
     <p><%= post.body %></p>
-    <% if post.image.present? %>
+   <% if post.image_attachment.present? %>
       <div class="p-4">
-        <%= image_tag post.image, alt: "Post Image", class: "rounded-lg w-full object-cover" %>
+        <%= image_tag post.image_attachment, alt: "Post Image", class: "rounded-lg w-full object-cover" %>
       </div>
     <% end %>
   </div>
