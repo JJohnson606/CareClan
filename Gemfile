@@ -7,6 +7,7 @@ gem 'kaminari', '~> 1.2', '>= 1.2.2'
 gem 'chartkick'
 gem 'debug'
 gem 'ransack'
+gem 'erb_lint'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.7", ">= 7.0.7"
