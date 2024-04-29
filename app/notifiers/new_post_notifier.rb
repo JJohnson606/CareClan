@@ -5,7 +5,7 @@ class NewPostNotifier < Noticed::Base
   def to_mailer
     {
       user: params[:user],
-      post: params[:post]
+      post: params[:post],
     }
   end
 end
