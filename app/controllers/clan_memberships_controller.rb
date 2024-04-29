@@ -19,7 +19,7 @@ class ClanMembershipsController < ApplicationController
   def create
     @clan_membership = ClanMembership.new(clan_membership_params)
     if @clan_membership.save
-      redirect_to @clan_membership, notice: 'Clan membership was successfully created.'
+      redirect_to @clan_membership, notice: "Clan membership was successfully created."
     else
       render :new
     end
@@ -27,7 +27,7 @@ class ClanMembershipsController < ApplicationController
 
   def update
     if @clan_membership.update(clan_membership_params)
-      redirect_to @clan_membership, notice: 'Clan membership was successfully updated.'
+      redirect_to @clan_membership, notice: "Clan membership was successfully updated."
     else
       render :edit
     end
@@ -36,7 +36,7 @@ class ClanMembershipsController < ApplicationController
   def destroy
     @clan_membership = ClanMembership.find(params[:id])
     @clan_membership.destroy
-    redirect_to clan_path(params[:clan_id]), notice: 'Clan membership was successfully destroyed.'
+    redirect_to clan_path(params[:clan_id]), notice: "Clan membership was successfully destroyed."
   end
 
   private
@@ -52,6 +52,6 @@ class ClanMembershipsController < ApplicationController
   def authorize_admin
     return if current_user.admin?
 
-    redirect_to root_path, alert: 'You are not authorized to perform this action.'
+    redirect_to root_path, alert: "You are not authorized to perform this action."
   end
 end
