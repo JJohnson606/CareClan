@@ -1,32 +1,30 @@
 <!DOCTYPE html>
 <html data-theme="emerald">
-<head>
-  <meta charset="UTF-8">
-  <title>CareClan - Streamline Your Family's Care</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
-  <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
-  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
-  <script src="https://kit.fontawesome.com/897711c116.js" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
- 
-</head>
-<body>
-  <%= render 'layouts/nav' %>
-
-  <div>
-    <% if controller_name == 'welcome' && action_name == 'index' %>
-      <%= yield %>
-    <% else %>
-      <div>
-        <% flash.each do |type, message| %>
-          <%= render partial: "layouts/flash", locals: { message: message, css_class: type.to_s } %>
-        <% end %>
+  <head>
+    <meta charset="UTF-8">
+    <title>CareClan - Streamline Your Family's Care</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
+    <script src="https://kit.fontawesome.com/897711c116.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <%= render 'layouts/nav' %>
+    <div>
+      <% if controller_name == 'welcome' && action_name == 'index' %>
         <%= yield %>
-      </div>
-    <% end %>
-  </div>
-</body>
+      <% else %>
+        <div>
+          <% flash.each do |type, message| %>
+            <%= render partial: "layouts/flash", locals: { message: message, css_class: type.to_s } %>
+          <% end %>
+          <%= yield %>
+        </div>
+      <% end %>
+    </div>
+  </body>
 </html>
