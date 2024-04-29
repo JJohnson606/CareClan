@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class PostsController < ApplicationController
   include PostLoadable
   respond_to :html, :json
-  before_action :load_post, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
+  before_action :load_post, only: %i[show edit update destroy approve disapprove]
 
   # GET /posts or /posts.json
   def index
@@ -9,7 +11,6 @@ class PostsController < ApplicationController
     @posts = @q.result(distinct: true).includes(:author, image_attachment: :blob)
     @posts = @q.result(distinct: true).page(params[:page])
   end
-
 
   # GET /posts/1 or /posts/1.json
   def show
@@ -27,24 +28,23 @@ class PostsController < ApplicationController
   end
 
   # GET /posts/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /posts or /posts.json
   def create
     @post = current_user.posts.build(post_params)
-  if @post.save
-    NewPostNotificationJob.perform_later(@post)
-    respond_with @post, location: post_url(@post), notice: "Post was successfully created."
-  else
-    respond_with @post.errors, status: :unprocessable_entity
-  end
+    if @post.save
+      NewPostNotificationJob.perform_later(@post)
+      respond_with @post, location: post_url(@post), notice: 'Post was successfully created.'
+    else
+      respond_with @post.errors, status: :unprocessable_entity
+    end
   end
 
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
     if @post.update(post_params)
-      respond_with @post, location: post_url(@post), notice: "Post was successfully updated."
+      respond_with @post, location: post_url(@post), notice: 'Post was successfully updated.'
     else
       respond_with @post.errors, status: :unprocessable_entity
     end
@@ -55,7 +55,7 @@ class PostsController < ApplicationController
     @post.destroy
 
     respond_to do |format|
-      format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
+      format.html { redirect_to posts_url, notice: 'Post was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -63,14 +63,14 @@ class PostsController < ApplicationController
   # Approve (like) the current post
   def approve
     @post.liked_by current_user
-    flash[:notice] = "Post approved successfully."
+    flash[:notice] = 'Post approved successfully.'
     redirect_back(fallback_location: root_path)
   end
 
   # Disapprove (dislike) the current post
   def disapprove
     @post.disliked_by current_user
-    flash[:notice] = "Post disapproved successfully."
+    flash[:notice] = 'Post disapproved successfully.'
     redirect_back(fallback_location: root_path)
   end
 
