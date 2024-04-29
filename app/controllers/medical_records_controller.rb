@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MedicalRecordsController < ApplicationController
   before_action :set_medical_record, only: %i[show edit update destroy]
 
@@ -11,8 +13,7 @@ class MedicalRecordsController < ApplicationController
   end
 
   # GET /medical_records/1 or /medical_records/1.json
-  def show
-  end
+  def show; end
 
   # GET /medical_records/new
   def new
@@ -35,7 +36,9 @@ class MedicalRecordsController < ApplicationController
     respond_to do |format|
       if @medical_record.save
         NewMedicalRecordNotificationJob.perform_later(current_user, @medical_record)
-        format.html { redirect_to medical_record_url(@medical_record), notice: "Medical record was successfully created." }
+        format.html do
+          redirect_to medical_record_url(@medical_record), notice: "Medical record was successfully created."
+        end
         format.json { render :show, status: :created, location: @medical_record }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -48,7 +51,9 @@ class MedicalRecordsController < ApplicationController
   def update
     respond_to do |format|
       if @medical_record.update(medical_record_params)
-        format.html { redirect_to medical_record_url(@medical_record), notice: "Medical record was successfully updated." }
+        format.html do
+          redirect_to medical_record_url(@medical_record), notice: "Medical record was successfully updated."
+        end
         format.json { render :show, status: :ok, location: @medical_record }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -75,7 +80,7 @@ class MedicalRecordsController < ApplicationController
   end
 
   def form_builder
-    SimpleForm::FormBuilder.new('medical_record', @medical_record, self.view_context, {})
+    SimpleForm::FormBuilder.new("medical_record", @medical_record, view_context, {})
   end
 
   private
@@ -85,25 +90,26 @@ class MedicalRecordsController < ApplicationController
   end
 
   def medical_record_params
-    params.require(:medical_record).permit(:patient_id, :record_type, :record_date, :created_by_id, images: []).tap do |permitted_params|
+    params.require(:medical_record).permit(:patient_id, :record_type, :record_date, :created_by_id,
+                                           images: []).tap do |permitted_params|
       permitted_params[:notes] = case permitted_params[:record_type]
-                                 when 'diagnosis'
-                                   RecordTypes::DiagnosisNotes.permitted_params(params)
-                                 when 'treatment_plan'
-                                   RecordTypes::TreatmentPlanNotes.permitted_params(params)
-                                 when 'prescription'
-                                   RecordTypes::PrescriptionNotes.permitted_params(params)
-                                 when 'imaging'
-                                   RecordTypes::ImagingNotes.permitted_params(params)
-                                 when 'progress_notes'
-                                   RecordTypes::ProgressNotesNotes.permitted_params(params)
-                                 when 'surgical_reports'
-                                   RecordTypes::SurgicalReportsNotes.permitted_params(params)
-                                 when 'vaccination_records'
-                                   RecordTypes::VaccinationRecordsNotes.permitted_params(params)
-                                 when 'lab_results'
-                                   RecordTypes::LabResultsNotes.permitted_params(params)
-                                 end
+        when "diagnosis"
+          RecordTypes::DiagnosisNotes.permitted_params(params)
+        when "treatment_plan"
+          RecordTypes::TreatmentPlanNotes.permitted_params(params)
+        when "prescription"
+          RecordTypes::PrescriptionNotes.permitted_params(params)
+        when "imaging"
+          RecordTypes::ImagingNotes.permitted_params(params)
+        when "progress_notes"
+          RecordTypes::ProgressNotesNotes.permitted_params(params)
+        when "surgical_reports"
+          RecordTypes::SurgicalReportsNotes.permitted_params(params)
+        when "vaccination_records"
+          RecordTypes::VaccinationRecordsNotes.permitted_params(params)
+        when "lab_results"
+          RecordTypes::LabResultsNotes.permitted_params(params)
+        end
     end
   end
 end

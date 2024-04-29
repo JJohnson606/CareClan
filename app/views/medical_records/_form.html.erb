@@ -1,4 +1,5 @@
 <!-- views/medical_records/_form.html.erb -->
+<!-- formatted -->
 <%= form_with(model: medical_record, id: "medical_record_form") do |form| %>
   <% if medical_record.errors.any? %>
     <div class="alert alert-error">
@@ -12,14 +13,12 @@
       </div>
     </div>
   <% end %>
-
   <ul class="steps">
     <li class="step step-primary" data-step="1">Choose Patient</li>
     <li class="step" data-step="2">Choose Date</li>
     <li class="step" data-step="3">Choose Record Type</li>
     <li class="step" data-step="4">Record Creator</li>
   </ul>
-
   <div id="step-content">
     <!-- Step 1: Choose Patient -->
     <div id="step-1" class="step-content" style="display: block;">
@@ -29,7 +28,6 @@
       </div>
       <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next</button>
     </div>
-
     <!-- Step 2: Choose Date -->
     <div id="step-2" class="step-content" style="display: none;">
       <div class="form-control">
@@ -39,7 +37,6 @@
       <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Previous</button>
       <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next</button>
     </div>
-
     <!-- Step 3: Choose Record Type -->
     <div id="step-3" class="step-content" style="display: none;">
       <div class="form-control">
@@ -51,7 +48,6 @@
       <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Previous</button>
       <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next</button>
     </div>
-
     <!-- Step 4: Record Creator -->
     <div id="step-4" class="step-content" style="display: none;">
       <div class="form-control">
@@ -63,7 +59,6 @@
     </div>
   </div>
 <% end %>
-
 <script>
   function goToStep(stepNumber) {
     // Hide all step content by default

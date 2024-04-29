@@ -1,79 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareClan - Streamline Your Family's Care</title>
-    <!-- Include Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Include Daisy UI CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.13.1/dist/full.css" rel="stylesheet">
-</head>
-<style>
-  .hero-background {
-    background-image: url('<%= asset_path 'hero.jpg' %>');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-  }
-  .hero-overlay {
-    background: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
-  }
-    .blended-image {
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-    border-radius: 8px; /* Optional: adds rounded corners */
-  }
-</style>
-
-<div class="hero min-h-screen hero-background">
-  <div class="hero-overlay"></div>
-  <div class="hero-content text-center text-neutral-content">
-    <div class="max-w-md">
-      <h1 class="mb-5 text-5xl font-bold">Welcome to CareClan</h1>
-      <p class="mb-5">Streamlined medical care coordination within your family, ensuring everyone stays informed and involved.</p>
-      <%= link_to 'Get Started', new_user_registration_path, class: 'btn btn-primary' %>
-    </div>
-  </div>
-</div>
-<section class="mb-20">
-  <div class="hero min-h-screen bg-base-200">
-    <div class="hero-content flex-col lg:flex-row">
-      <div>
-        <h2 class="text-5xl font-bold">Why Choose CareClan?</h2>
-        <p class="py-6">CareClan is dedicated to simplifying care updates for families. Our platform ensures that every family member and friend is updated and involved in the decision making process, no matter where they are.</p>
-        
-        <!-- Features List Start -->
-        <div class="features-list mt-6">
-          <h3 class="text-3xl font-bold mb-4">Key Features</h3>
-          <ul class="list-disc ml-6">
-            <li><strong>User-friendly Dashboard:</strong> Real-time updates on your loved ones.</li>
-            <li><strong>Detailed Care Log:</strong> Comprehensive records of all care activities.</li>
-            <li><strong>Information Sharing:</strong> Easy sharing with designated family and friends.</li>
-            <li><strong>Collective Decision-Making:</strong> Facilitate family and friend voting on medical updates, ensuring collaborative and democratic decisions.</li>
-
-            <!-- Add more features as needed -->
-          </ul>
-        </div>
-        <!-- Features List End -->
-
-        <div class="mt-8">
-          <%= link_to 'Learn More', new_user_registration_path, class: 'btn btn-primary' %> <!-- Update 'features_path' with the actual path -->
-        </div>
-      </div>
-      <!-- Optionally, include an image or graphic related to the content -->
-      <div>
-        <!-- Image or graphic placeholder -->
-        <%= image_tag 'care_clan_map.jpeg', alt: 'Feature Graphic', class: 'rounded-lg shadow-lg blended-image' %>
+  <style>
+    .hero-background {
+      background-image: url('<%= asset_path 'hero.jpg' %>');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .hero-overlay {
+      background: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+    }
+      .blended-image {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      border-radius: 8px; /
+    }
+  </style>
+  <div class="hero min-h-screen hero-background">
+    <div class="hero-overlay"></div>
+    <div class="hero-content text-center text-neutral-content">
+      <div class="max-w-md">
+        <h1 class="mb-5 text-5xl font-bold">Welcome to CareClan</h1>
+        <p class="mb-5">Streamlined medical care coordination within your family, ensuring everyone stays informed and involved.</p>
+        <%= link_to 'Get Started', new_user_registration_path, class: 'btn btn-primary' %>
       </div>
     </div>
   </div>
-</section>
-
-<section class="call-to-action py-20 bg-accent">
-  <div class="text-center text-neutral-content">
-    <h2 class="text-5xl font-bold mb-6">Ready to Get Started?</h2>
-    <p class="mb-8">Join the CareClan community today and make family care decisions effortless.</p>
-    <%= link_to 'Sign Up Now', new_user_registration_path, class: 'btn btn-primary' %>
-  </div>
-</section>
+  <section class="mb-20">
+    <div class="hero min-h-screen bg-base-200">
+      <div class="hero-content flex-col lg:flex-row">
+        <div>
+          <h2 class="text-5xl font-bold">Why Choose CareClan?</h2>
+          <p class="py-6">CareClan is dedicated to simplifying care updates for families. Our platform ensures that every family member and friend is updated and involved in the decision making process, no matter where they are.</p>
+          <!-- Features List Start -->
+          <div class="features-list mt-6">
+            <h3 class="text-3xl font-bold mb-4">Key Features</h3>
+            <ul class="list-disc ml-6">
+              <li><strong>User-friendly Dashboard:</strong> Real-time updates on your loved ones.</li>
+              <li><strong>Detailed Care Log:</strong> Comprehensive records of all care activities.</li>
+              <li><strong>Information Sharing:</strong> Easy sharing with designated family and friends.</li>
+              <li><strong>Collective Decision-Making:</strong> Facilitate family and friend voting on medical updates, ensuring collaborative and democratic decisions.</li>
+            </ul>
+          </div>
+          <!-- Features List End -->
+          <div class="mt-8">
+            <%= link_to 'Learn More', new_user_registration_path, class: 'btn btn-primary' %> <!-- Update 'features_path' with the actual path -->
+          </div>
+        </div>
+        <div>
+          <%= image_tag 'care_clan_map.jpeg', alt: 'Feature Graphic', class: 'rounded-lg shadow-lg blended-image' %>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="call-to-action py-20 bg-accent">
+    <div class="text-center text-neutral-content">
+      <h2 class="text-5xl font-bold mb-6">Ready to Get Started?</h2>
+      <p class="mb-8">Join the CareClan community today and make family care decisions effortless.</p>
+      <%= link_to 'Sign Up Now', new_user_registration_path, class: 'btn btn-primary' %>
+    </div>
+  </section>

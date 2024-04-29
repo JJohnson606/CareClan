@@ -10,15 +10,12 @@
       </ul>
     </div>
   <% end %>
-
   <div class="mb-4">
     <% placeholder_text = comment.parent_id.present? ? "Write a reply..." : "Add a comment..." %>
     <%= form.text_area :body, class: "textarea textarea-primary w-full", placeholder: placeholder_text %>
   </div>
-
   <%= form.hidden_field :author_id, value: current_user.id %>
   <%= form.hidden_field :parent_id %>
-
   <div class="flex justify-end mt-2">
     <%= form.submit comment.new_record? ? "Post Comment" : "Update Comment", class: "btn btn-primary" %>
   </div>

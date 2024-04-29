@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class CommentsController < ApplicationController
   include PostFindable
-  before_action :find_post, except: [:show, :edit, :update, :destroy, :approve, :disapprove]
-  before_action :set_post, except: [:show, :edit, :update, :destroy, :approve, :disapprove]
-  before_action :set_comment, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
-  before_action :set_parent_comment, only: [:create, :new]
+  before_action :find_post, except: %i[show edit update destroy approve disapprove]
+  before_action :set_post, except: %i[show edit update destroy approve disapprove]
+  before_action :set_comment, only: %i[show edit update destroy approve disapprove]
+  before_action :set_parent_comment, only: %i[create new]
 
   # GET /comments or /comments.json
   def index
@@ -11,8 +13,7 @@ class CommentsController < ApplicationController
   end
 
   # GET /comments/1 or /comments/1.json
-  def show
-  end
+  def show; end
 
   # GET /comments/new
   def new
@@ -21,8 +22,7 @@ class CommentsController < ApplicationController
   end
 
   # GET /comments/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /comments or /comments.json
   def create
@@ -30,11 +30,12 @@ class CommentsController < ApplicationController
     @comment = @post.comments.create(comment_params.merge(author: current_user))
     if @comment.save
       # Trigger notification after successful save
-      NewCommentNotifier.with(post: @post, user: current_user, message: "New comment on your post!").deliver(current_user)
-      redirect_to @post, notice: 'Comment was successfully created.'
+      NewCommentNotifier.with(post: @post, user: current_user,
+                              message: "New comment on your post!").deliver(current_user)
+      redirect_to @post, notice: "Comment was successfully created."
     else
-      flash.now[:alert] = 'Failed to create comment.'
-      render 'posts/show', status: :unprocessable_entity
+      flash.now[:alert] = "Failed to create comment."
+      render "posts/show", status: :unprocessable_entity
     end
   end
 
@@ -61,41 +62,37 @@ class CommentsController < ApplicationController
     end
   end
 
-
   def approve
     @comment.liked_by current_user
-    redirect_to post_path(@comment.post), notice: 'Comment approved!'
+    redirect_to post_path(@comment.post), notice: "Comment approved!"
   end
 
   def disapprove
     @comment.disliked_by current_user
-    redirect_to post_path(@comment.post), notice: 'Comment disapproved!'
+    redirect_to post_path(@comment.post), notice: "Comment disapproved!"
   end
-
 
   private
 
-   def set_post
+  def set_post
     if params[:post_id]
-    @post = Post.find(params[:post_id])
-  elsif params[:comment_id]
-    #'comment_id' is the parent comment's ID when replying
-    parent_comment = Comment.find(params[:comment_id])
-    @post = parent_comment.post
-  else
-    redirect_to root_url, alert: "Post not found."
+      @post = Post.find(params[:post_id])
+    elsif params[:comment_id]
+      # 'comment_id' is the parent comment's ID when replying
+      parent_comment = Comment.find(params[:comment_id])
+      @post = parent_comment.post
+    else
+      redirect_to root_url, alert: "Post not found."
+    end
   end
-end
 
-
-def find_parent_comment
-  @parent_comment = Comment.find_by(id: params[:parent_id]) if params[:parent_id].present?
-end
+  def find_parent_comment
+    @parent_comment = Comment.find_by(id: params[:parent_id]) if params[:parent_id].present?
+  end
 
   def set_comment
     @comment = Comment.find(params[:id])
   end
-
 
   def comment_params
     params.require(:comment).permit(:body, :parent_id)

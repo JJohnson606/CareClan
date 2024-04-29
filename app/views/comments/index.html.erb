@@ -1,12 +1,8 @@
 <h1>Comments</h1>
-
-
-  <% @comments.each do |comment| %>
-    <%= render comment %>
-    <p>
-      <%= link_to "Show this comment", comment %>
-    </p>
-  <% end %>
-
-
+<% @comments.each do |comment| %>
+  <%= render comment %>
+  <p>
+    <%= link_to "Show this comment", comment %>
+  </p>
+<% end %>
 <%= link_to "New comment", new_comment_path %>

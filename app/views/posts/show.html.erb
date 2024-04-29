@@ -9,11 +9,9 @@
       <h1 class="text-2xl font-bold"><%= @post.title %></h1>
     </div>
   </div>
-
   <div class="post-content mb-4">
     <%= render @post %>
   </div>
-
   <div class="collapse collapse-arrow bg-base-400 rounded-box shadow-lg">
     <input type="checkbox" class="peer" />
     <div class="collapse-title text-xl font-medium peer-checked:bg-primary peer-checked:text-white text-center">
@@ -27,7 +25,6 @@
       <% end %>
     </div>
   </div>
-
   <div class="flex gap-4 mb-4">
     <!-- Approved By Section -->
     <div class="flex-1 bg-primary rounded-lg p-4 flex flex-col items-center">
@@ -51,7 +48,6 @@
         <% end %>
       </div>
     </div>
-
     <!-- Disapproved By Section -->
     <div class="flex-1 bg-accent rounded-lg p-4 flex flex-col items-center">
       <h5 class="text-lg font-semibold text-white mb-2">Disapproved</h5>
@@ -75,7 +71,6 @@
       </div>
     </div>
   </div>
-
   <div class="flex gap-4 mb-4">
     <!-- Approval Rating Section -->
     <div class="stats shadow w-full bg-gray-100 p-4 rounded-lg mb-4 mx-auto">
@@ -103,14 +98,13 @@
       </div>
     </div>
   </div>
-
   <!-- Comment Sorting Links -->
   <div class="flex justify-center mb-4">
     <div class="dropdown">
       <button class="btn btn-black dropdown-toggle" tabindex="0">
         Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
       </button>
-      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">   
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">
         <li> <%= link_to 'Newest', post_path(@post, q: {s: 'created_at desc'}) %> </li>
         <li> <%= link_to 'Oldest', post_path(@post, q: {s: 'created_at asc'}) %></li>
         <li> <%= link_to 'Most Popular', post_path(@post, q: {s: 'replies_count desc'}) %> </li>
@@ -118,8 +112,6 @@
       </ul>
     </div>
   </div>
-
-
   <div class="flex gap-4 mb-4">
     <!-- Comment Section -->
     <ul class="timeline timeline-vertical">
