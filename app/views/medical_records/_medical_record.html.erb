@@ -15,8 +15,6 @@
       </div>
     <% end %>
   </div>
-
-
   <!-- Display patient information with standardized avatar -->
   <div class="flex justify-between">
     <div class="card flex-1 m-2 bg-base-100 shadow-xl">
@@ -35,7 +33,6 @@
         </div>
       </div>
     </div>
-
     <!-- Display doctor information with standardized avatar -->
     <div class="card flex-1 m-2 bg-base-100 shadow-xl">
       <div class="card-body">
@@ -51,39 +48,35 @@
           </div>
           <p class="font-bold ml-2">Ordered by: <%= @medical_record.creator.name %></p>
           <div>
-           
-          <p class="font-mono italic text-sm" id="phone_number"><i class="fas fa-phone-alt mr-2"></i>555-217-7777<p>
-            
-          <p class="font-mono italic text-sm" id="address"> <i class="fas fa-map-marker-alt mr-2"></i>123 Main St, Anytown, CA 90210</p>
+            <p class="font-mono italic text-sm" id="phone_number"><i class="fas fa-phone-alt mr-2"></i>555-217-7777
+              <p>
+                <p class="font-mono italic text-sm" id="address"> <i class="fas fa-map-marker-alt mr-2"></i>123 Main St, Anytown, CA 90210</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <p class="font-mono italic text-sm">Date: <%= @medical_record.record_date.strftime("%B %d, %Y") rescue 'Not specified' %></p>
+      <!-- Determine which partial to render based on the record type -->
+      <% case @medical_record.record_type %>
+      <% when 'diagnosis' %>
+        <%= render partial: 'medical_records/partials/diagnosis', locals: { medical_record: @medical_record } %>
+      <% when 'treatment_plan' %>
+        <%= render partial: 'medical_records/partials/treatment_plan', locals: { medical_record: @medical_record } %>
+      <% when 'prescription' %>
+        <%= render partial: 'medical_records/partials/prescription', locals: { medical_record: @medical_record } %>
+      <% when 'lab_results' %>
+        <%= render partial: 'medical_records/partials/lab_results', locals: { medical_record: @medical_record } %>
+      <% when 'imaging' %>
+        <%= render partial: 'medical_records/partials/imaging', locals: { medical_record: @medical_record } %>
+      <% when 'progress_notes' %>
+        <%= render partial: 'medical_records/partials/progress_notes', locals: { medical_record: @medical_record } %>
+      <% when 'surgical_reports' %>
+        <%= render partial: 'medical_records/partials/surgical_reports', locals: { medical_record: @medical_record } %>
+      <% when 'vaccination_records' %>
+        <%= render partial: 'medical_records/partials/vaccination_records', locals: { medical_record: @medical_record } %>
+      <% else %>
+        <% # Default case to handle other or unknown record types %>
+      <% end %>
+      <!-- Notes Section -->
     </div>
-  </div>
-
-  <p class="font-mono italic text-sm">Date: <%= @medical_record.record_date.strftime("%B %d, %Y") rescue 'Not specified' %></p>
-
-  <!-- Determine which partial to render based on the record type -->
-  <% case @medical_record.record_type %>
-  <% when 'diagnosis' %>
-    <%= render partial: 'medical_records/partials/diagnosis', locals: { medical_record: @medical_record } %>
-  <% when 'treatment_plan' %>
-    <%= render partial: 'medical_records/partials/treatment_plan', locals: { medical_record: @medical_record } %>
-  <% when 'prescription' %>
-    <%= render partial: 'medical_records/partials/prescription', locals: { medical_record: @medical_record } %>
-  <% when 'lab_results' %>
-    <%= render partial: 'medical_records/partials/lab_results', locals: { medical_record: @medical_record } %>
-  <% when 'imaging' %>
-    <%= render partial: 'medical_records/partials/imaging', locals: { medical_record: @medical_record } %>
-  <% when 'progress_notes' %>
-    <%= render partial: 'medical_records/partials/progress_notes', locals: { medical_record: @medical_record } %>
-  <% when 'surgical_reports' %>
-    <%= render partial: 'medical_records/partials/surgical_reports', locals: { medical_record: @medical_record } %>
-  <% when 'vaccination_records' %>
-    <%= render partial: 'medical_records/partials/vaccination_records', locals: { medical_record: @medical_record } %>
-  <% else %>
-    <% # Default case to handle other or unknown record types %>
-  <% end %>
-
-  <!-- Notes Section -->
-</div>
