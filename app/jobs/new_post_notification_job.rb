@@ -1,6 +1,6 @@
 class NewPostNotificationJob < ApplicationJob
   queue_as :default
- 
+
   def perform(post)
     post.author.clans.each do |clan|
       clan.users.each do |user|
