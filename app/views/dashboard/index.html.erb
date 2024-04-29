@@ -2,16 +2,13 @@
 <h1>Dashboard</h1>
 <div>
   <%= link_to 'Create New Post', new_post_path, class: "btn" %>
-
-  </div>
-
-  <% @posts.each do |post| %>
+</div>
+<% @posts.each do |post| %>
+  <div>
+    <!-- Post Section -->
     <div>
-      <!-- Post Section -->
-      <div>
-        <h2 class="text-lg font-bold mb-4">Posts</h2>
-        <%= render 'posts/post', post: post %>
-      </div>
+      <h2 class="text-lg font-bold mb-4">Posts</h2>
+      <%= render 'posts/post', post: post %>
+    </div>
   <% end %>
 </div>
-
