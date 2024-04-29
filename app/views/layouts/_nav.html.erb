@@ -19,13 +19,6 @@
         </div>
         <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-300 rounded-box w-52">
           <!-- Menu items -->
-          <li>
-          <select data-choose-theme>
-          <option value="emerald">Default</option>
-          <option value="dark">Dark</option>
-          <option value="pink">Pink</option>
-           </select>
-           </li>
           <li><%= link_to 'Dashboard', posts_path %> </li>
           <li><%= link_to 'Medical Records', medical_records_path %></li>
           <li><%= link_to 'My Clan', clans_path %></li>
@@ -33,10 +26,6 @@
           <li><%= link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %></li>
         </ul>
       </div>
-
-          <!-- Notifications Link Here-->
-          <!-- Approvals Rank Link Here-->
-
     <% else %>
       <%= link_to 'Login', new_user_session_path, class: "btn" %>
       <%= link_to 'Sign Up', new_user_registration_path, class: "btn" %>
