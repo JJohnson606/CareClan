@@ -1,11 +1,11 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
-  before_action :set_medical_record, only: [:new]
+  include PostLoadable
   respond_to :html, :json
 
   # GET /posts or /posts.json
   def index
-    @q = Post.with_author_and_image.ransack(params[:q])
+    @q = Post.ransack(params[:q])
+    @posts = @q.result(distinct: true).includes(:author, image_attachment: :blob)
     @posts = @q.result(distinct: true).page(params[:page])
   end
 
@@ -67,12 +67,14 @@ class PostsController < ApplicationController
       format.json { head :no_content }
     end
   end
-
+  
+  # Approve (like) the current post
   def approve
     @post.liked_by current_user
     redirect_back(fallback_location: root_path)
   end
 
+  # Disapprove (dislike) the current post
   def disapprove
     @post.disliked_by current_user
     redirect_back(fallback_location: root_path)
@@ -80,18 +82,7 @@ class PostsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_post
-    @post = Post.find(params[:id])
-    redirect_to posts_path, alert: "Post not found." unless @post
-  end
-
-  # Only allow a list of trusted parameters through.
   def post_params
     params.require(:post).permit(:title, :author_id, :body, :image, :trusted, :medical_record_id)
-  end
-
-  def set_medical_record
-    @medical_record = MedicalRecord.find(params[:medical_record_id]) if params[:medical_record_id].present?
   end
 end
