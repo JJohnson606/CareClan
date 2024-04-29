@@ -1,13 +1,13 @@
 class NewMedicalRecordNotifier < Noticed::Base
   deliver_by :database  # logs to the database
-  deliver_by :email, mailer: 'UserMailer', method: :new_medical_record_notification
+  deliver_by :email, mailer: "UserMailer", method: :new_medical_record_notification
 
   required_param :medical_record
 
   def to_database
     {
       title: "New Medical Record Added",
-      text: "A new medical record for #{params[:medical_record].patient.name} has been added."
+      text: "A new medical record for #{params[:medical_record].patient.name} has been added.",
     }
   end
 
