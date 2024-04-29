@@ -6,7 +6,7 @@ Rails.application.configure do
     Bullet.alert         = false
     Bullet.bullet_logger = false
     Bullet.console       = false
-    Bullet.rails_logger  = false
+    Bullet.rails_logger  = true
     Bullet.add_footer    = false
   end
 
