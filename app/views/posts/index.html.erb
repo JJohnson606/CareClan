@@ -9,14 +9,15 @@
       <button class="btn btn-black dropdown-toggle" tabindex="0">
         Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
       </button>
-      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-        <li><%= link_to 'Newest', posts_path(q: { s: 'created_at desc' }), class: "dropdown-item" %></li>
-        <li><%= link_to 'Oldest', posts_path(q: { s: 'created_at asc' }), class: "dropdown-item" %></li>
-        <li><%= link_to 'Popularity', posts_path(q: { s: 'comments_count desc' }), class: "dropdown-item" %></li>
-        <li><%= link_to 'Controversial', posts_path(q: { s: 'cached_vote_diff desc' }), class: "dropdown-item" %></li>
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">
+         <li><%= link_to 'Newest', posts_path(q: { s: 'created_at desc' }), class: "dropdown-item" %></li>
+         <li><%= link_to 'Oldest', posts_path(q: { s: 'created_at asc' }), class: "dropdown-item" %></li>
+         <li><%= link_to 'Popularity', posts_path(q: { s: 'comments_count desc' }), class: "dropdown-item" %></li>
+         <li><%= link_to 'Controversial', posts_path(q: { s: 'cached_vote_diff desc' }), class: "dropdown-item" %></li>
       </ul>
     </div>
   </div>
+
 
   <!-- Posts Display -->
   <div id="posts" class="flex flex-col justify-center gap-6">
