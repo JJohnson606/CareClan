@@ -1,8 +1,6 @@
 <!-- views/post/index.html.erb -->
-
 <div class="container mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold text-center mb-8">Posts</h1>
-
   <!-- Sorting Options -->
   <div class="flex justify-center mb-4">
     <div class="dropdown">
@@ -10,15 +8,13 @@
         Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
       </button>
       <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">
-         <li><%= link_to 'Newest', posts_path(q: { s: 'created_at desc' }), class: "dropdown-item" %></li>
-         <li><%= link_to 'Oldest', posts_path(q: { s: 'created_at asc' }), class: "dropdown-item" %></li>
-         <li><%= link_to 'Popularity', posts_path(q: { s: 'comments_count desc' }), class: "dropdown-item" %></li>
-         <li><%= link_to 'Controversial', posts_path(q: { s: 'cached_vote_diff desc' }), class: "dropdown-item" %></li>
+        <li><%= link_to 'Newest', posts_path(q: { s: 'created_at desc' }), class: "dropdown-item" %></li>
+        <li><%= link_to 'Oldest', posts_path(q: { s: 'created_at asc' }), class: "dropdown-item" %></li>
+        <li><%= link_to 'Popularity', posts_path(q: { s: 'comments_count desc' }), class: "dropdown-item" %></li>
+        <li><%= link_to 'Controversial', posts_path(q: { s: 'cached_vote_diff desc' }), class: "dropdown-item" %></li>
       </ul>
     </div>
   </div>
-
-
   <!-- Posts Display -->
   <div id="posts" class="flex flex-col justify-center gap-6">
     <% @posts.each do |post| %>
@@ -43,7 +39,6 @@
             </h5>
           </div>
         </div>
-
         <!-- Post Content -->
         <% if post.image.attached? %>
           <div class="w-full h-48">
@@ -57,10 +52,10 @@
           <div class="flex justify-between items-center mt-4">
             <div class="flex space-x-2">
               <%= button_to approve_post_path(post), method: :put, class: "btn btn-primary btn-xs" do %>
-                <i class="fa-solid fa-arrow-up"></i> 
+                <i class="fa-solid fa-arrow-up"></i>
               <% end %>
               <%= button_to disapprove_post_path(post), method: :put, class: "btn btn-accent btn-xs" do %>
-                <i class="fa-solid fa-arrow-down"></i> 
+                <i class="fa-solid fa-arrow-down"></i>
               <% end %>
             </div>
             <%= link_to "View Post", post, class: 'text-primary' %>

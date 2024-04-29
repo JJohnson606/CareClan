@@ -1,8 +1,7 @@
 <!-- app/views/posts/_post.html.erb -->
-
 <div class="card bg-base-100 shadow-xl mb-4">
   <!-- Card Header -->
-    <div class="card-header flex items-center space-x-4 p-4">
+  <div class="card-header flex items-center space-x-4 p-4">
     <div class="avatar">
       <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
         <% if post.author.profile_picture.attached? %>
@@ -16,17 +15,15 @@
       <%= post.author.name %>
     </h5>
   </div>
-
   <!-- Card Body -->
   <div class="card-body">
     <p><%= post.body %></p>
-   <% if post.image_attachment.present? %>
+    <% if post.image_attachment.present? %>
       <div class="p-4">
         <%= image_tag post.image_attachment, alt: "Post Image", class: "rounded-lg w-full object-cover" %>
       </div>
     <% end %>
   </div>
-
   <!-- Card Actions -->
   <div class="card-footer flex justify-between items-center p-4">
     <div class="flex space-x-2">

@@ -5,9 +5,7 @@
     <i class="fa-solid fa-circle-chevron-left" style="color: #ffffff;"></i>
   <% end %>
 </div>
-
 <%= render partial: 'medical_records/medical_record', locals: { medical_record: @medical_record } %>
-
 <div>
   <%= link_to "Edit this medical record", edit_medical_record_path(@medical_record) %> |
   <%= link_to "Back to medical records", medical_records_path %>
