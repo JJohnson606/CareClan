@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   include PostLoadable
   respond_to :html, :json
+  before_action :load_post, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
 
   # GET /posts or /posts.json
   def index
@@ -12,15 +13,6 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
-      @post = Post.includes(
-        :image_attachment,
-        author: { profile_picture_attachment: :blob },
-        comments: [
-          { author: { profile_picture_attachment: :blob } },
-          { replies: [:author, { author: { profile_picture_attachment: :blob } }] }
-        ]
-      ).find(params[:id])
-
     @comments = CommentSorter.new(@post, params[:q]).sort
     @approval_rating = @post.approval_rating
     @medical_record = @post.medical_record
@@ -31,7 +23,7 @@ class PostsController < ApplicationController
   # GET /posts/new
   def new
     @post = Post.new
-    @medical_record = MedicalRecord.find(params[:medical_record_id]) if params[:medical_record_id].present?
+    set_medical_record
   end
 
   # GET /posts/1/edit
@@ -67,16 +59,18 @@ class PostsController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   # Approve (like) the current post
   def approve
     @post.liked_by current_user
+    flash[:notice] = "Post approved successfully."
     redirect_back(fallback_location: root_path)
   end
 
   # Disapprove (dislike) the current post
   def disapprove
     @post.disliked_by current_user
+    flash[:notice] = "Post disapproved successfully."
     redirect_back(fallback_location: root_path)
   end
 
@@ -84,5 +78,9 @@ class PostsController < ApplicationController
 
   def post_params
     params.require(:post).permit(:title, :author_id, :body, :image, :trusted, :medical_record_id)
+  end
+
+  def load_post
+    @post = Post.find(params[:id])
   end
 end
