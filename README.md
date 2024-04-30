@@ -14,7 +14,7 @@ application up and running.
 bundle install
 yarn install
 ./bin/dev
-login {email: :gary@example.com, password: :password}
+login {email: :gary@example.com, password: :password} #Production and Development Environments
 ```
 # Overview
 
