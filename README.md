@@ -14,43 +14,16 @@ application up and running.
 bundle install
 yarn install
 ./bin/dev
+login {email: :gary@example.com, password: :password}
 ```
 # Overview
 
-CareClan is a web application designed to streamline the management and sharing of medical care responsibilities within families. The platform enables users to efficiently communicate updates, make collective decisions, and maintain a centralized record of their elderly family member's care.
-
-**Addressing Care Coordination Challenges**
-
-> In our fast-paced and often dispersed world, coordinating care for family members presents a unique set of challenges. Families are frequently spread across different locations, > making it difficult to stay informed about the daily care and medical updates of their loved ones. Given the sensitive nature of healthcare, there's a critical need for a tool
-> that not only facilitates the sharing of information but also respects the privacy and dignity of the individual. CareClan aims to fulfill this need by providing a platform that > supports collaborative care efforts while honoring the individual's preferences and needs.
-
-## Features
-
-1. User-friendly Dashboard: For real-time updates on care.
-2. Detailed Care Log: Maintains records of all care activities.
-3. Information Sharing: Allows sharing of relevant information with designated family members.
-4. Status Updates and Comments: For efficient communication within the family.
-5. Voting System: For democratic decision-making on care matters.
-6. Responsive Design: Ensures accessibility from various devices.
-
-### User Stories
-
-**Dashboard and Post**
-
-- As a family member, I want to see a dashboard with recent care updates for my elderly relative so that I can quickly get up to speed with their current status.
-Care Management
-- As a family member with Power of Attorney, I want to post detailed updates about medical appointments, care decisions, and daily activities, so other family members are well-informed.
-- As a family member, I want to view comprehensive information about each care update, including descriptions, dates, and any attached images, to feel more connected to my elderly relative's care.
-- 
-  **Family Collaboration**
-  
-- As a family member, I want the ability to comment on care updates to ask questions, provide support, or offer insights, fostering a supportive family network.
-- As a family member, I want to participate in care decisions by voting on important matters, ensuring that my voice is heard in the collective decision-making process.
-- 
-**General**
-  
-- As a user, I desire a straightforward and intuitive interface that allows for easy navigation between care updates, family discussions, and decision-making features.
-- As a user, I need the flexibility to edit or remove care updates and comments to ensure the information remains accurate and relevant.
-- As a user, I expect the application to be responsive and accessible from various devices, allowing me to stay connected with my family's care efforts regardless of where I am.
-
-  ![CareClan Entity Relationship Model](/app/assets/images/erd.jpeg)
+1. **Logging In:** After logging in with your username and password, users gain access to their medical records.
+2. **Accessing Medical Records:** Users can access their medical records once logged in. These records may include information such as past appointments, prescriptions, and medical history.
+3. **Creating New Records:** Users have the option to create new records within the app. This could involve documenting new medical information, such as medication intake or symptoms, by specifying a date and record type.
+4. **Sharing Medical Records:** The app allows users to share their medical records with friends and family, potentially for purposes such as seeking advice or updating loved ones on their health status.
+5. **Voting on Posts:** Users can vote on their own posts within the app. This feature might be used for feedback or to track the popularity or importance of certain medical updates or discussions.
+6. **Engaging in Conversations:** Users can engage in conversations within the app, likely with other users or healthcare professionals.
+7. **Receiving Feedback:** Users can receive feedback from others within the app. This feedback might come from peers, healthcare professionals, or other members of the Careclan community.
+8. **Managing Privacy Settings:** Manage Privacy Settings in the Clan Section by Toggling Trust.
+9. **Enjoy The Content**
