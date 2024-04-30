@@ -1,19 +1,20 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.1'
+ruby "3.2.1"
 gem "simple_form"
-gem 'kaminari', '~> 1.2', '>= 1.2.2'
-gem 'chartkick'
-gem 'debug'
-gem 'ransack'
-gem 'erb_lint'
+gem "kaminari", "~> 1.2", ">= 1.2.2"
+gem "chartkick"
+gem "debug"
+gem "ransack"
+gem "erb_lint"
+gem "aws-sdk-s3"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.7", ">= 7.0.7"
 
 # Update rake gem file to 13.1.0
-gem 'rake', '13.1.0'
+gem "rake", "13.1.0"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -22,7 +23,7 @@ gem "sprockets-rails"
 gem "pg", "~> 1.1"
 
 # Generates uuids for security
-gem 'pgcrypto', '~> 0.4.1'
+gem "pgcrypto", "~> 0.4.1"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 6.0"
@@ -89,15 +90,15 @@ end
 # ===========
 gem "appdev_support"
 gem "awesome_print"
-gem "devise"       # to be removed
+gem "devise"
 gem "dotenv-rails"
 gem "faker"
 gem "htmlbeautifier"
 gem "http"
 gem "sqlite3", "~> 1.4"
 gem "table_print"
-gem 'ui_faces'
-gem 'acts_as_votable', '~> 0.14.0'
+gem "ui_faces"
+gem "acts_as_votable", "~> 0.14.0"
 
 group :development do
   gem "annotate"
@@ -111,8 +112,8 @@ group :development do
   gem "rufo"
   gem "specs_to_readme"
   gem "web_git"
-  gem 'bullet'
-  gem 'letter_opener', '~> 1.10'
+  gem "bullet"
+  gem "letter_opener", "~> 1.10"
 end
 
 group :development, :test do
@@ -120,7 +121,7 @@ group :development, :test do
 end
 
 group :test do
-  gem "draft_matchers"#, "0.0.2"#path: "../../my_stuff/draft_matchers"
+  gem "draft_matchers" #, "0.0.2"#path: "../../my_stuff/draft_matchers"
   # gem "draft_matchers"
   gem "rspec-html-matchers"
   gem "webmock"
