@@ -34,6 +34,8 @@ class Post < ApplicationRecord
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: 'Noticed::Event'
   has_many :notifications, through: :noticed_events, class_name: 'Noticed::Notification'
 
+  after_create_commit :enqueue_notification_job
+
   scope :with_author_and_image, -> { includes(:author, image_attachment: :blob) }
   scope :with_comments_and_replies, lambda {
     includes(
@@ -58,4 +60,10 @@ class Post < ApplicationRecord
   }
 
   scope :controversial, -> { order(cached_vote_diff: :desc) }
+
+  private
+
+  def enqueue_notification_job
+    NewPostNotificationJob.perform_later(self)
+  end
 end
