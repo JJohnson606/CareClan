@@ -127,6 +127,6 @@ group :test do
   gem "webmock"
 end
 
-gem "sidekiq", "~> 7.2"
-
 gem "noticed", "~> 2.2"
+
+gem "good_job", "~> 3.28"
