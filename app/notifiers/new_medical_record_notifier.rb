@@ -1,4 +1,4 @@
-class NewMedicalRecordNotifier < Noticed::Base
+class NewMedicalRecordNotifier < Noticed::Event
   deliver_by :database  # logs to the database
   deliver_by :email, mailer: "UserMailer", method: :new_medical_record_notification
 
