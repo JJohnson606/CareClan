@@ -1,4 +1,4 @@
-class NewCommentNotifier < Noticed::Base
+class NewCommentNotifier < Noticed::Event
   deliver_by :email, mailer: "UserMailer", method: :new_comment_notification, if: -> { user.allow_email_notifications? }
   param :post, :user, :message
 
