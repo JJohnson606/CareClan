@@ -1,6 +1,7 @@
-class NewPostNotifier < Noticed::Base
+class NewPostNotifier < Noticed::Event
   deliver_by :email, mailer: "UserMailer", method: :new_post_notification
-  param :user, :post
+  required_param :user
+  required_param :post
 
   def to_mailer
     {
