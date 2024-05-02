@@ -35,7 +35,6 @@ class MedicalRecordsController < ApplicationController
 
     respond_to do |format|
       if @medical_record.save
-        NewMedicalRecordNotificationJob.perform_later(current_user, @medical_record)
         format.html do
           redirect_to medical_record_url(@medical_record), notice: "Medical record was successfully created."
         end
