@@ -1,5 +1,15 @@
-<h1>Hello <%= @user.name %>,</h1>
-<p>A new medical record has been added to your clan's records:</p>
+<!-- app/views/user_mailer/new_medical_record_notification.html.erb -->
+<h1>New Medical Record Added</h1>
+
+<p>Hi <%= @user.email %>,</p>
+
+<p>A new medical record has been added:</p>
+
 <p><strong>Type:</strong> <%= @medical_record.record_type %></p>
 <p><strong>Date:</strong> <%= @medical_record.record_date %></p>
 <p><strong>Notes:</strong> <%= @medical_record.notes %></p>
+
+<p>Click the link below to view the medical record:</p>
+<p><%= link_to 'View Medical Record', url_for(@medical_record) %></p>
+
+<p>Thanks for being a part of our community!</p>
