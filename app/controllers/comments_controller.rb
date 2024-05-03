@@ -29,9 +29,6 @@ class CommentsController < ApplicationController
     find_parent_comment
     @comment = @post.comments.create(comment_params.merge(author: current_user))
     if @comment.save
-      # Trigger notification after successful save
-      NewCommentNotifier.with(post: @post, user: current_user,
-                              message: "New comment on your post!").deliver(current_user)
       redirect_to @post, notice: "Comment was successfully created."
     else
       flash.now[:alert] = "Failed to create comment."

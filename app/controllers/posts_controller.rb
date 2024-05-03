@@ -34,7 +34,6 @@ class PostsController < ApplicationController
   def create
     @post = current_user.posts.build(post_params)
     if @post.save
-      NewPostNotificationJob.perform_later(@post)
       respond_with @post, location: post_url(@post), notice: "Post was successfully created."
     else
       respond_with @post.errors, status: :unprocessable_entity

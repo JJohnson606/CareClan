@@ -1,5 +1,3 @@
-require "sidekiq/web"
-
 Rails.application.routes.draw do
   root "welcome#index"
 
@@ -45,5 +43,7 @@ Rails.application.routes.draw do
 
   get 'dashboard', to: 'dashboard#index', as: 'dashboard'
 
-  mount Sidekiq::Web => '/sidekiq'
+  authenticate :user, ->(user) { user.admin? } do
+    mount GoodJob::Engine => 'good_job'
+  end
 end

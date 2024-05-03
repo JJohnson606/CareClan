@@ -10,7 +10,7 @@
 #  created_by_id :uuid             not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  
+#
 class MedicalRecord < ApplicationRecord
   has_many_attached :images
   belongs_to :patient, class_name: 'User', foreign_key: 'patient_id'
@@ -28,6 +28,8 @@ class MedicalRecord < ApplicationRecord
     vaccination_records: 'Vaccination Records'
   }
 
+  after_create_commit :enqueue_notification_job
+
   # Specified which fields can be searched and sorted
   def self.ransackable_attributes(auth_object = nil)
     super & %w[record_date record_type notes] # Only allow these fields to be searchable
@@ -35,5 +37,11 @@ class MedicalRecord < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     %w[patient creator] # Specified associations that can be included in the search
+  end
+
+  private
+
+  def enqueue_notification_job
+    NewMedicalRecordNotificationJob.perform_later(self)
   end
 end
