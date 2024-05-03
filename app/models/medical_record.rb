@@ -28,7 +28,7 @@ class MedicalRecord < ApplicationRecord
     vaccination_records: 'Vaccination Records'
   }
 
-  after_create_commit :notify_new_medical_record
+  after_create_commit :enqueue_notification_job
 
   # Specified which fields can be searched and sorted
   def self.ransackable_attributes(auth_object = nil)
@@ -41,7 +41,7 @@ class MedicalRecord < ApplicationRecord
 
   private
 
-  def notify_new_medical_record
-    NewMedicalRecordNotifier.with(medical_record: self).deliver_later
+  def enqueue_notification_job
+    NewMedicalRecordNotificationJob.perform_later(self)
   end
 end

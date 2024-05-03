@@ -33,7 +33,7 @@ class Comment < ApplicationRecord
   belongs_to :parent, class_name: 'Comment', optional: true, counter_cache: :replies_count
   has_many :replies, class_name: 'Comment', foreign_key: 'parent_id', dependent: :destroy
 
-  after_create_commit :notify_new_comment
+  after_create_commit :enqueue_notification_job
 
   # Instance methods
   def depth
@@ -42,7 +42,7 @@ class Comment < ApplicationRecord
 
   private
 
-  def notify_new_comment
-    NewCommentNotifier.with(post: post, user: author, message: body).deliver_later
+  def enqueue_notification_job
+    NewCommentNotificationJob.perform_later(self)
   end
 end
