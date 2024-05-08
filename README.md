@@ -1,4 +1,5 @@
 # README
+
 Daisy Official Documentation https://daisyui.com/
 
 Demo: https://daisyui.fly.dev/
@@ -27,3 +28,15 @@ login {email: :gary@example.com, password: :password} #Production and Developmen
 7. **Receiving Feedback:** Users can receive feedback from others within the app. This feedback might come from peers, healthcare professionals, or other members of the Careclan community.
 8. **Managing Privacy Settings:** Manage Privacy Settings in the Clan Section by Toggling Trust.
 9. **Enjoy The Content**
+
+<hr>
+
+# Code Review
+
+## Documentation
+- Setup and installation section is not clearly labeled. The setup section should be clearly identified so that outside developer can easily onbard onto your project.
+- No contribution guidelines
+- We encourage you to review the rubric for the Documentation section! The rubric lists out the information that should be included on a basic readme file
+
+## Code Hygiene
+
