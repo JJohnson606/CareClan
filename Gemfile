@@ -9,6 +9,11 @@ gem "debug"
 gem "ransack"
 gem "erb_lint"
 gem "aws-sdk-s3"
+gem "noticed", "~> 2.2"
+gem "good_job", "~> 3.28"
+gem 'postmark'
+gem 'postmark-rails'
+
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.7", ">= 7.0.7"
@@ -126,7 +131,3 @@ group :test do
   gem "rspec-html-matchers"
   gem "webmock"
 end
-
-gem "noticed", "~> 2.2"
-
-gem "good_job", "~> 3.28"
