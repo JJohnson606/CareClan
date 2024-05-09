@@ -5,6 +5,9 @@ class NewMedicalRecordNotifier < Noticed::Event
   required_param :medical_record
 
   def to_mailer
-    UserMailer.new_medical_record_notification(params[:medical_record].patient, params[:medical_record])
+    {
+      user: params[:medical_record].patient,
+      medical_record: params[:medical_record]
+    }
   end
 end
