@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Job to send notifications when a new user is created
 class NewUserNotificationJob < ApplicationJob
   queue_as :default
 
@@ -10,7 +13,7 @@ class NewUserNotificationJob < ApplicationJob
       clan_members = clan.users.where.not(id: user.id)
       next unless clan_members.any?
 
-      clan_members.each do |member|
+      clan_members.each do |_member|
         NewUserClanNotifier.with(user:, clan:).deliver_later
       end
     end
