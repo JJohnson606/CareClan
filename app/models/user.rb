@@ -40,6 +40,8 @@ class User < ApplicationRecord
   has_many :patients, class_name: 'User', foreign_key: 'healthcare_provider_id'
   has_many :medical_records_as_creator, foreign_key: 'created_by_id', class_name: 'MedicalRecord', dependent: :destroy
 
+  after_create_commit :send_notifications
+
   def self.ransackable_attributes(_auth_object = nil)
     %w[name email role]
   end
@@ -84,4 +86,8 @@ class User < ApplicationRecord
   # Family friend-specific attributes
   attribute :relationship_to_patient, :string
   attribute :bio, :text
+
+  def send_notifications
+    NewUserNotificationJob.perform_later(self)
+  end
 end
