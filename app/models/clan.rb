@@ -9,9 +9,8 @@
 #  updated_at  :datetime         not null
 #
 class Clan < ApplicationRecord
-    has_many :clan_memberships
-    has_many :users, through: :clan_memberships
-    has_many :posts, through: :users
-    has_many :medical_records, through: :users
-  end
-  
+  has_many :clan_memberships
+  has_many :users, through: :clan_memberships
+  has_many :posts, through: :users
+  has_many :medical_records, through: :users
+end

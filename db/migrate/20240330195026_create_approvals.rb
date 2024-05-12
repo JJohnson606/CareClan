@@ -10,6 +10,6 @@ class CreateApprovals < ActiveRecord::Migration[7.0]
     end
 
     # Optionally, add an index to ensure a user can only vote once per post
-    add_index :approvals, [:voter_id, :post_id], unique: true
+    add_index :approvals, %i[voter_id post_id], unique: true
   end
 end

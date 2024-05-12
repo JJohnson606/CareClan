@@ -13,7 +13,7 @@
 #
 class MedicalRecord < ApplicationRecord
   has_many_attached :images
-  belongs_to :patient, class_name: 'User', foreign_key: 'patient_id'
+  belongs_to :patient, class_name: 'User'
   belongs_to :creator, class_name: 'User', foreign_key: 'created_by_id'
   has_many :posts
 
@@ -35,7 +35,7 @@ class MedicalRecord < ApplicationRecord
     super & %w[record_date record_type notes] # Only allow these fields to be searchable
   end
 
-  def self.ransackable_associations(auth_object = nil)
+  def self.ransackable_associations(_auth_object = nil)
     %w[patient creator] # Specified associations that can be included in the search
   end
 

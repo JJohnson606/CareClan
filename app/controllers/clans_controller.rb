@@ -14,14 +14,14 @@ class ClansController < ApplicationController
 
   def show_members
     @clan = Clan.find(params[:id])
-    @members = @clan.users.includes(:profile_picture_attachment).order("name ASC")
+    @members = @clan.users.includes(:profile_picture_attachment).order('name ASC')
   end
 
   def edit; end
 
   def update
     if @clan.update(clan_params)
-      redirect_to @clan, notice: "Clan was successfully updated."
+      redirect_to @clan, notice: 'Clan was successfully updated.'
     else
       render :edit
     end
@@ -30,7 +30,7 @@ class ClansController < ApplicationController
   def destroy
     @clan.destroy
     respond_to do |format|
-      format.html { redirect_to clans_url, notice: "Clan was successfully destroyed." }
+      format.html { redirect_to clans_url, notice: 'Clan was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -39,9 +39,9 @@ class ClansController < ApplicationController
     @user = User.find(params[:user_id])
     @user.update(trust: !@user.trust)
     respond_to do |format|
-      format.html { redirect_to clan_path(params[:id]), notice: "Trust status updated." }
+      format.html { redirect_to clan_path(params[:id]), notice: 'Trust status updated.' }
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(@user, partial: "user_row", locals: { user: @user })
+        render turbo_stream: turbo_stream.replace(@user, partial: 'user_row', locals: { user: @user })
       end
     end
   end

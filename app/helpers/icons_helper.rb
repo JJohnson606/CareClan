@@ -12,8 +12,8 @@ module IconsHelper
   private
 
   def icons_file
-    file_path = Rails.root.join('public', 'icons.svg')
-    Rails.cache.fetch("icons") do
+    file_path = Rails.root.join('public/icons.svg')
+    Rails.cache.fetch('icons') do
       return Nokogiri::XML(File.read(file_path))
     end
   end

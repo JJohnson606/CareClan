@@ -29,10 +29,10 @@ class CommentsController < ApplicationController
     find_parent_comment
     @comment = @post.comments.create(comment_params.merge(author: current_user))
     if @comment.save
-      redirect_to @post, notice: "Comment was successfully created."
+      redirect_to @post, notice: 'Comment was successfully created.'
     else
-      flash.now[:alert] = "Failed to create comment."
-      render "posts/show", status: :unprocessable_entity
+      flash.now[:alert] = 'Failed to create comment.'
+      render 'posts/show', status: :unprocessable_entity
     end
   end
 
@@ -40,7 +40,7 @@ class CommentsController < ApplicationController
   def update
     respond_to do |format|
       if @comment.update(comment_params)
-        format.html { redirect_to comment_url(@comment), notice: "Comment was successfully updated." }
+        format.html { redirect_to comment_url(@comment), notice: 'Comment was successfully updated.' }
         format.json { render :show, status: :ok, location: @comment }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -54,19 +54,19 @@ class CommentsController < ApplicationController
     @comment.destroy
 
     respond_to do |format|
-      format.html { redirect_to comments_url, notice: "Comment was successfully destroyed." }
+      format.html { redirect_to comments_url, notice: 'Comment was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   def approve
     @comment.liked_by current_user
-    redirect_to post_path(@comment.post), notice: "Comment approved!"
+    redirect_to post_path(@comment.post), notice: 'Comment approved!'
   end
 
   def disapprove
     @comment.disliked_by current_user
-    redirect_to post_path(@comment.post), notice: "Comment disapproved!"
+    redirect_to post_path(@comment.post), notice: 'Comment disapproved!'
   end
 
   private
@@ -79,7 +79,7 @@ class CommentsController < ApplicationController
       parent_comment = Comment.find(params[:comment_id])
       @post = parent_comment.post
     else
-      redirect_to root_url, alert: "Post not found."
+      redirect_to root_url, alert: 'Post not found.'
     end
   end
 

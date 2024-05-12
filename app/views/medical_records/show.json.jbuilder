@@ -1,1 +1,1 @@
-json.partial! "medical_records/medical_record", medical_record: @medical_record
+json.partial! 'medical_records/medical_record', medical_record: @medical_record

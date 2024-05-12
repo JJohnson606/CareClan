@@ -11,8 +11,8 @@
 #
 require 'rails_helper'
 
-RSpec.describe "ClanMemberships", type: :request do
-  describe "GET /index" do
+RSpec.describe 'ClanMemberships', type: :request do
+  describe 'GET /index' do
     pending "add some examples (or delete) #{__FILE__}"
   end
 end

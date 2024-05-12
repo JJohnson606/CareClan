@@ -34,7 +34,7 @@
               </div>
             </div>
           </td>
-          <td><%= membership.user.role.capitalize %></td>
+          <td><%= membership.user.role %></td>
           <td>
             <%= form_with url: toggle_trust_clan_path(@clan, user_id: membership.user.id), method: :patch, local: false do |form| %>
               <label class="swap swap-rotate">

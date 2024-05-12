@@ -10,7 +10,6 @@
 #  updated_at :datetime         not null
 #
 class ClanMembership < ApplicationRecord
-    belongs_to :clan
-    belongs_to :user
-  end
-  
+  belongs_to :clan
+  belongs_to :user
+end

@@ -10,8 +10,8 @@
 #
 require 'rails_helper'
 
-RSpec.describe "Clans", type: :request do
-  describe "GET /index" do
+RSpec.describe 'Clans', type: :request do
+  describe 'GET /index' do
     pending "add some examples (or delete) #{__FILE__}"
   end
 end

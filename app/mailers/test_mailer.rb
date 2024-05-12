@@ -8,6 +8,7 @@ class TestMailer < ApplicationMailer
       from: 'jjdevacc@careclan.life',
       html_body: '<strong>Hello</strong> dear Postmark user.',
       track_opens: 'true',
-      message_stream: 'broadcast')
+      message_stream: 'broadcast'
+    )
   end
 end
