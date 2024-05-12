@@ -34,7 +34,7 @@ class PostsController < ApplicationController
   def create
     @post = current_user.posts.build(post_params)
     if @post.save
-      respond_with @post, location: post_url(@post), notice: "Post was successfully created."
+      respond_with @post, location: post_url(@post), notice: 'Post was successfully created.'
     else
       respond_with @post.errors, status: :unprocessable_entity
     end
@@ -43,7 +43,7 @@ class PostsController < ApplicationController
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
     if @post.update(post_params)
-      respond_with @post, location: post_url(@post), notice: "Post was successfully updated."
+      respond_with @post, location: post_url(@post), notice: 'Post was successfully updated.'
     else
       respond_with @post.errors, status: :unprocessable_entity
     end
@@ -54,7 +54,7 @@ class PostsController < ApplicationController
     @post.destroy
 
     respond_to do |format|
-      format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
+      format.html { redirect_to posts_url, notice: 'Post was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -62,14 +62,14 @@ class PostsController < ApplicationController
   # Approve (like) the current post
   def approve
     @post.liked_by current_user
-    flash[:notice] = "Post approved successfully."
+    flash[:notice] = 'Post approved successfully.'
     redirect_back(fallback_location: root_path)
   end
 
   # Disapprove (dislike) the current post
   def disapprove
     @post.disliked_by current_user
-    flash[:notice] = "Post disapproved successfully."
+    flash[:notice] = 'Post disapproved successfully.'
     redirect_back(fallback_location: root_path)
   end
 

@@ -10,7 +10,7 @@ module PostFindable
       parent_comment = Comment.find(params[:comment_id])
       @post = parent_comment.post
     else
-      redirect_to root_url, alert: "Post not found."
+      redirect_to root_url, alert: 'Post not found.'
     end
   end
 end

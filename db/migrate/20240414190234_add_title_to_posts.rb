@@ -4,4 +4,3 @@ class AddTitleToPosts < ActiveRecord::Migration[7.0]
     add_index :posts, :title
   end
 end
- 

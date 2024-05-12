@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root "welcome#index"
+  root 'welcome#index'
 
   resources :medical_records do
     collection do
@@ -15,19 +15,19 @@ Rails.application.routes.draw do
       put 'approve'
       put 'disapprove'
     end
-    resources :comments, only: [:create, :new, :show]
+    resources :comments, only: %i[create new show]
   end
 
-  resources :comments, except: [:create, :new] do
+  resources :comments, except: %i[create new] do
     member do
       put 'approve'
       put 'disapprove'
     end
-    resources :comments, only: [:create, :new]
+    resources :comments, only: %i[create new]
   end
 
   resources :clans do
-    resources :clan_memberships, only: [:create, :destroy, :index, :show]
+    resources :clan_memberships, only: %i[create destroy index show]
     member do
       get 'show_members'
       patch 'toggle_trust/:user_id', to: 'clans#toggle_trust', as: 'toggle_trust'

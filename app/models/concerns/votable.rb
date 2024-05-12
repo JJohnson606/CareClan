@@ -30,9 +30,11 @@ module Votable
     def approval_rating
       total_votes = votes_for.size
       return 0 if total_votes.zero?
+
       approval_votes = get_upvotes.size
       (approval_votes.to_f / total_votes * 100).round(2)
     end
+
     private
 
     def update_vote_cache_after_vote

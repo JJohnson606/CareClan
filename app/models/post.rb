@@ -28,7 +28,7 @@ class Post < ApplicationRecord
   include Votable
   include Ransackable
   has_one_attached :image
-  belongs_to :author, class_name: 'User', foreign_key: 'author_id' # author association
+  belongs_to :author, class_name: 'User' # author association
   belongs_to :medical_record, optional: true # medical record association optional
   has_many :comments, dependent: :destroy # comments association
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: 'Noticed::Event'
