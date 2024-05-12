@@ -11,6 +11,7 @@ gem 'kaminari', '~> 1.2', '>= 1.2.2'
 gem 'noticed', '~> 2.2'
 gem 'postmark'
 gem 'postmark-rails'
+gem 'pundit'
 gem 'ransack'
 gem 'simple_form'
 
