@@ -1,6 +1,6 @@
 class PostPolicy < ApplicationPolicy
   def index?
-    user.present? && user_in_same_clan_as_post_author?
+    true
   end
 
   def show?
@@ -38,6 +38,6 @@ class PostPolicy < ApplicationPolicy
   private
 
   def user_in_same_clan_as_post_author?
-    user.clan_memberships.where(clan_id: record.author.clan_memberships.pluck(:clan_id)).exists?
+    user.clans.exists?(id: @record.author.clan_ids)
   end
 end
