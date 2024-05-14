@@ -1,37 +1,41 @@
-<%= form_with(model: post, local: true, html: { class: 'w-full' }) do |form| %>
-  <% if post.errors.any? %>
-    <div class="alert alert-error">
-      <label>
-        <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+<% if policy(@post).new? || policy(@post).edit? %>
+  <%= form_with(model: post, local: true, html: { class: 'w-full' }) do |form| %>
+    <% if post.errors.any? %>
+      <div class="alert alert-error">
+        <label>
+          <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+        </label>
+        <ul>
+          <% post.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="form-control w-full max-w-xs mx-auto">
+      <label class="label">
+        <span class="label-text">Title</span>
       </label>
-      <ul>
-        <% post.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+      <%= form.text_field :title, placeholder: 'Type the title here', class: 'input input-bordered w-full' %>
+    </div>
+    <div class="form-control w-full max-w-xs mx-auto">
+      <label class="label">
+        <span class="label-text">Your message</span>
+      </label>
+      <%= form.text_area :body, placeholder: 'Type your message here', rows: 4, class: 'textarea textarea-bordered w-full' %>
+    </div>
+    <div class="form-control w-full max-w-xs mx-auto">
+      <label class="label">
+        <span class="label-text">Image</span>
+      </label>
+      <%= form.file_field :image, class: 'input input-bordered w-full' %>
+    </div>
+    <%= form.hidden_field :medical_record_id, value: @medical_record.id if @medical_record %>
+    <%= form.hidden_field :author_id, value: current_user.id %>
+    <div class="form-control mt-4 w-full flex justify-center">
+      <%= form.submit 'Submit', class: 'btn btn-primary' %>
     </div>
   <% end %>
-  <div class="form-control w-full max-w-xs mx-auto">
-    <label class="label">
-      <span class="label-text">Title</span>
-    </label>
-    <%= form.text_field :title, placeholder: 'Type the title here', class: 'input input-bordered w-full' %>
-  </div>
-  <div class="form-control w-full max-w-xs mx-auto">
-    <label class="label">
-      <span class="label-text">Your message</span>
-    </label>
-    <%= form.text_area :body, placeholder: 'Type your message here', rows: 4, class: 'textarea textarea-bordered w-full' %>
-  </div>
-  <div class="form-control w-full max-w-xs mx-auto">
-    <label class="label">
-      <span class="label-text">Image</span>
-    </label>
-    <%= form.file_field :image, class: 'input input-bordered w-full' %>
-  </div>
-  <%= form.hidden_field :medical_record_id, value: @medical_record.id if @medical_record %>
-  <%= form.hidden_field :author_id, value: current_user.id %>
-  <div class="form-control mt-4 w-full flex justify-center">
-    <%= form.submit 'Submit', class: 'btn btn-primary' %>
-  </div>
+<% else %>
+  <p>You are not authorized to create or edit this post.</p>
 <% end %>
