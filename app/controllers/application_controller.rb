@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  include Pundit
+
   helper_method :current_user_can_edit?, :current_user_is_admin?
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   private
 
