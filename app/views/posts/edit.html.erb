@@ -1,7 +1,11 @@
-<h1>Editing post</h1>
-<%= render "form", post: @post %>
-<br>
-<div>
-  <%= link_to "Show this post", @post %> |
-  <%= link_to "Back to posts", posts_path %>
-</div>
+<% if policy(@post).edit? %>
+  <h1>Editing post</h1>
+  <%= render "form", post: @post %>
+  <br>
+  <div>
+    <%= link_to "Show this post", @post %> |
+    <%= link_to "Back to posts", posts_path %>
+  </div>
+<% else %>
+  <p>You are not authorized to edit this post.</p>
+<% end %>
