@@ -3,7 +3,9 @@
 class PostsController < ApplicationController
   include PostLoadable
   respond_to :html, :json
+
   before_action :load_post, only: %i[show edit update destroy approve disapprove]
+  before_action :authorize_post, only: %i[show edit update destroy approve disapprove]
 
   # GET /posts or /posts.json
   def index
@@ -25,6 +27,7 @@ class PostsController < ApplicationController
   def new
     @post = Post.new
     set_medical_record
+    authorize @post
   end
 
   # GET /posts/1/edit
@@ -33,6 +36,7 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = current_user.posts.build(post_params)
+    authorize @post
     if @post.save
       respond_with @post, location: post_url(@post), notice: 'Post was successfully created.'
     else
@@ -81,5 +85,9 @@ class PostsController < ApplicationController
 
   def load_post
     @post = Post.find(params[:id])
+  end
+
+  def authorize_post
+    authorize @post
   end
 end
