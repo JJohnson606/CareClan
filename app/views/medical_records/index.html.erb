@@ -1,6 +1,6 @@
 <!-- views/medical_records/index.html.erb -->
 <!-- Page Header and Introduction -->
-
+<% if policy(MedicalRecord).index? %>
 <div class="text-center mt-8 mb-6">
     <h1 class="text-3xl font-bold mb-2">Medical Records</h1>
 </div>
@@ -123,7 +123,7 @@
 <div class="text-center mt-8 mb-8">
     <%= link_to 'Back to Medical Records', medical_records_path, class: "btn btn-ghost" %>
 </div>
-
+<% end %>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const toggle = document.getElementById('postToggle');
