@@ -12,6 +12,8 @@ class PostPolicy < ApplicationPolicy
   end
 
   def create?
+    return true if record.new_record?
+
     new?
   end
 
