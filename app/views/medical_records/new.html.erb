@@ -1,7 +1,11 @@
 <!-- views/medical_records/new.html.erb -->
+<% if policy(@medical_record).new? %>
 <h1>New medical record</h1>
 <%= render "form", medical_record: @medical_record %>
 <br>
 <div>
   <%= link_to "Back to medical records", medical_records_path %>
 </div>
+<% else %>
+  <p>You are not authorized to create a new medical record.</p>
+<% end %>
