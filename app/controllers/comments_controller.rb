@@ -28,10 +28,11 @@ class CommentsController < ApplicationController
   def create
     find_parent_comment
     @comment = @post.comments.create(comment_params.merge(author: current_user))
-    if @comment.save
+
+    if current_user.trust? && @comment.save
       redirect_to @post, notice: 'Comment was successfully created.'
     else
-      flash.now[:alert] = 'Failed to create comment.'
+      flash.now[:alert] = 'Failed to create comment. You may not have permission to comment.'
       render 'posts/show', status: :unprocessable_entity
     end
   end
