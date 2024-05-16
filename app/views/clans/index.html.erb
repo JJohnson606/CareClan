@@ -1,9 +1,30 @@
-<h1>All Clans</h1>
-<ul>
-  <% @clans.each do |clan| %>
-    <li>
-      <%= link_to clan.name, clan_path(clan) %>
-      - <%= clan.description %>
-    </li>
-  <% end %>
-</ul>
+<h1>Clans</h1>
+<% if policy(Clan).create? %>
+  <%= link_to 'New Clan', new_clan_path, class: 'btn btn-primary' %>
+<% end %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @clans.each do |clan| %>
+      <tr>
+        <td><%= clan.name %></td>
+        <td><%= clan.description %></td>
+        <% if policy(clan).show? %>
+          <td><%= link_to 'Show', clan_path(clan) %></td>
+        <% end %>
+        <% if policy(clan).edit? %>
+          <td><%= link_to 'Edit', edit_clan_path(clan) %></td>
+        <% end %>
+        <% if policy(clan).destroy? %>
+          <td><%= link_to 'Destroy', clan_path(clan), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
