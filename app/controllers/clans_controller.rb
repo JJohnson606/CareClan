@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class ClansController < ApplicationController
-  before_action :set_clan, only: %i[show edit update destroy show_members trust_user untrust_user]
+  before_action :set_clan, only: %i[show edit update destroy show_members toggle_trust]
+  before_action :authorize_clan, only: %i[show edit update destroy show_members toggle_trust]
 
   def index
     @clans = Clan.all
@@ -50,6 +51,10 @@ class ClansController < ApplicationController
 
   def set_clan
     @clan = Clan.find(params[:id])
+  end
+
+  def authorize_clan
+    authorize @clan
   end
 
   def clan_params
