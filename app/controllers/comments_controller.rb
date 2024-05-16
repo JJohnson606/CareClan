@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
     find_parent_comment
     @comment = @post.comments.create(comment_params.merge(author: current_user))
 
-    if current_user.trust? && @comment.save
+    if @comment.save
       redirect_to @post, notice: 'Comment was successfully created.'
     else
       flash.now[:alert] = 'Failed to create comment. You may not have permission to comment.'
@@ -94,5 +94,9 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:body, :parent_id)
+  end
+
+  def authorize_comment
+    authorize @comment
   end
 end
