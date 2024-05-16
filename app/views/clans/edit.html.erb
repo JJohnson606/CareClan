@@ -1,13 +1,6 @@
-<%= form_for @clan, url: clan_path(@clan), method: :patch do |f| %>
-  <div>
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </div>
-  <div>
-    <%= f.label :description %>
-    <%= f.text_area :description %>
-  </div>
-  <div>
-    <%= f.submit "Update Clan" %>
+<% if policy(@clan).edit? %>
+  <div class="container mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-4">Edit Clan</h1>
+    <%= render 'form', clan: @clan, submit_label: 'Update Clan', cancel_path: @clan %>
   </div>
 <% end %>
