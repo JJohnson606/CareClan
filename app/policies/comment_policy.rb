@@ -36,6 +36,6 @@ class CommentPolicy < ApplicationPolicy
   private
 
   def user_in_same_clan_as_post_author?
-    user.clans.exists?(id: record.post.author.clan_ids)
+    record.post.present? && user.clans.exists?(id: record.post.author.clan_ids)
   end
 end
