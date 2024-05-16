@@ -35,7 +35,8 @@
             </div>
           </td>
           <td><%= membership.user.role %></td>
-          <td>
+          <td> 
+                 <% if policy(@clan).toggle_trust? %>
             <%= form_with url: toggle_trust_clan_path(@clan, user_id: membership.user.id), method: :patch, local: false do |form| %>
               <label class="swap swap-rotate">
                 <input type="checkbox" <%= 'checked' if membership.user.trust %> onchange="this.form.submit();">
@@ -44,8 +45,9 @@
               </label>
             <% end %>
           </td>
+          <% end %>
           <td>
-            <% if current_user_is_admin?(@clan) %>
+            <% if policy(@clan).destroy? %>
               <%= link_to 'Remove', clan_clan_membership_path(@clan, membership), method: :delete, data: { confirm: 'Are you sure?', turbo_method: :delete }, class: "btn btn-ghost btn-xs" %>
             <% end %>
           </td>
@@ -63,8 +65,10 @@
     </tfoot>
   </table>
 </div>
-<% if current_user_is_admin?(@clan) %>
+<% if policy(@clan).edit? %>
   <%= link_to 'Edit Clan', edit_clan_path(@clan), class: "btn btn-primary" %> |
+<% end %>
+<% if policy(@clan).destroy? %>
   <%= link_to 'Delete Clan', @clan, method: :delete, data: { confirm: 'Are you sure you want to delete this clan?' }, class: "btn btn-error" %>
 <% end %>
 <%= link_to 'Back to Clans', clans_path, class: "btn" %>
