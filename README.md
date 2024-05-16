@@ -1,4 +1,5 @@
 # README
+
 Daisy Official Documentation https://daisyui.com/
 
 Demo: https://daisyui.fly.dev/
@@ -136,3 +137,32 @@ Rails 6 + webpacker: https://github.com/mkhairi/rails-daisyui-starter/tree/rails
 7. **Receiving Feedback:** Users can receive feedback from others within the app. This feedback might come from peers, healthcare professionals, or other members of the Careclan community.
 8. **Managing Privacy Settings:** Manage Privacy Settings in the Clan Section by Toggling Trust.
 9. **Enjoy The Content**
+
+<hr>
+
+# Code Review
+
+## Documentation
+- Setup and installation section is not clearly labeled. The setup section should be clearly identified so that outside developer can easily onbard onto your project. 
+- No contribution guidelines
+- We encourage you to review the rubric for the Documentation section! The rubric lists out the information that should be included on a basic readme file
+
+## Code Hygiene
+- Good indentation overall.
+- Remove unused/blank files
+
+## Frontend
+- Responsive site
+- All images are not loading in production; fix your images
+- Production styling has room for improvement
+- Broken toggler
+
+## Backend
+- We do not have your development key, so we were unable to onbaord/launch app in development
+- We could not run your application in development. The readme setup instructions were incomplete/missing steps 
+- Consider adding an authorization framework like Pundit
+
+
+## Other Feedback
+- Debug your pagination. It is not displaying in production
+- I created a new user account. However, I was able to see all of Gary's medical records.
