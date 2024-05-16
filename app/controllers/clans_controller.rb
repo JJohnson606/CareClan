@@ -18,6 +18,25 @@ class ClansController < ApplicationController
     @members = @clan.users.includes(:profile_picture_attachment).order('name ASC')
   end
 
+  def new
+    @clan = Clan.new
+    authorize @clan
+  end
+
+  def create
+    @clan = Clan.new(clan_params)
+    authorize @clan
+
+    if @clan.save
+      # Create a ClanMembership record for the current user
+      ClanMembership.create(clan: @clan, user: current_user, role: 'admin')
+
+      redirect_to @clan, notice: 'Clan was successfully created.'
+    else
+      render :new
+    end
+  end
+
   def edit; end
 
   def update
