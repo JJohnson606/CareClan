@@ -6,10 +6,11 @@ class CommentsController < ApplicationController
   before_action :set_post, except: %i[show edit update destroy approve disapprove]
   before_action :set_comment, only: %i[show edit update destroy approve disapprove]
   before_action :find_parent_comment, only: %i[create new]
+  before_action :authorize_comment, only: %i[index show create update approve disapprove]
 
   # GET /comments or /comments.json
   def index
-    @comments = Comment.all
+    @comments = policy_scope(Comment)
   end
 
   # GET /comments/1 or /comments/1.json
