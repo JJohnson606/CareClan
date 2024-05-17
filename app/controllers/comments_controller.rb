@@ -5,11 +5,12 @@ class CommentsController < ApplicationController
   before_action :find_post, except: %i[show edit update destroy approve disapprove]
   before_action :set_post, except: %i[show edit update destroy approve disapprove]
   before_action :set_comment, only: %i[show edit update destroy approve disapprove]
-  before_action :set_parent_comment, only: %i[create new]
+  before_action :find_parent_comment, only: %i[create new]
+  before_action :authorize_comment, only: %i[index show create update approve disapprove]
 
   # GET /comments or /comments.json
   def index
-    @comments = Comment.all
+    @comments = policy_scope(Comment)
   end
 
   # GET /comments/1 or /comments/1.json
@@ -18,7 +19,7 @@ class CommentsController < ApplicationController
   # GET /comments/new
   def new
     find_parent_comment
-    @comment = @post.comments.create(parent_id: params[:parent_id])
+    @comment = @post.comments.build(parent_id: params[:parent_id])
   end
 
   # GET /comments/1/edit
@@ -27,11 +28,12 @@ class CommentsController < ApplicationController
   # POST /comments or /comments.json
   def create
     find_parent_comment
-    @comment = @post.comments.create(comment_params.merge(author: current_user))
+    @comment = @post.comments.build(comment_params.merge(author: current_user))
+
     if @comment.save
       redirect_to @post, notice: 'Comment was successfully created.'
     else
-      flash.now[:alert] = 'Failed to create comment.'
+      flash.now[:alert] = 'Failed to create comment. You may not have permission to comment.'
       render 'posts/show', status: :unprocessable_entity
     end
   end
@@ -93,5 +95,9 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:body, :parent_id)
+  end
+
+  def authorize_comment
+    authorize @comment
   end
 end

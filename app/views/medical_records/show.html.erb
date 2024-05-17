@@ -1,13 +1,19 @@
 <!-- Medical Records Show View -->
 <!-- app/views/medical_records/show.html.erb -->
+<% if policy(@medical_record).show? %>
+  <div>
+    <%= link_to medical_records_path, class: "btn btn-black" do %>
+      <i class="fa-solid fa-circle-chevron-left" style="color: #ffffff;"></i>
+    <% end %>
+  </div>
+  <%= render partial: 'medical_records/medical_record', locals: { medical_record: @medical_record } %>
+<% end %>
 <div>
-  <%= link_to medical_records_path, class: "btn btn-black" do %>
-    <i class="fa-solid fa-circle-chevron-left" style="color: #ffffff;"></i>
+  <% if policy(@medical_record).edit? %>
+    <%= link_to "Edit this medical record", edit_medical_record_path(@medical_record) %> |
   <% end %>
-</div>
-<%= render partial: 'medical_records/medical_record', locals: { medical_record: @medical_record } %>
-<div>
-  <%= link_to "Edit this medical record", edit_medical_record_path(@medical_record) %> |
   <%= link_to "Back to medical records", medical_records_path %>
-  <%= button_to "Destroy this medical record", @medical_record, method: :delete, data: { confirm: 'Are you sure?' } %>
+  <% if policy(@medical_record).destroy? %>
+    <%= button_to "Destroy this medical record", @medical_record, method: :delete, data: { confirm: 'Are you sure?' } %>
+  <% end %>
 </div>

@@ -2,29 +2,36 @@
 
 class MedicalRecordsController < ApplicationController
   before_action :set_medical_record, only: %i[show edit update destroy]
+  before_action :authorize_medical_record, only: %i[show edit update destroy]
 
   # GET /medical_records or /medical_records.json
   def index
     @q = MedicalRecordSearchService.new(params).call
-    @medical_records = @q.result(distinct: true)
-                         .includes(patient: [profile_picture_attachment: :blob],
-                                   creator: [profile_picture_attachment: :blob])
-                         .page(params[:page])
+    @medical_records = policy_scope(@q.result(distinct: true))
+                       .includes(patient: [profile_picture_attachment: :blob],
+                                 creator: [profile_picture_attachment: :blob])
+                       .page(params[:page])
   end
 
   # GET /medical_records/1 or /medical_records/1.json
-  def show; end
+  def show
+    @post = if params[:post_id].present?
+              @medical_record.posts.find_by(id: params[:post_id])
+            else
+              @medical_record.posts.new
+            end
+  end
 
   # GET /medical_records/new
   def new
     @medical_record = MedicalRecord.new
     @patients = User.patients
     @creators = User.healthcare_professionals
+    authorize @medical_record
   end
 
   # GET /medical_records/1/edit
   def edit
-    @medical_record = MedicalRecord.find(params[:id])
     @patients = User.patients
     @creators = User.healthcare_professionals
   end
@@ -32,6 +39,7 @@ class MedicalRecordsController < ApplicationController
   # POST /medical_records or /medical_records.json
   def create
     @medical_record = MedicalRecord.new(medical_record_params)
+    authorize @medical_record
 
     if @medical_record.save
       redirect_to medical_record_url(@medical_record), notice: 'Medical record was successfully created.'
@@ -71,6 +79,12 @@ class MedicalRecordsController < ApplicationController
 
   def set_medical_record
     @medical_record = MedicalRecord.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: 'Medical record not found'
+  end
+
+  def authorize_medical_record
+    authorize @medical_record
   end
 
   def medical_record_params

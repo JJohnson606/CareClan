@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class ClansController < ApplicationController
-  before_action :set_clan, only: %i[show edit update destroy show_members trust_user untrust_user]
+  before_action :set_clan, only: %i[show edit update destroy show_members toggle_trust]
+  before_action :authorize_clan, only: %i[show edit update destroy show_members toggle_trust]
 
   def index
     @clans = Clan.all
@@ -15,6 +16,25 @@ class ClansController < ApplicationController
   def show_members
     @clan = Clan.find(params[:id])
     @members = @clan.users.includes(:profile_picture_attachment).order('name ASC')
+  end
+
+  def new
+    @clan = Clan.new
+    authorize @clan
+  end
+
+  def create
+    @clan = Clan.new(clan_params)
+    authorize @clan
+
+    if @clan.save
+      # Create a ClanMembership record for the current user
+      ClanMembership.create(clan: @clan, user: current_user, role: 'admin')
+
+      redirect_to @clan, notice: 'Clan was successfully created.'
+    else
+      render :new
+    end
   end
 
   def edit; end
@@ -50,6 +70,10 @@ class ClansController < ApplicationController
 
   def set_clan
     @clan = Clan.find(params[:id])
+  end
+
+  def authorize_clan
+    authorize @clan
   end
 
   def clan_params

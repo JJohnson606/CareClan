@@ -27,19 +27,27 @@
   <!-- Card Actions -->
   <div class="card-footer flex justify-between items-center p-4">
     <div class="flex space-x-2">
-      <%= button_to approve_post_path(post), method: :put, class: "btn btn-primary btn-xs" do %>
-        <i class="fa-solid fa-arrow-up"></i>
+      <% if policy(post).approve? %>
+        <%= button_to approve_post_path(post), method: :put, class: "btn btn-primary btn-xs" do %>
+          <i class="fa-solid fa-arrow-up"></i>
+        <% end %>
       <% end %>
-      <%= button_to disapprove_post_path(post), method: :put, class: "btn btn-accent btn-xs" do %>
-        <i class="fa-solid fa-arrow-down"></i>
+      <% if policy(post).disapprove? %>
+        <%= button_to disapprove_post_path(post), method: :put, class: "btn btn-accent btn-xs" do %>
+          <i class="fa-solid fa-arrow-down"></i>
+        <% end %>
       <% end %>
     </div>
     <div>
-      <%= link_to edit_post_path(post), class: "btn btn-outline btn-accent btn-xs" do %>
-        <i class="fa-solid fa-pencil"></i>
+      <% if policy(post).edit? %>
+        <%= link_to edit_post_path(post), class: "btn btn-outline btn-accent btn-xs" do %>
+          <i class="fa-solid fa-pencil"></i>
+        <% end %>
       <% end %>
-      <%= link_to post_path(post), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline btn-accent btn-xs" do %>
-        <i class="fa-solid fa-trash"></i>
+      <% if policy(post).destroy? %>
+        <%= link_to post_path(post), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline btn-accent btn-xs" do %>
+          <i class="fa-solid fa-trash"></i>
+        <% end %>
       <% end %>
     </div>
   </div>

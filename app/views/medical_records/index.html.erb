@@ -1,18 +1,17 @@
 <!-- views/medical_records/index.html.erb -->
 <!-- Page Header and Introduction -->
-
-<div class="text-center mt-8 mb-6">
+<% if policy(MedicalRecord).index? %>
+  <div class="text-center mt-8 mb-6">
     <h1 class="text-3xl font-bold mb-2">Medical Records</h1>
-</div>
-
-<!-- Search and Filter Bar with DaisyUI -->
-<div class="flex justify-center mt-8 mb-6">
+  </div>
+  <!-- Search and Filter Bar with DaisyUI -->
+  <div class="flex justify-center mt-8 mb-6">
     <form action="<%= medical_records_path %>" method="get" class="join-item">
-        <!-- CSRF Token -->
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <input type="text" name="search" placeholder="Enter search term..." class="input input-bordered join-item" />
-        <select name="search_type" class="select select-bordered join-item">
-            <option value="name" <%= 'selected' if params[:search_type] == 'name' %>>Search by Creator Name</option>
+      <!-- CSRF Token -->
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <input type="text" name="search" placeholder="Enter search term..." class="input input-bordered join-item" />
+      <select name="search_type" class="select select-bordered join-item">
+        <option value="name" <%= 'selected' if params[:search_type] == 'name' %>>Search by Creator Name</option>
             <option value="date" <%= 'selected' if params[:search_type] == 'date' %>>Search by Record Date</option>
             <option value="record_type" <%= 'selected' if params[:search_type] == 'record_type' %>>Search by Record Type</option>
         </select>
@@ -46,136 +45,132 @@
         <tbody>
             <% @medical_records.each do |medical_record| %>
                 <tr>
-                    <td>
-                        <div class="badge badge-primary">Shareable</div>
-                    </td>
-                    <td>
-                        <div class="flex items-center gap-3">
-                            <div class="avatar">
-                                <div class="mask mask-squircle w-12 h-12">
-                                    <% if medical_record.patient.profile_picture? %>
-                                        <%= image_tag medical_record.patient.profile_picture, class: "w-full h-full object-cover rounded-full" %>
-                                    <% else %>
-                                        <img src="<%= asset_path('default_profile_picture.png') %>" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
-                                    <% end %>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="font-bold">Patient:</div>
-                                <div class="text-sm opacity-50"><%= medical_record.patient.name %></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><%= medical_record.record_type&.titleize || 'Unknown' %></td>
-                    <td><%= medical_record.record_date&.strftime("%B %d, %Y") || 'N/A' %></td>
-                    <td>
-                        <div class="flex items-center gap-3">
-                            <div class="avatar">
-                                <div class="mask mask-squircle w-12 h-12">
-                                    <% if medical_record.creator.profile_picture? %>
-                                        <%= image_tag medical_record.creator.profile_picture, class: "w-full h-full object-cover rounded-full" %>
-                                    <% else %>
-                                        <img src="/default_profile_picture.png" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
-                                    <% end %>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="font-bold">Provider:</div>
-                                <div class="text-sm opacity-50"><%= medical_record.creator.name %></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="action-cell">
-                        <%= link_to 'View More', medical_record, class: 'btn btn-ghost btn-xs view-more-btn', data: {recordId: medical_record.id} %>
-                    </td>
-                </tr>
-            <% end %>
-        </tbody>
-        <tfoot>
-            <tr>
-                <th></th>
-                <th>Patient</th>
-                <th>Record Type</th>
-                <th>Record Date</th>
-                <th>Provider</th>
-                <th>Details</th>
-            </tr>
-        </tfoot>
-    </table>
+          <td>
+            <div class="badge badge-primary">Shareable</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="avatar">
+                <div class="mask mask-squircle w-12 h-12">
+                  <% if medical_record.patient.profile_picture? %>
+                    <%= image_tag medical_record.patient.profile_picture, class: "w-full h-full object-cover rounded-full" %>
+                  <% else %>
+                    <img src="<%= asset_path('default_profile_picture.png') %>" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
+                  <% end %>
+                </div>
+              </div>
+              <div>
+                <div class="font-bold">Patient:</div>
+                <div class="text-sm opacity-50"><%= medical_record.patient.name %></div>
+              </div>
+            </div>
+          </td>
+          <td><%= medical_record.record_type&.titleize || 'Unknown' %></td>
+          <td><%= medical_record.record_date&.strftime("%B %d, %Y") || 'N/A' %></td>
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="avatar">
+                <div class="mask mask-squircle w-12 h-12">
+                  <% if medical_record.creator.profile_picture? %>
+                    <%= image_tag medical_record.creator.profile_picture, class: "w-full h-full object-cover rounded-full" %>
+                  <% else %>
+                    <img src="/default_profile_picture.png" alt="Default Profile Picture" class="w-full h-full object-cover rounded-full">
+                  <% end %>
+                </div>
+              </div>
+              <div>
+                <div class="font-bold">Provider:</div>
+                <div class="text-sm opacity-50"><%= medical_record.creator.name %></div>
+              </div>
+            </div>
+          </td>
+          <td class="action-cell">
+            <%= link_to 'View More', medical_record, class: 'btn btn-ghost btn-xs view-more-btn', data: {recordId: medical_record.id} %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th></th>
+        <th>Patient</th>
+        <th>Record Type</th>
+        <th>Record Date</th>
+        <th>Provider</th>
+        <th>Details</th>
+      </tr>
+    </tfoot>
+  </table>
 </div>
-
 <!-- Pagination -->
 <div class="mt-6">
-    <%= paginate @medical_records %>
+  <%= paginate @medical_records %>
 </div>
-
 <!-- No Records Found Message -->
 <% if @medical_records.empty? %>
-    <p class="text-center mt-4">No records found. <%= link_to "Add a new record?", new_medical_record_path, class: "text-blue-500 hover:underline" %></p>
+  <p class="text-center mt-4">No records found. <%= link_to "Add a new record?", new_medical_record_path, class: "text-blue-500 hover:underline" %></p>
 <% end %>
-
 <!-- Add New Record Button -->
 <div class="text-center mt-8">
-    <%= link_to "Add New Record", new_medical_record_path, class: "btn btn-primary" %>
+  <%= link_to "Add New Record", new_medical_record_path, class: "btn btn-primary" %>
 </div>
-
 <!-- Back to Medical Records Button -->
 <div class="text-center mt-8 mb-8">
-    <%= link_to 'Back to Medical Records', medical_records_path, class: "btn btn-ghost" %>
+  <%= link_to 'Back to Medical Records', medical_records_path, class: "btn btn-ghost" %>
 </div>
-
+<% end %>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const toggle = document.getElementById('postToggle');
-    const selectColumns = document.querySelectorAll('.select-column');
-    const table = document.getElementById('medicalRecordsTable');
+  document.addEventListener("DOMContentLoaded", function() {
+      const toggle = document.getElementById('postToggle');
+      const selectColumns = document.querySelectorAll('.select-column');
+      const table = document.getElementById('medicalRecordsTable');
 
-    // Function to show select columns
-    function showSelectColumns() {
-        selectColumns.forEach(column => column.classList.remove('hidden-placeholder'));  // Show the column
-    }
+      // Function to show select columns
+      function showSelectColumns() {
+          selectColumns.forEach(column => column.classList.remove('hidden-placeholder'));  // Show the column
+      }
 
-    // Function to hide select columns
-    function hideSelectColumns() {
-        selectColumns.forEach(column => column.classList.add('hidden-placeholder'));  // Hide the column
-    }
+      // Function to hide select columns
+      function hideSelectColumns() {
+          selectColumns.forEach(column => column.classList.add('hidden-placeholder'));  // Hide the column
+      }
 
-    // Initially hide the select columns
-    hideSelectColumns();
+      // Initially hide the select columns
+      hideSelectColumns();
 
-    toggle.addEventListener('change', function() {
-        if (this.checked) {
-            showSelectColumns();
-            changeButtonsToSharePost();
-        } else {
-            hideSelectColumns();
-            revertButtonsToViewMore();
-        }
-    });
+      toggle.addEventListener('change', function() {
+          if (this.checked) {
+              showSelectColumns();
+              changeButtonsToSharePost();
+          } else {
+              hideSelectColumns();
+              revertButtonsToViewMore();
+          }
+      });
 
-    function changeButtonsToSharePost() {
-        const buttons = table.querySelectorAll('.view-more-btn');
-        buttons.forEach(function(button) {
-            button.textContent = 'Share Post';
-            button.classList.remove('btn-ghost');
-            button.classList.add('btn-active', 'btn-primary');
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                const recordId = this.dataset.recordId;
-                console.log('Share post for record:', recordId);
-            });
-        });
-    }
+      function changeButtonsToSharePost() {
+          const buttons = table.querySelectorAll('.view-more-btn');
+          buttons.forEach(function(button) {
+              button.textContent = 'Share Post';
+              button.classList.remove('btn-ghost');
+              button.classList.add('btn-active', 'btn-primary');
+              button.addEventListener('click', function(event) {
+                  event.preventDefault();
+                  const recordId = this.dataset.recordId;
+                  console.log('Share post for record:', recordId);
+              });
+          });
+      }
 
-    function revertButtonsToViewMore() {
-        const buttons = table.querySelectorAll('.view-more-btn');
-        buttons.forEach(function(button) {
-            button.textContent = 'View More';
-            button.classList.remove('btn-active', 'btn-primary');
-            button.classList.add('btn-ghost');
-            const recordId = button.dataset.recordId;
-            button.href = `/medical_records/${recordId}`;
-        });
-    }
-});
+      function revertButtonsToViewMore() {
+          const buttons = table.querySelectorAll('.view-more-btn');
+          buttons.forEach(function(button) {
+              button.textContent = 'View More';
+              button.classList.remove('btn-active', 'btn-primary');
+              button.classList.add('btn-ghost');
+              const recordId = button.dataset.recordId;
+              button.href = `/medical_records/${recordId}`;
+          });
+      }
+  });
 </script>

@@ -44,18 +44,24 @@
     <div class="flex justify-between items-center mt-2">
       <!-- Vote Buttons -->
       <div class="flex space-x-2">
-        <%= button_to approve_comment_path(comment), method: :put, class: "btn btn-primary btn-xs" do %>
-          <i class="fa-solid fa-arrow-up"></i>
+        <% if policy(comment).approve? %>
+          <%= button_to approve_comment_path(comment), method: :put, class: "btn btn-primary btn-xs" do %>
+            <i class="fa-solid fa-arrow-up"></i>
+          <% end %>
         <% end %>
-        <%= button_to disapprove_comment_path(comment), method: :put, class: "btn btn-accent btn-xs" do %>
-          <i class="fa-solid fa-arrow-down"></i>
+        <% if policy(comment).disapprove? %>
+          <%= button_to disapprove_comment_path(comment), method: :put, class: "btn btn-accent btn-xs" do %>
+            <i class="fa-solid fa-arrow-down"></i>
+          <% end %>
         <% end %>
         <%= comment.approval_rating %>
       </div>
       <!-- Reply Button -->
-      <label for="reply-modal-<%= comment.id %>" class="btn btn-xs btn-secondary cursor-pointer">
-        <i class="fa-solid fa-reply"></i> Reply
-      </label>
+      <% if policy(Comment.new(post: @post, parent: comment)).create? %>
+        <label for="reply-modal-<%= comment.id %>" class="btn btn-xs btn-secondary cursor-pointer">
+          <i class="fa-solid fa-reply"></i> Reply
+        </label>
+      <% end %>
     </div>
     <!-- Modal for reply -->
     <input type="checkbox" id="reply-modal-<%= comment.id %>" class="modal-toggle" />
@@ -67,13 +73,13 @@
       </div>
       <label for="reply-modal-<%= comment.id %>" class="modal-backdrop cursor-pointer"></label>
     </div>
-    <!-- Nested Comments -->
-    <% if comment.replies.any? %>
-      <ul class="nested-comments ml-10 mt-4">
-        <% comment.replies.each do |child_comment| %>
-          <%= render 'comments/comment', comment: child_comment %>
-        <% end %>
-      </ul>
-    <% end %>
-  </div>
+  <!-- Nested Comments -->
+  <% if comment.replies.any? %>
+    <ul class="nested-comments ml-10 mt-4">
+      <% comment.replies.each do |child_comment| %>
+        <%= render 'comments/comment', comment: child_comment %>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
 </li>
