@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CommentPolicy < ApplicationPolicy
   def index?
     user.present? && user_in_same_clan_as_post_author?

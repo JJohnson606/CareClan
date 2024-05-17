@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MedicalRecordPolicy < ApplicationPolicy
   def index?
     user.present? && (user.healthcare_professional? || user.clan_poa? || user.admin? || user.patient?)
