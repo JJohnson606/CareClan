@@ -15,15 +15,14 @@ Rails.application.routes.draw do
       put 'approve'
       put 'disapprove'
     end
-    resources :comments, only: %i[create new show]
-  end
-
-  resources :comments, except: %i[create new] do
-    member do
-      put 'approve'
-      put 'disapprove'
+    resources :comments, only: %i[create new show destroy] do
+      member do
+        get 'edit'
+        patch 'update'
+        put 'approve'
+        put 'disapprove'
+      end
     end
-    resources :comments, only: %i[create new]
   end
 
   resources :clans do
