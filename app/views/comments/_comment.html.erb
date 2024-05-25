@@ -45,12 +45,12 @@
       <!-- Vote Buttons -->
       <div class="flex space-x-2">
         <% if policy(comment).approve? %>
-          <%= button_to approve_comment_path(comment), method: :put, class: "btn btn-primary btn-xs" do %>
+           <%= button_to approve_post_comment_path(comment.post, comment), method: :put, class: "btn btn-primary btn-xs" do %>
             <i class="fa-solid fa-arrow-up"></i>
           <% end %>
         <% end %>
         <% if policy(comment).disapprove? %>
-          <%= button_to disapprove_comment_path(comment), method: :put, class: "btn btn-accent btn-xs" do %>
+          <%= button_to disapprove_post_comment_path(comment.post, comment), method: :put, class: "btn btn-accent btn-xs" do %>
             <i class="fa-solid fa-arrow-down"></i>
           <% end %>
         <% end %>
@@ -64,7 +64,7 @@
           </label>
         <% end %>
         <% if policy(comment).destroy? %>
-          <%= link_to comment_path(comment), method: :delete, data: { confirm: "Are you sure you want to delete this comment?" }, class: "btn btn-outline btn-accent btn-xs" do %>
+         <%= link_to post_comment_path(comment.post, comment), method: :delete, data: { confirm: "Are you sure you want to delete this comment?" }, class: "btn btn-outline btn-accent btn-xs" do %>
             <i class="fa-solid fa-trash"></i>
           <% end %>
         <% end %>
