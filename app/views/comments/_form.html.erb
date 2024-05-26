@@ -1,25 +1,48 @@
 <!-- views/comments/_form.html.erb -->
 <% if policy(comment).create? || policy(comment).update? %>
-  <%= form_with(model: [@post, comment], local: true) do |form| %>
-    <% if comment.errors.any? %>
-      <div style="color: red">
-        <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
-        <ul>
-          <% comment.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
+  <% if comment.new_record? %>
+    <%= form_with(model: [post, comment], url: post_comments_path(post), local: true) do |form| %>
+      <% if comment.errors.any? %>
+        <div style="color: red">
+          <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+          <ul>
+            <% comment.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="mb-4">
+        <% placeholder_text = comment.parent_id.present? ? "Write a reply..." : "Add a comment..." %>
+        <%= form.text_area :body, class: "textarea textarea-primary w-full", placeholder: placeholder_text %>
+      </div>
+      <%= form.hidden_field :author_id, value: current_user.id %>
+      <%= form.hidden_field :parent_id, value: comment.parent_id %>
+      <div class="flex justify-end mt-2">
+        <%= form.submit "Submit", class: "btn btn-primary" %>
       </div>
     <% end %>
-    <div class="mb-4">
-      <% placeholder_text = comment.parent_id.present? ? "Write a reply..." : "Add a comment..." %>
-      <%= form.text_area :body, class: "textarea textarea-primary w-full", placeholder: placeholder_text %>
-    </div>
-    <%= form.hidden_field :author_id, value: current_user.id %>
-    <%= form.hidden_field :parent_id %>
-    <div class="flex justify-end mt-2">
-      <%= form.submit comment.new_record? ? "Post Comment" : "Update Comment", class: "btn btn-primary" %>
-    </div>
+  <% else %>
+    <%= form_with(model: [comment.post, comment], local: true) do |form| %>
+      <% if comment.errors.any? %>
+        <div style="color: red">
+          <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+          <ul>
+            <% comment.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="mb-4">
+        <%= form.text_area :body, class: "textarea textarea-primary w-full", placeholder: "Edit your comment..." %>
+      </div>
+      <%= form.hidden_field :author_id, value: current_user.id %>
+      <%= form.hidden_field :parent_id %>
+      <div class="flex justify-end mt-2">
+        <%= form.submit "Update Comment", class: "btn btn-primary" %>
+      </div>
+    <% end %>
   <% end %>
 <% else %>
   <p>You are not authorized to <%= comment.new_record? ? 'create' : 'update' %> this comment.</p>
