@@ -6,7 +6,7 @@ class CommentsController < ApplicationController
   before_action :set_post, except: %i[show edit update destroy approve disapprove]
   before_action :set_comment, only: %i[show edit update destroy approve disapprove]
   before_action :find_parent_comment, only: %i[create new]
-  before_action :build_comment, only: %i[create new]
+  before_action :build_comment, only: %i[create new edit update]
   before_action :authorize_comment, only: %i[index show create update approve disapprove]
 
   # GET /comments or /comments.json
@@ -29,6 +29,7 @@ class CommentsController < ApplicationController
   # POST /comments or /comments.json
   def create
     find_parent_comment
+    @post = @parent_comment.post if @parent_comment.present?
     @comment = @post.comments.build(comment_params.merge(author: current_user))
 
     if @comment.save
