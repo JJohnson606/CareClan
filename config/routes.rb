@@ -15,10 +15,9 @@ Rails.application.routes.draw do
       put 'approve'
       put 'disapprove'
     end
-    resources :comments, only: %i[create new show destroy] do
+    resources :comments, only: %i[create new show update destroy] do
       member do
         get 'edit'
-        patch 'update'
         put 'approve'
         put 'disapprove'
       end
