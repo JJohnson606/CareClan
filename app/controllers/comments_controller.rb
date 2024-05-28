@@ -43,6 +43,7 @@ class CommentsController < ApplicationController
 
   # PATCH/PUT /comments/1 or /comments/1.json
   def update
+    @post = Post.find(params[:post_id])
     respond_to do |format|
       if @comment.update(comment_params)
         redirect_to post_path(@comment.post), notice: 'Comment was successfully updated.'
@@ -97,7 +98,7 @@ class CommentsController < ApplicationController
   end
 
   def build_comment
-    @comment = @post.comments.build(comment_params.merge(author: current_user))
+    @comment = @post.comments.build(comment_params.merge(author: current_user)) if @post.present?
     @comment.parent = @parent_comment if @parent_comment.present?
   end
 
