@@ -98,32 +98,34 @@
       </div>
     </div>
   </div>
-  <div class="container mx-auto my-8 p-4 bg-white shadow-lg rounded-lg">
-  <div class="flex gap-4 mb-4">
-    <!-- Comment Form Section -->
-    <div class="w-full">
-      <h3 class="text-xl font-bold mb-4">Leave a Comment</h3>
-      <%= render partial: 'comments/form', locals: { post: @post, comment: @new_comment } %>
+
+    <div class="flex gap-4 mb-4">
+      <!-- Comment Form Section -->
+      <div class="w-full">
+        <h3 class="text-xl font-bold mb-4">Leave a Comment</h3>
+        <%= render partial: 'comments/form', locals: { post: @post, comment: @new_comment } %>
+      </div>
     </div>
-  </div>
-  <!-- Comment Sorting Links -->
-  <div class="flex justify-center mb-4">
-    <div class="dropdown">
-      <button class="btn btn-black dropdown-toggle" tabindex="0">
-        Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
-      </button>
-      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">
-        <li> <%= link_to 'Newest', post_path(@post, q: {s: 'created_at desc'}) %> </li>
-        <li> <%= link_to 'Oldest', post_path(@post, q: {s: 'created_at asc'}) %></li>
-        <li> <%= link_to 'Most Popular', post_path(@post, q: {s: 'replies_count desc'}) %> </li>
-        <li> <%= link_to 'Most Controversial', post_path(@post, q: {s: 'cached_vote_diff desc'}) %> </li>
-      </ul>
+    <!-- Comment Sorting Links -->
+    <div class="flex justify-center mb-4">
+      <div class="dropdown">
+        <button class="btn btn-black dropdown-toggle" tabindex="0">
+          Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
+        </button>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">
+          <li> <%= link_to 'Newest', post_path(@post, q: {s: 'created_at desc'}) %> </li>
+          <li> <%= link_to 'Oldest', post_path(@post, q: {s: 'created_at asc'}) %></li>
+          <li> <%= link_to 'Most Popular', post_path(@post, q: {s: 'replies_count desc'}) %> </li>
+          <li> <%= link_to 'Most Controversial', post_path(@post, q: {s: 'cached_vote_diff desc'}) %> </li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="flex gap-4 mb-4">
-    <!-- Comment Section -->
-    <ul class="timeline timeline-vertical">
-      <%= render partial: 'comments/comment', collection: @comments, as: :comment %>
-    </ul>
-  </div>
-</div>
+    <div class="flex gap-4 mb-4">
+      <!-- Comment Section -->
+      <div class="w-full border border-gray-300 rounded-lg p-4">
+        <ul class="timeline-vertical">
+          <%= render partial: 'comments/comment', collection: @comments, as: :comment %>
+        </ul>
+      </div>
+    </div>
+  
