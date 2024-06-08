@@ -6,7 +6,8 @@ class CommentsController < ApplicationController
   before_action :set_post, except: %i[show edit update destroy approve disapprove]
   before_action :set_comment, only: %i[show edit update destroy approve disapprove]
   before_action :find_parent_comment, only: %i[create new]
-  before_action :authorize_comment, only: %i[index show create update approve disapprove]
+  before_action :build_comment, only: %i[create new edit update]
+  before_action :authorize_comment, only: %i[index show update approve disapprove]
 
   # GET /comments or /comments.json
   def index
@@ -28,7 +29,9 @@ class CommentsController < ApplicationController
   # POST /comments or /comments.json
   def create
     find_parent_comment
+    @post = @parent_comment.post if @parent_comment.present?
     @comment = @post.comments.build(comment_params.merge(author: current_user))
+    authorize @comment
 
     if @comment.save
       redirect_to @post, notice: 'Comment was successfully created.'
@@ -40,12 +43,13 @@ class CommentsController < ApplicationController
 
   # PATCH/PUT /comments/1 or /comments/1.json
   def update
+    @post = Post.find(params[:post_id])
     respond_to do |format|
       if @comment.update(comment_params)
-        format.html { redirect_to comment_url(@comment), notice: 'Comment was successfully updated.' }
+        redirect_to post_path(@comment.post), notice: 'Comment was successfully updated.'
         format.json { render :show, status: :ok, location: @comment }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        render :edit
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
@@ -56,7 +60,7 @@ class CommentsController < ApplicationController
     @comment.destroy
 
     respond_to do |format|
-      format.html { redirect_to comments_url, notice: 'Comment was successfully destroyed.' }
+      format.html { redirect_to post_path(@comment.post), notice: 'Comment was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -91,6 +95,11 @@ class CommentsController < ApplicationController
 
   def set_comment
     @comment = Comment.find(params[:id])
+  end
+
+  def build_comment
+    @comment = @post.comments.build(comment_params.merge(author: current_user)) if @post.present?
+    @comment.parent = @parent_comment if @parent_comment.present?
   end
 
   def comment_params

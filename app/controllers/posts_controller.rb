@@ -21,6 +21,7 @@ class PostsController < ApplicationController
     @medical_record = @post.medical_record
     @voters_up = @post.voters_up
     @voters_down = @post.voters_down
+    @new_comment = @post.comments.build
   end
 
   # GET /posts/new

@@ -32,7 +32,7 @@ module Votable
       return 0 if total_votes.zero?
 
       approval_votes = get_upvotes.size
-      (approval_votes.to_f / total_votes * 100).round(2)
+      (approval_votes.to_f / total_votes * 100).to_i
     end
 
     private

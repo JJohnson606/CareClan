@@ -14,11 +14,11 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def update?
-    user.present? && (user == record.author || user.admin?)
+    user.present? && (user == record.author)
   end
 
   def destroy?
-    user.present? && (user == record.author || user.admin?)
+    user.present? && (user == record.author)
   end
 
   def approve?
@@ -38,6 +38,7 @@ class CommentPolicy < ApplicationPolicy
   private
 
   def user_in_same_clan_as_post_author?
-    record.post.present? && user.clans.exists?(id: record.post.author.clan_ids)
+    post = record.post || record.parent&.post
+    post.present? && user.clans.exists?(id: post.author.clan_ids)
   end
 end
