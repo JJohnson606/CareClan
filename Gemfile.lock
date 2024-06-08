@@ -133,6 +133,9 @@ GEM
     color_namer (0.1.0)
       color (>= 1.4.1)
     concurrent-ruby (1.2.3)
+    counter_culture (3.5.3)
+      activerecord (>= 4.2)
+      activesupport (>= 4.2)
     crack (1.0.0)
       bigdecimal
       rexml
@@ -540,6 +543,7 @@ DEPENDENCIES
   bullet
   capybara
   chartkick
+  counter_culture
   cssbundling-rails
   debug
   devise
