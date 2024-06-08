@@ -30,8 +30,11 @@ class Comment < ApplicationRecord
   # Associations
   belongs_to :post, counter_cache: :comments_count
   belongs_to :author, class_name: 'User'
-  belongs_to :parent, class_name: 'Comment', optional: true, counter_cache: :replies_count
+  belongs_to :parent, class_name: 'Comment', optional: true
   has_many :replies, class_name: 'Comment', foreign_key: 'parent_id', dependent: :destroy
+
+  # Counter cache for replies count
+  counter_culture :parent, column_name: 'replies_count'
 
   after_create_commit :enqueue_notification_job
 
@@ -46,3 +49,6 @@ class Comment < ApplicationRecord
     NewCommentNotificationJob.perform_later(self)
   end
 end
+
+# Reset counter cache for replies_count
+Comment.counter_culture_fix_counts column_name: 'replies_count'
