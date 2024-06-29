@@ -19,8 +19,8 @@ class PostsController < ApplicationController
     @comments = CommentSorter.new(@post, params[:q]).sort
     @approval_rating = @post.approval_rating
     @medical_record = @post.medical_record
-    @voters_up = @post.voters_up
-    @voters_down = @post.voters_down
+    @voters_up = @post.voters_up.includes(profile_picture_attachment: :blob)
+    @voters_down = @post.voters_down.includes(profile_picture_attachment: :blob)
     @new_comment = @post.comments.build
   end
 
