@@ -34,6 +34,12 @@ class Post < ApplicationRecord
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: 'Noticed::Event'
   has_many :notifications, through: :noticed_events, class_name: 'Noticed::Notification'
 
+  # Counter cache for vote counts
+  counter_culture :author, column_name: 'cached_votes_total'
+  counter_culture :author, column_name: 'cached_votes_up', delta_column: 'cached_votes_up'
+  counter_culture :author, column_name: 'cached_votes_down', delta_column: 'cached_votes_down'
+  counter_culture :author, column_name: 'cached_vote_diff', delta_column: 'cached_vote_diff'
+
   after_create_commit :enqueue_notification_job
 
   scope :with_author_and_image, -> { includes(:author, image_attachment: :blob) }
