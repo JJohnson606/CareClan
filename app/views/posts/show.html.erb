@@ -1,4 +1,16 @@
 <!-- views/post/show.html.erb -->
+
+<style>
+  .avatar-overlap .avatar {
+    margin-left: -12px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+  }
+
+  .avatar-overlap .avatar:first-child {
+    margin-left: 0;
+  }
+</style>
 <div class="container mx-auto my-8 p-4 bg-white shadow-lg rounded-lg">
   <div class="flex justify-between items-center mb-4">
     <%= link_to posts_path, class: "btn btn-black" do %>
@@ -27,105 +39,192 @@
   </div>
   <div class="flex gap-4 mb-4">
     <!-- Approved By Section -->
-    <div class="flex-1 bg-primary rounded-lg p-4 flex flex-col items-center">
-      <h5 class="text-lg font-semibold text-white mb-2">Approved</h5>
-      <div class="<%= 'avatar-group -space-x-6' if @voters_up.size > 4 %> flex flex-wrap justify-center gap-2 mt-2">
-        <% @voters_up.limit(4).each do |voter| %>
-          <div class="avatar">
-            <div class="w-12 h-12 rounded-full">
-              <% if voter.profile_picture.present? %>
-                <%= image_tag voter.profile_picture, alt: voter.name, class: "rounded-full" %>
-              <% else %>
-                <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="rounded-full">
-              <% end %>
+    <div class="flex-1 bg-primary rounded-lg p-4">
+      <h5 class="text-lg font-semibold text-white mb-2 text-center">Approved</h5>
+      <div class="flex justify-center">
+        <div class="flex -space-x-2 avatar-overlap">
+          <% @voters_up.limit(4).each do |voter| %>
+            <div class="tooltip" data-tip="<%= voter.name %>">
+              <div class="avatar">
+                <div class="w-12 h-12 rounded-full ring-2 ring-white dark:ring-gray-800">
+                  <% if voter.profile_picture.present? %>
+                    <%= image_tag voter.profile_picture, alt: voter.name, class: "rounded-full" %>
+                  <% else %>
+                    <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="rounded-full">
+                  <% end %>
+                </div>
+              </div>
             </div>
-          </div>
-        <% end %>
-        <% if @voters_up.size > 4 %>
-          <div class="avatar bg-gray-300 w-12 h-12 rounded-full flex items-center justify-center">
-            +<%= @voters_up.size - 4 %>
-          </div>
-        <% end %>
+          <% end %>
+          <% if @voters_up.size > 4 %>
+            <label for="voters-up-modal" class="avatar bg-gray-300 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer ring-2 ring-white dark:ring-gray-800">
+              +<%= @voters_up.size - 4 %>
+            </label>
+          <% end %>
+        </div>
       </div>
     </div>
     <!-- Disapproved By Section -->
-    <div class="flex-1 bg-accent rounded-lg p-4 flex flex-col items-center">
-      <h5 class="text-lg font-semibold text-white mb-2">Disapproved</h5>
-      <div class="<%= 'avatar-group -space-x-6' if @voters_down.size > 4 %> flex flex-wrap justify-center gap-2 mt-2">
-        <% @voters_down.limit(4).each do |voter| %>
-          <div class="avatar">
-            <div class="w-12 h-12 rounded-full">
-              <% if voter.profile_picture.present? %>
-                <%= image_tag voter.profile_picture, alt: voter.name, class: "rounded-full" %>
-              <% else %>
-                <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="rounded-full">
-              <% end %>
+    <div class="flex-1 bg-accent rounded-lg p-4">
+      <h5 class="text-lg font-semibold text-white mb-2 text-center">Disapproved</h5>
+      <div class="flex justify-center">
+        <div class="flex -space-x-2 avatar-overlap">
+          <% @voters_down.limit(4).each do |voter| %>
+            <div class="tooltip" data-tip="<%= voter.name %>">
+              <div class="avatar">
+                <div class="w-12 h-12 rounded-full ring-2 ring-white dark:ring-gray-800">
+                  <% if voter.profile_picture.present? %>
+                    <%= image_tag voter.profile_picture, alt: voter.name, class: "rounded-full" %>
+                  <% else %>
+                    <img src="https://via.placeholder.com/150" alt="Default Profile Picture" class="rounded-full">
+                  <% end %>
+                </div>
+              </div>
             </div>
-          </div>
-        <% end %>
-        <% if @voters_down.size > 4 %>
-          <div class="avatar bg-gray-300 w-12 h-12 rounded-full flex items-center justify-center">
-            +<%= @voters_down.size - 4 %>
-          </div>
-        <% end %>
+          <% end %>
+          <% if @voters_down.size > 4 %>
+            <label for="voters-down-modal" class="avatar bg-gray-300 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer ring-2 ring-white dark:ring-gray-800">
+              +<%= @voters_down.size - 4 %>
+            </label>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Approval Rating Section -->
+  <div class="stats shadow w-full bg-gray-100 p-4 rounded-lg mb-4 mx-auto">
+    <div class="stat">
+      <div class="stat-title">Approval Rating</div>
+      <div class="stat-value <%= 'text-primary' if @post.approval_rating > 70 %> <%= 'text-accent' if @post.approval_rating < 50 %> <%= 'text-yellow-500' if @post.approval_rating >= 50 && @post.approval_rating <= 70 %>">
+        <%= @post.approval_rating %> %
+      </div>
+      <div class="stat-desc">Overall Clan approval</div>
+    </div>
+    <div class="stat">
+      <div class="stat-title">Approved</div>
+      <div class="stat-value text-primary"><%= @post.get_upvotes.size %></div>
+      <div class="stat-desc">Total Approvals</div>
+    </div>
+    <div class="stat">
+      <div class="stat-title">Disapproved</div>
+      <div class="stat-value text-accent"><%= @post.get_downvotes.size %></div>
+      <div class="stat-desc">Total Disapprovals</div>
+    </div>
+    <div class="stat">
+      <div class="stat-title">Total Votes</div>
+      <div class="stat-value"><%= @post.get_upvotes.size + @post.get_downvotes.size %></div>
+      <div class="stat-desc">All Votes</div>
+    </div>
+  </div>
+  <!-- Modal for voters_up -->
+  <input type="checkbox" id="voters-up-modal" class="modal-toggle" />
+  <div class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Users who approved this post</h3>
+      <div class="overflow-x-auto">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @post.voters_up.each do |voter| %>
+              <tr>
+                <td>
+                  <div class="flex items-center space-x-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle w-12 h-12">
+                        <% if voter.profile_picture.attached? %>
+                          <%= image_tag(voter.profile_picture, alt: "#{voter.name} profile") %>
+                        <% else %>
+                          <%= image_tag("default_profile_picture.png", alt: "Default profile picture") %>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold"><%= voter.name %></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-action">
+        <label for="voters-up-modal" class="btn">Close</label>
+      </div>
+    </div>
+  </div>
+  <!-- Modal for voters_down -->
+  <input type="checkbox" id="voters-down-modal" class="modal-toggle" />
+  <div class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Users who disapproved this post</h3>
+      <div class="overflow-x-auto">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @post.voters_down.each do |voter| %>
+              <tr>
+                <td>
+                  <div class="flex items-center space-x-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle w-12 h-12">
+                        <% if voter.profile_picture.attached? %>
+                          <%= image_tag(voter.profile_picture, alt: "#{voter.name} profile") %>
+                        <% else %>
+                          <%= image_tag("default_profile_picture.png", alt: "Default profile picture") %>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold"><%= voter.name %></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-action">
+        <label for="voters-down-modal" class="btn">Close</label>
       </div>
     </div>
   </div>
   <div class="flex gap-4 mb-4">
-    <!-- Approval Rating Section -->
-    <div class="stats shadow w-full bg-gray-100 p-4 rounded-lg mb-4 mx-auto">
-      <div class="stat">
-        <div class="stat-title">Approval Rating</div>
-        <div class="stat-value <%= 'text-primary' if @post.approval_rating > 70 %> <%= 'text-accent' if @post.approval_rating < 50 %> <%= 'text-yellow-500' if @post.approval_rating >= 50 && @post.approval_rating <= 70 %>">
-          <%= @post.approval_rating %> %
-        </div>
-        <div class="stat-desc">Overall Clan approval</div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Approved</div>
-        <div class="stat-value text-primary"><%= @post.get_upvotes.size %></div>
-        <div class="stat-desc">Total Approvals</div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Disapproved</div>
-        <div class="stat-value text-accent"><%= @post.get_downvotes.size %></div>
-        <div class="stat-desc">Total Disapprovals</div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Total Votes</div>
-        <div class="stat-value"><%= @post.get_upvotes.size + @post.get_downvotes.size %></div>
-        <div class="stat-desc">All Votes</div>
-      </div>
+    <!-- Comment Form Section -->
+    <div class="w-full">
+      <h3 class="text-xl font-bold mb-4">Leave a Comment</h3>
+      <%= render partial: 'comments/form', locals: { post: @post, comment: @new_comment } %>
     </div>
   </div>
-
-    <div class="flex gap-4 mb-4">
-      <!-- Comment Form Section -->
-      <div class="w-full">
-        <h3 class="text-xl font-bold mb-4">Leave a Comment</h3>
-        <%= render partial: 'comments/form', locals: { post: @post, comment: @new_comment } %>
-      </div>
+  <!-- Comment Sorting Links -->
+  <div class="flex justify-center mb-4">
+    <div class="dropdown">
+      <button class="btn btn-black dropdown-toggle" tabindex="0">
+        Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
+      </button>
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">
+        <li> <%= link_to 'Newest', post_path(@post, q: {s: 'created_at desc'}) %> </li>
+        <li> <%= link_to 'Oldest', post_path(@post, q: {s: 'created_at asc'}) %></li>
+        <li> <%= link_to 'Most Popular', post_path(@post, q: {s: 'replies_count desc'}) %> </li>
+        <li> <%= link_to 'Most Controversial', post_path(@post, q: {s: 'cached_vote_diff desc'}) %> </li>
+      </ul>
     </div>
-    <!-- Comment Sorting Links -->
-    <div class="flex justify-center mb-4">
-      <div class="dropdown">
-        <button class="btn btn-black dropdown-toggle" tabindex="0">
-          Sort by <i class="fa-solid fa-caret-down" style="color: #ffffff;"></i>
-        </button>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52" style="z-index: 100;">
-          <li> <%= link_to 'Newest', post_path(@post, q: {s: 'created_at desc'}) %> </li>
-          <li> <%= link_to 'Oldest', post_path(@post, q: {s: 'created_at asc'}) %></li>
-          <li> <%= link_to 'Most Popular', post_path(@post, q: {s: 'replies_count desc'}) %> </li>
-          <li> <%= link_to 'Most Controversial', post_path(@post, q: {s: 'cached_vote_diff desc'}) %> </li>
-        </ul>
-      </div>
+  </div>
+  <div class="flex gap-4 mb-4">
+    <!-- Comment Section -->
+    <div class="w-full border border-gray-300 rounded-lg p-4">
+      <ul class="timeline-vertical">
+        <%= render partial: 'comments/comment', collection: @comments, as: :comment %>
+      </ul>
     </div>
-    <div class="flex gap-4 mb-4">
-      <!-- Comment Section -->
-      <div class="w-full border border-gray-300 rounded-lg p-4">
-        <ul class="timeline-vertical">
-          <%= render partial: 'comments/comment', collection: @comments, as: :comment %>
-        </ul>
-      </div>
-    </div>
-  
+  </div>
+</div>
