@@ -33,6 +33,12 @@ class Comment < ApplicationRecord
   belongs_to :parent, class_name: 'Comment', optional: true
   has_many :replies, class_name: 'Comment', foreign_key: 'parent_id', dependent: :destroy
 
+  # Counter cache for vote counts
+  counter_culture :post, column_name: 'cached_votes_total'
+  counter_culture :post, column_name: 'cached_votes_up', delta_column: 'cached_votes_up'
+  counter_culture :post, column_name: 'cached_votes_down', delta_column: 'cached_votes_down'
+  counter_culture :post, column_name: 'cached_vote_diff', delta_column: 'cached_vote_diff'
+
   # Counter cache for replies count
   counter_culture :parent, column_name: 'replies_count'
 
