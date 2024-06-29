@@ -1,4 +1,6 @@
 # app/models/concerns/votable.rb
+# frozen_string_literal: true
+
 module Votable
   extend ActiveSupport::Concern
 
@@ -13,18 +15,12 @@ module Votable
       User.joins(:votes).where(votes: { votable: self, vote_flag: false }).includes(:profile_picture_attachment)
     end
 
-    def update_vote_cache
-      upvotes = get_upvotes.size
-      downvotes = get_downvotes.size
-      total_votes = upvotes + downvotes
-      vote_diff = (upvotes - downvotes).abs
+    def upvotes_count
+      get_upvotes.size
+    end
 
-      update_columns(
-        cached_votes_up: upvotes,
-        cached_votes_down: downvotes,
-        cached_votes_total: total_votes,
-        cached_vote_diff: vote_diff
-      )
+    def downvotes_count
+      get_downvotes.size
     end
 
     def approval_rating
@@ -33,12 +29,6 @@ module Votable
 
       approval_votes = get_upvotes.size
       (approval_votes.to_f / total_votes * 100).to_i
-    end
-
-    private
-
-    def update_vote_cache_after_vote
-      after_save :update_vote_cache_after_vote, if: :saved_change_to_votes?
     end
   end
 end
